@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tech.thrithvam.boutiqueapp.Home"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/bg">
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/homeScroll">
+        <LinearLayout
+
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:id="@+id/homeScreen"
+            >
+   <!-- <TextView
+        android:paddingLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="New Arrivals !!!"
+        android:id="@+id/new_arrivals_label"
+        android:textColor="#ffffffff"
+        android:layout_above="@+id/newArrivalCard"
+        android:background="@color/whiteBackground"
+        android:layout_alignRight="@+id/newArrivalCard"
+        android:layout_alignEnd="@+id/newArrivalCard"
+        android:layout_alignLeft="@+id/newArrivalCard"
+        android:layout_alignStart="@+id/newArrivalCard" />-->
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+
+        android:id="@+id/newArrivalCard"
+        android:background="@color/whiteBackground"
+        android:orientation="vertical"
+        >
+
+  <!--  <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/newArrival"
+        android:scaleType="centerCrop"
+        android:src="@drawable/na5"/>-->
+<!--
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:paddingBottom="10dp"
+        />
+
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider3"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider4"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider5"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />-->
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider6"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            />
+    <!--    <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider8"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider9"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider10"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider11"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider12"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider13"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:paddingBottom="10dp"
+            />-->
+   <!-- <TextView
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:paddingRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/textView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="#ffffff" />-->
+        <SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchView"
+            android:queryHint="Search"
+            android:background="#00ffffff"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:maxWidth="10000dp"/>
+
+    </RelativeLayout>
+
+
+
+            <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/whiteBackground"
+    android:baselineAligned="false">
+
+    <!--        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/LinearLeft">
+                &lt;!&ndash;<com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/categoriesScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    />&ndash;&gt;
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <TextView
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/categoryScroll"
+        android:layout_gravity="center"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+</FrameLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/LinearRight">
+
+                                                <ImageView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="150dp"
+                                                    android:src="@drawable/offer"/>
+
+            </LinearLayout>-->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/offer"
+                    android:scaleType="fitXY"/>
+</LinearLayout>
+
+
+
+        </LinearLayout>
+</com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+</RelativeLayout>

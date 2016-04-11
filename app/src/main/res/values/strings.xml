@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BoutiqueApp</string>
+    <string name="add_fav_msg">Added to favorites..</string>
+    <string name="remove_fav_msg">Removed from favorites..</string>
+    <string name="favorite_count">☆ %1$d people favorited it ☆</string>
+    <string name="share_image">Share Image</string>
+</resources>

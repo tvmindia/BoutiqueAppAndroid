@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/bg"
+    tools:context="com.tech.thrithvam.boutiqueapp.ItemDetails">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemDetailsLinear"
+        android:orientation="vertical">
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/itemImages"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            />
+        <com.daimajia.slider.library.Indicators.PagerIndicator
+            android:id="@+id/custom_indicator"
+            android:layout_width="match_parent"
+            android:paddingTop="10dp"
+            style="@style/AndroidImageSlider_Magnifier_Oval_Black"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/fav"
+                android:src="@drawable/fav_no"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/share"
+                android:src="@drawable/share" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="☆ $d people favorited it"
+            android:textSize="20sp"
+            android:textIsSelectable="false"
+            android:textColor="#a7ffeb"
+            android:id="@+id/favCount"
+            android:gravity="center"/>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:paddingLeft="15dp">
+        <TextView
+
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3e2723"
+            android:text="Look knock-out on nights out in figure skimming bodycon fits, flowing maxi lengths and stunning sequin embellished occasion dresses. This season make for satin sheen slip dresses in mink nudes, and match lace trim cami dresses with barely there heels for that cocktail ready combo. If glitterball gowns aren't your thing, take to the dance floor in a tux dress for an all-eyes-on-you androgynous look."
+            android:id="@+id/description" />
+
+</RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            >
+            <TextView
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="In Stock"
+                android:textSize="30sp"
+                android:textIsSelectable="false"
+                android:textColor="#ffffff"
+                android:layout_toLeftOf="@+id/textView3"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:text="₹ 500"
+                android:textSize="30sp"
+                android:textIsSelectable="false"
+                android:textColor="#ffffff"
+                android:id="@+id/textView3" />
+
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="View Designer"
+            android:textIsSelectable="false"
+            android:textColor="#a7ffeb"
+            android:gravity="center"/>
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
