@@ -4,4 +4,6 @@
     <string name="remove_fav_msg">Removed from favorites..</string>
     <string name="favorite_count">☆ %1$d people favorited it ☆</string>
     <string name="share_image">Share Image</string>
+    <string name="similar_products">Similar products in %1$s</string>
+    <string name="related_products">Complete your looks</string>
 </resources>

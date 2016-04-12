@@ -1,13 +1,20 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +22,7 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -28,11 +36,12 @@ ImageView favorite;
     Integer favCount=220;
     TextView favCountString;
     SliderLayout itemImages;
+    LayoutInflater inflater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
-
+        inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
@@ -85,6 +94,7 @@ ImageView favorite;
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(ItemDetails.this,R.string.share_image,Toast.LENGTH_LONG).show();
                 try {
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("image/jpeg");
@@ -95,5 +105,53 @@ ImageView favorite;
                 }
             }
         });
+        //-----------------------Similar items grid---------------------------
+        itemsGrid((LinearLayout)findViewById(R.id.similarProducts));
+        //-----------------------Related items grid---------------------------
+        itemsGrid((LinearLayout)findViewById(R.id.relatedProducts));
+    }
+    public void itemsGrid(LinearLayout fillingArea){
+        LinearLayout itemRow=new LinearLayout(ItemDetails.this);
+        itemRow.setOrientation(LinearLayout.HORIZONTAL);
+        itemRow= (LinearLayout) inflater.inflate(R.layout.items_two_coloum_frame, null);
+        itemRow.setPadding(0,10,0,5);
+        LinearLayout leftItem=(LinearLayout)itemRow.findViewById(R.id.LinearLeft);
+        LinearLayout rightItem=(LinearLayout)itemRow.findViewById(R.id.LinearRight);
+        View item=inflater.inflate(R.layout.grid_item, null);
+        ImageView imageView=(ImageView)item.findViewById(R.id.gridImg);
+        Picasso.with(ItemDetails.this).load(R.drawable.na3).into(imageView);
+        leftItem.addView(item);
+        View item2=inflater.inflate(R.layout.grid_item, null);
+        ImageView imageView2=(ImageView)item2.findViewById(R.id.gridImg);
+        Picasso.with(ItemDetails.this).load(R.drawable.na4).into(imageView2);
+        rightItem.addView(item2);
+        fillingArea.addView(itemRow);
+        item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
+                startActivity(intent);
+            }
+        });
+        item2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
+                startActivity(intent);
+            }
+        });
+        //More---------------
+        TextView more = new TextView(ItemDetails.this);
+        more.setText("more");
+        more.setGravity(Gravity.RIGHT);
+        if (Build.VERSION.SDK_INT < 23) {
+            more.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+        } else {
+            more.setTextAppearance(android.R.style.TextAppearance_Medium);
+        }
+        more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        more.setPadding(5,5,5,0);
+        more.setTextColor(Color.WHITE);
+        fillingArea.addView(more);
     }
 }
