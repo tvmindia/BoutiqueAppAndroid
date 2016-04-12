@@ -151,7 +151,6 @@ ImageView favorite;
         }
         more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         more.setPadding(5,5,5,0);
-        more.setTextColor(Color.WHITE);
         fillingArea.addView(more);
     }
 }
