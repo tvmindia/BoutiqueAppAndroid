@@ -1,9 +1,11 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,14 +42,17 @@ ImageView favorite;
     TextView favCountString;
     SliderLayout itemImages;
     LayoutInflater inflater;
+    TextView description;
+    TextView viewDesigner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setElevation(0);
         inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
+        Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
+        description=(TextView)findViewById(R.id.description);
+        description.setTypeface(fontType1);
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
         for (int i = 0; i < 3; i++) {
             final String image = "f" + (Integer.toString(i + 1));
@@ -69,6 +74,14 @@ ImageView favorite;
         itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
         itemImages.stopAutoCycle();
 
+        viewDesigner=(TextView)findViewById(R.id.view_designer);
+        viewDesigner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ItemDetails.this, OwnerAndDesigner.class);
+                startActivity(intent);
+            }
+        });
 
 
         //-----------Add to favorite and Sharing--------------------------
@@ -123,11 +136,11 @@ ImageView favorite;
         LinearLayout rightItem=(LinearLayout)itemRow.findViewById(R.id.LinearRight);
         View item=inflater.inflate(R.layout.grid_item, null);
         ImageView imageView=(ImageView)item.findViewById(R.id.gridImg);
-        Picasso.with(ItemDetails.this).load(R.drawable.na3).into(imageView);
+        Picasso.with(ItemDetails.this).load(R.drawable.k1).into(imageView);
         leftItem.addView(item);
         View item2=inflater.inflate(R.layout.grid_item, null);
         ImageView imageView2=(ImageView)item2.findViewById(R.id.gridImg);
-        Picasso.with(ItemDetails.this).load(R.drawable.na4).into(imageView2);
+        Picasso.with(ItemDetails.this).load(R.drawable.k2).into(imageView2);
         rightItem.addView(item2);
         fillingArea.addView(itemRow);
         item.setOnClickListener(new View.OnClickListener() {

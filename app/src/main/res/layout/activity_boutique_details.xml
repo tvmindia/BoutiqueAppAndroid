@@ -108,7 +108,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/phone"
         android:layout_below="@+id/address"
-        android:textColor="@color/accent"/>
+        android:textColor="@color/accent"
+        android:layout_toLeftOf="@+id/callSymbol"
+        android:layout_toStartOf="@+id/callSymbol" />
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"

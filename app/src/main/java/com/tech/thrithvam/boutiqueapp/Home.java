@@ -114,11 +114,19 @@ LinearLayout homeScreen;
         LinearLayout rightItem=(LinearLayout)itemRow.findViewById(R.id.LinearRight);
         View item=inflater.inflate(R.layout.grid_item, null);
         ImageView imageView=(ImageView)item.findViewById(R.id.gridImg);
-        Picasso.with(Home.this).load(R.drawable.na2).into(imageView);
+        if(isNewCat) {
+        Picasso.with(Home.this).load(R.drawable.s1).into(imageView);}
+        else {
+            Picasso.with(Home.this).load(R.drawable.s3).into(imageView);
+        }
         leftItem.addView(item);
         View item2=inflater.inflate(R.layout.grid_item, null);
         ImageView imageView2=(ImageView)item2.findViewById(R.id.gridImg);
-        Picasso.with(Home.this).load(R.drawable.na3).into(imageView2);
+        if(isNewCat) {
+        Picasso.with(Home.this).load(R.drawable.s2).into(imageView2);}
+        else {
+            Picasso.with(Home.this).load(R.drawable.s4).into(imageView2);
+        }
         rightItem.addView(item2);
         homeScreen.addView(itemRow);
         item.setOnClickListener(new View.OnClickListener() {

@@ -23,6 +23,8 @@ ImageView boutiqueImg;
     TextView workingDays;
     TextView fbLink;
     TextView instagramLink;
+    TextView owners;
+    TextView designers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,8 @@ ImageView boutiqueImg;
         workingDays=(TextView)findViewById(R.id.workingDays);
         fbLink=(TextView)findViewById(R.id.fbLink);
         instagramLink=(TextView)findViewById(R.id.instagramLink);
+        owners=(TextView)findViewById(R.id.owners);
+        designers=(TextView)findViewById(R.id.designers);
         //---------------set boutique details------------------
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             boutiqueImg.setImageDrawable(getDrawable(R.drawable.boutique));
@@ -99,6 +103,20 @@ ImageView boutiqueImg;
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramLinkString));
                 startActivity(browserIntent);
+            }
+        });
+        owners.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
+                startActivity(intent);
+            }
+        });
+        designers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
+                startActivity(intent);
             }
         });
     }
