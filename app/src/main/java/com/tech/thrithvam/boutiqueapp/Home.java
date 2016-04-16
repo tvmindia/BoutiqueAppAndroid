@@ -47,6 +47,8 @@ LinearLayout homeScreen;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getSupportActionBar().setElevation(0);
+
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
       /*  final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
@@ -150,7 +152,7 @@ LinearLayout homeScreen;
         }
     }
 
-
+    //---------------Menu creation---------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -161,14 +163,18 @@ LinearLayout homeScreen;
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.user:
-                //final Intent intentUser = new Intent(this, Login.class);
-
-
+               Intent intentUser = new Intent(this, User.class);
+                startActivity(intentUser);
+                break;
+            case R.id.boutique:
+                Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
+                startActivity(intentBoutique);
+                break;
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
-
+    //--------------Actionbar hiding while scrolling-------------------------------
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
 

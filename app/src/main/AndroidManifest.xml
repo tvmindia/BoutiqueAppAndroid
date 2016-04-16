@@ -29,7 +29,9 @@
             android:name=".User"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".ItemDetails" />
-        <activity android:name=".ImageViewer"></activity>
+        <activity android:name=".ImageViewer" />
+        <activity android:name=".BoutiqueDetails" />
+        <activity android:name=".OwnerAndDesigner"></activity>
     </application>
 
 </manifest>

@@ -11,6 +11,9 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,6 +44,7 @@ ImageView favorite;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        getSupportActionBar().setElevation(0);
         inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
@@ -150,7 +154,35 @@ ImageView favorite;
             more.setTextAppearance(android.R.style.TextAppearance_Medium);
         }
         more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            more.setTextColor(getColor(R.color.accent));
+        }
+        else {
+            more.setTextColor(getResources().getColor(R.color.accent));
+        }
         more.setPadding(5,5,5,0);
         fillingArea.addView(more);
+    }
+    //---------------Menu creation---------------------------------------------
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.user:
+                Intent intentUser = new Intent(this, User.class);
+                startActivity(intentUser);
+                break;
+            case R.id.boutique:
+                Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
+                startActivity(intentBoutique);
+                break;
+            default:
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

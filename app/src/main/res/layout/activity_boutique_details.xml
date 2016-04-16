@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.tech.thrithvam.boutiqueapp.BoutiqueDetails"
+    android:background="@color/background">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:id="@+id/boutiqueImg"
+                android:background="@drawable/bg"/>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    app:cardCornerRadius="4dp">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="7dp"
+        android:text="caption"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/caption"
+        android:textColor="@color/primary_text"
+        android:gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="about us"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/aboutUs"
+        android:layout_below="@+id/caption"
+        android:textColor="@color/primary_text"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/divider1"
+        android:background="@color/divider"
+        android:layout_below="@id/aboutUs"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="2016"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/year"
+        android:layout_below="@+id/divider1"
+        android:textColor="@color/primary_text"
+        android:layout_alignParentLeft="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Location"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/location"
+        android:layout_below="@+id/divider1"
+        android:textColor="@color/primary_text"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/year"
+        android:layout_toEndOf="@+id/year"
+        android:gravity="right"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Address"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/address"
+        android:layout_below="@+id/year"
+        android:textColor="@color/primary_text"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Phone"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/phone"
+        android:layout_below="@+id/address"
+        android:textColor="@color/accent"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:src="@drawable/call"
+        android:id="@+id/callSymbol"
+        android:layout_alignBottom="@+id/phone"
+        android:layout_alignRight="@+id/location"
+        android:layout_alignEnd="@+id/location"/>
+
+
+</RelativeLayout>
+</android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="4dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Timing: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/timingLabel"
+                android:textColor="@color/primary_text"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="timing"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/timing"
+                android:textColor="@color/primary_text"
+                android:layout_toEndOf="@+id/timingLabel"
+                android:layout_toRightOf="@+id/timingLabel" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="Working Days: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/workingDaysLabel"
+                    android:layout_below="@+id/timing"
+                    android:textColor="@color/primary_text"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="working Days"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/workingDays"
+                    android:textColor="@color/primary_text"
+                    android:layout_toEndOf="@+id/workingDaysLabel"
+                    android:layout_below="@+id/timing"
+                    android:layout_toRightOf="@+id/workingDaysLabel" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="View us on Facebook"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/fbLink"
+                    android:layout_below="@+id/workingDays"
+                    android:textColor="@color/accent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="View us on Instagram"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/instagramLink"
+                    android:layout_below="@+id/fbLink"
+                    android:textColor="@color/accent"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            app:cardCornerRadius="4dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="View Owners"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/owners"
+                    android:textColor="@color/accent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="View Designers"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/designers"
+                    android:layout_below="@+id/owners"
+                    android:textColor="@color/accent"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
