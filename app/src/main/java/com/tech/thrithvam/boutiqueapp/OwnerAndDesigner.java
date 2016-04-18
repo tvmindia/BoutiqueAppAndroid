@@ -35,4 +35,9 @@ TextView profile;
         spinner.setAdapter(adapter);
 
     }
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
+    }
 }

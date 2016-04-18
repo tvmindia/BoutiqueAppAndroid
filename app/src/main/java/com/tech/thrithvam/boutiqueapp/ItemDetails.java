@@ -66,6 +66,7 @@ ImageView favorite;
                     Intent intent=new Intent(ItemDetails.this,ImageViewer.class);
                     intent.putExtra("Image",image);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 }
             });
             itemImages.addSlider(sliderViews);
@@ -79,7 +80,8 @@ ImageView favorite;
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ItemDetails.this, OwnerAndDesigner.class);
-                startActivity(intent);
+                startActivity(intent  );
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
 
@@ -117,6 +119,7 @@ ImageView favorite;
                     share.setType("image/jpeg");
                     share.putExtra(Intent.EXTRA_STREAM, Uri.parse("android.resource://" + getPackageName() + "/drawable/" + "f" + Integer.toString(itemImages.getCurrentPosition() + 1)));
                     startActivity(Intent.createChooser(share, getString(R.string.share_image)));
+                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 } catch (Exception e) {
                     Toast.makeText(ItemDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -148,6 +151,7 @@ ImageView favorite;
             public void onClick(View v) {
                 Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         item2.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +159,7 @@ ImageView favorite;
             public void onClick(View v) {
                 Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         //More---------------
@@ -189,13 +194,20 @@ ImageView favorite;
             case R.id.user:
                 Intent intentUser = new Intent(this, User.class);
                 startActivity(intentUser);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 break;
             case R.id.boutique:
                 Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
                 startActivity(intentBoutique);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 break;
             default:
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }

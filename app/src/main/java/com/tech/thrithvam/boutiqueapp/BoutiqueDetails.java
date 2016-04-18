@@ -73,6 +73,7 @@ ImageView boutiqueImg;
                 Uri number = Uri.parse("tel:" + phoneNumber);
                 Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
                 startActivity(callIntent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         phoneSymbol.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +82,7 @@ ImageView boutiqueImg;
                 Uri number = Uri.parse("tel:" + phoneNumber);
                 Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
                 startActivity(callIntent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
 
@@ -94,6 +96,7 @@ ImageView boutiqueImg;
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fbLinkString));
                 startActivity(browserIntent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
 
@@ -103,6 +106,7 @@ ImageView boutiqueImg;
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramLinkString));
                 startActivity(browserIntent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         owners.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +114,7 @@ ImageView boutiqueImg;
             public void onClick(View v) {
                 Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         designers.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +122,13 @@ ImageView boutiqueImg;
             public void onClick(View v) {
                 Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }

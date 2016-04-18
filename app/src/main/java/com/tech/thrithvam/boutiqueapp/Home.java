@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -13,18 +12,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Scroller;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -33,9 +24,6 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class Home extends AppCompatActivity implements ObservableScrollViewCallbacks {
 
@@ -134,6 +122,7 @@ LinearLayout homeScreen;
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ItemDetails.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         item2.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +130,7 @@ LinearLayout homeScreen;
             public void onClick(View v) {
                 Intent intent=new Intent(Home.this,ItemDetails.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
         if(!isNewCat) { ////////temporary logic
@@ -173,10 +163,12 @@ LinearLayout homeScreen;
             case R.id.user:
                Intent intentUser = new Intent(this, User.class);
                 startActivity(intentUser);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 break;
             case R.id.boutique:
                 Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
                 startActivity(intentBoutique);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 break;
             default:
         }
