@@ -27,11 +27,16 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".User"
-            android:configChanges="orientation|screenSize" />
-        <activity android:name=".ItemDetails" />
-        <activity android:name=".ImageViewer" />
-        <activity android:name=".BoutiqueDetails" />
-        <activity android:name=".OwnerAndDesigner"></activity>
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".ItemDetails"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ImageViewer"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".BoutiqueDetails"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".OwnerAndDesigner"
+            android:configChanges="orientation|screenSize"/>
     </application>
 
 </manifest>
