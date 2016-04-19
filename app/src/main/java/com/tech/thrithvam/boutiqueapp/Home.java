@@ -87,11 +87,13 @@ LinearLayout homeScreen;
             }
             categoryTitle.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             categoryTitle.setPadding(5, 5, 0, 5);
-            categoryTitle.setTextColor(Color.WHITE);
+            categoryTitle.setTextColor(Color.BLUE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                categoryTitle.setTextColor(Home.this.getColor(R.color.accent));
                 categoryTitle.setBackgroundColor(Home.this.getColor(R.color.whiteBackground));
             }
             else {
+                categoryTitle.setTextColor(getResources().getColor(R.color.accent));
             categoryTitle.setBackgroundColor(getResources().getColor(R.color.whiteBackground));}
             homeScreen.addView(categoryTitle);
         }
@@ -145,7 +147,7 @@ LinearLayout homeScreen;
             }
             more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             more.setPadding(5, 5, 5, 5);
-            more.setTextColor(Color.WHITE);
+            more.setTextColor(Color.BLUE);
             homeScreen.addView(more);
         }
     }

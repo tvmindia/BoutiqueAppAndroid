@@ -1,6 +1,7 @@
 package com.tech.thrithvam.boutiqueapp;
 
 import android.app.DatePickerDialog;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.nineoldandroids.animation.TypeEvaluator;
+import com.nineoldandroids.animation.ValueAnimator;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,8 +25,9 @@ public class User extends AppCompatActivity {
     Animation slideExit1;
     Animation slideExit2;
     ScrollView login,signup,userDetails;
-    TextView dobPicker,anniversoryPicker;
-    Calendar dob,anniversory;
+    TextView dobPicker, anniversaryPicker;
+    Calendar dob, anniversary;
+    TextView points;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +44,9 @@ public class User extends AppCompatActivity {
         //------------Sign up------------------------------------------
         signup=(ScrollView)findViewById(R.id.SignUp);
         dob=Calendar.getInstance();
-        anniversory=Calendar.getInstance();
+        anniversary =Calendar.getInstance();
         dobPicker=(TextView)findViewById(R.id.dob_signup);
-        anniversoryPicker=(TextView)findViewById(R.id.anniversary_signup);
+        anniversaryPicker =(TextView)findViewById(R.id.anniversary_signup);
         dobPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,23 +65,56 @@ public class User extends AppCompatActivity {
                 new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR),today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-        anniversoryPicker.setOnClickListener(new View.OnClickListener() {
+        anniversaryPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar today=Calendar.getInstance();
                 DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        anniversory.set(Calendar.YEAR,year);
-                        anniversory.set(Calendar.MONTH,monthOfYear);
-                        anniversory.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                        anniversary.set(Calendar.YEAR,year);
+                        anniversary.set(Calendar.MONTH,monthOfYear);
+                        anniversary.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                         SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-                        anniversoryPicker.setText(formatted.format(anniversory.getTime()));
+                        anniversaryPicker.setText(formatted.format(anniversary.getTime()));
                     }
                 };
                 new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR),today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        //-----------------------User details-----------------------
+        userDetails=(ScrollView)findViewById(R.id.UserDetails);
+        Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
+        Typeface fontType2 = Typeface.createFromAsset(getAssets(), "fonts/handwriting.ttf");
+
+
+        TextView greeting=(TextView)findViewById(R.id.greeting);
+        greeting.setTypeface(fontType2);
+        TextView user_name=(TextView)findViewById(R.id.user_name);
+        user_name.setTypeface(fontType2);
+        TextView textView1=(TextView)findViewById(R.id.textView1);
+        textView1.setTypeface(fontType1);
+        TextView textView2=(TextView)findViewById(R.id.textView2);
+        textView2.setTypeface(fontType1);
+        TextView textView10=(TextView)findViewById(R.id.textView10);
+        textView10.setTypeface(fontType1);
+        TextView loyaltyCardNo=(TextView)findViewById(R.id.loyalty_card_number);
+        loyaltyCardNo.setTypeface(fontType1);
+        points=(TextView)findViewById(R.id.points);
+
+        //greeting--------
+        int timeOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if(timeOfDay >= 0 && timeOfDay < 12){
+            greeting.setText("Good Morning");
+        }else if(timeOfDay >= 12 && timeOfDay < 16){
+            greeting.setText("Good Afternoon");
+        }else if(timeOfDay >= 16 && timeOfDay < 21){
+            greeting.setText("Good Evening");
+        }else if(timeOfDay >= 21 && timeOfDay < 24){
+            greeting.setText("Good Night");
+        }
+
     }
     @Override
     public void onBackPressed() {
@@ -91,5 +130,31 @@ public class User extends AppCompatActivity {
         login.startAnimation(slideEntry1);
         signup.startAnimation(slideEntry2);
         signup.setVisibility(View.GONE);
+    }
+    public void login(View view){
+        userDetails.setVisibility(View.VISIBLE);
+        login.startAnimation(slideEntry2);
+        userDetails.startAnimation(slideEntry1);
+        //points animation---------
+        int count=150;
+        ValueAnimator animator = new ValueAnimator();
+        animator.setObjectValues(0, count);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                points.setText(String.valueOf(animation.getAnimatedValue()));
+            }
+        });
+        animator.setEvaluator(new TypeEvaluator<Integer>() {
+            public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                return Math.round(startValue + (endValue - startValue) * fraction);
+            }
+        });
+        animator.setDuration(2000);
+        animator.start();
+    }
+    public void logout(View view){
+        userDetails.startAnimation(slideExit2);
+        login.startAnimation(slideExit1);
+        userDetails.setVisibility(View.GONE);
     }
 }
