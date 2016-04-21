@@ -1,15 +1,18 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.content.ClipData;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,10 +32,17 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ItemDetails extends AppCompatActivity {
 ImageView favorite;
@@ -44,11 +54,14 @@ ImageView favorite;
     LayoutInflater inflater;
     TextView description;
     TextView viewDesigner;
+    TextView price;
+    TextView stock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setElevation(0);
+        new ProductDetails().execute();
         inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         description=(TextView)findViewById(R.id.description);
@@ -70,7 +83,6 @@ ImageView favorite;
                 }
             });
             itemImages.addSlider(sliderViews);
-//            sliderShow9.setPresetTransformer(SliderLayout.Transformer.DepthPage);
         }
         itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
         itemImages.stopAutoCycle();
@@ -85,7 +97,8 @@ ImageView favorite;
             }
         });
 
-
+        price=(TextView)findViewById(R.id.price);
+        stock=(TextView)findViewById(R.id.stock);
         //-----------Add to favorite and Sharing--------------------------
         favorite=(ImageView)findViewById(R.id.fav);
         favCountString=(TextView)findViewById(R.id.favCount);
@@ -181,7 +194,7 @@ ImageView favorite;
         more.setPadding(5,5,5,0);
         fillingArea.addView(more);
     }
-    //---------------Menu creation---------------------------------------------
+    //---------------Menu creation------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -209,5 +222,130 @@ ImageView favorite;
     public void onBackPressed() {
         finish();
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
+    }
+
+    //-------------------- Async tasks---------------------------------
+    public class ProductDetails extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData,userID;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
+        String productName,descriptionString,priceString,designerID;
+        Boolean isOutOfStock;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+              pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting ---------------------------
+           // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Products";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"productID\":\"" +"570A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"boutiqueID\":\"" + "470A044A-4DBA-4770-BCA7-331D2C0834AE" + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                     //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    productName=jsonObject.optString("Name");
+                    descriptionString=jsonObject.optString("Description");
+                    priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
+                    isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
+                    designerID=jsonObject.optString("DesignerID");
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            Toast.makeText(ItemDetails.this,strJson, Toast.LENGTH_LONG).show();
+            if(!pass) {
+                new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                android.support.v7.app.ActionBar ab = getSupportActionBar();
+                if (ab != null) {
+                    ab.setTitle(productName);
+                }
+                description.setText(descriptionString);
+                price.setText(priceString);
+                if(isOutOfStock){
+                    stock.setText("Out of Stock");
+                    stock.setTextColor(Color.RED);
+                }
+            }
+        }
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

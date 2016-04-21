@@ -28,4 +28,7 @@
     <string name="dob">Date of Birth</string>
     <string name="pick_a_date">Pick a date</string>
     <string name="anniversary">Anniversary</string>
+    <string name="wait">Please wait</string>
+    <string name="url" translatable="false">http://192.168.1.107:222/</string>
+    <string name="ok_button">OK</string>
 </resources>
