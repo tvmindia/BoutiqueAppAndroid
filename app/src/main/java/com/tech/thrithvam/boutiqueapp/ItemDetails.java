@@ -48,7 +48,7 @@ public class ItemDetails extends AppCompatActivity {
 ImageView favorite;
     ImageView share;
     Boolean isFav=false;
-    Integer favCount=220;
+    Integer favCount;
     TextView favCountString;
     SliderLayout itemImages;
     LayoutInflater inflater;
@@ -249,7 +249,7 @@ ImageView favorite;
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Products";
             HttpURLConnection c = null;
             try {
-                postData = "{\"productID\":\"" +"570A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"boutiqueID\":\"" + "470A044A-4DBA-4770-BCA7-331D2C0834AE" + "\"}";
+                postData = "{\"productID\":\"" +"570A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"boutiqueID\":\"" + "470A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"userID\":\"" + "2E522A80-5FED-4BDB-A433-15D78ED22162"+ "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -306,6 +306,8 @@ ImageView favorite;
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
                     designerID=jsonObject.optString("DesignerID");
+                    isFav=jsonObject.optBoolean("isFav");
+                    favCount=jsonObject.optInt("FavCount");
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -339,6 +341,13 @@ ImageView favorite;
                 if(isOutOfStock){
                     stock.setText("Out of Stock");
                     stock.setTextColor(Color.RED);
+                }
+                if (isFav) {
+                    favorite.setImageResource(R.drawable.fav);
+                    favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
+                } else {
+                    favorite.setImageResource(R.drawable.fav_no);
+                    favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
                 }
             }
         }
