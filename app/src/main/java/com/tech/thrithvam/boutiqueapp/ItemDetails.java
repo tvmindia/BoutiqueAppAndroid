@@ -61,7 +61,13 @@ ImageView favorite;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setElevation(0);
-        new ProductDetails().execute();
+        if (isOnline()){
+            new ProductDetails().execute();
+        }
+        else {
+            Toast.makeText(ItemDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
+            finish();
+        }
         inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         description=(TextView)findViewById(R.id.description);
