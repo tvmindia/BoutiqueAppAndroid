@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,10 +25,16 @@ public class User extends AppCompatActivity {
     Animation slideEntry2;
     Animation slideExit1;
     Animation slideExit2;
-    ScrollView login,signup,userDetails;
+    ScrollView login, signUp, userDetails;
     TextView dobPicker, anniversaryPicker;
     Calendar dob, anniversary;
     TextView points;
+    EditText mobileLogin;
+    EditText passwordLogin;
+    EditText nameSignUp;
+    EditText mobileNoSignUp;
+    EditText emailSignUp;
+    Constants constants=new Constants();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +47,39 @@ public class User extends AppCompatActivity {
 
         //------------Login---------------------------------------------
         login=(ScrollView)findViewById(R.id.Login);
+        //validation-------
+        mobileLogin=(EditText)findViewById(R.id.mobLogin);
+        mobileLogin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {}
+                else {
+                    mobileLogin.setText(mobileLogin.getText().toString().trim());
+                    if( (mobileLogin.length()<constants.MobileNumberMin) || (mobileLogin.length()>constants.MobileNumberMax) || !(mobileLogin.getText().toString().matches(constants.MobileNumberRegularExpression))) {
+                        mobileLogin.setError(getResources().getString(R.string.mob_no_error));
+                    }
+                }
+            }
+        });
+        passwordLogin=(EditText)findViewById(R.id.passwordLogin);
+        passwordLogin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {}
+                else {
+                    passwordLogin.setText(passwordLogin.getText().toString().trim());
+                    if( passwordLogin.getText().toString().equals("")) {
+                        passwordLogin.setError(getResources().getString(R.string.no_pass_error));
+                    }
+                }
+            }
+        });
 
         //------------Sign up------------------------------------------
-        signup=(ScrollView)findViewById(R.id.SignUp);
+        signUp =(ScrollView)findViewById(R.id.SignUp);
+        nameSignUp=(EditText)findViewById(R.id.user_name_signup);
+        mobileNoSignUp=(EditText)findViewById(R.id.mob_no_signup);
+        emailSignUp=(EditText)findViewById(R.id.email_signup);
         dob=Calendar.getInstance();
         anniversary =Calendar.getInstance();
         dobPicker=(TextView)findViewById(R.id.dob_signup);
@@ -82,12 +119,50 @@ public class User extends AppCompatActivity {
                 new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR),today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-
+        //validation------------------
+        nameSignUp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    nameSignUp.setError(null);
+                }
+                else {
+                    nameSignUp.setText(nameSignUp.getText().toString().trim());
+                    if( !(nameSignUp.getText().toString().matches(constants.UserNameRegularExpression)) || nameSignUp.length()<constants.UserNameMin)
+                    {
+                        nameSignUp.setError(getResources().getString(R.string.name_error));
+                    }
+                }
+            }
+        });
+        mobileNoSignUp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {}
+                else {
+                    mobileNoSignUp.setText(mobileNoSignUp.getText().toString().trim());
+                    if( mobileNoSignUp.length()<constants.MobileNumberMin || mobileNoSignUp.length()>constants.MobileNumberMax || !(mobileNoSignUp.getText().toString().matches(constants.MobileNumberRegularExpression))) {
+                        mobileNoSignUp.setError(getResources().getString(R.string.mob_no_error));
+                    }
+                }
+            }
+        });
+        emailSignUp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {}
+                else {
+                    emailSignUp.setText(emailSignUp.getText().toString().trim());
+                    if( !android.util.Patterns.EMAIL_ADDRESS.matcher(emailSignUp.getText().toString()).matches()) {
+                        emailSignUp.setError(getResources().getString(R.string.email_error));
+                    }
+                }
+            }
+        });
         //-----------------------User details-----------------------
         userDetails=(ScrollView)findViewById(R.id.UserDetails);
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         Typeface fontType2 = Typeface.createFromAsset(getAssets(), "fonts/handwriting.ttf");
-
 
         TextView greeting=(TextView)findViewById(R.id.greeting);
         greeting.setTypeface(fontType2);
@@ -122,37 +197,61 @@ public class User extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     public void sign_up(View view){
-        signup.setVisibility(View.VISIBLE);
+        mobileNoSignUp.setText(mobileLogin.getText().toString()); //getting mobile number from login page if user already entered
+        signUp.setVisibility(View.VISIBLE);
         login.startAnimation(slideExit2);
-        signup.startAnimation(slideExit1);
+        signUp.startAnimation(slideExit1);
+        login.setVisibility(View.GONE);
     }
     public void sign_up_cancel(View view){
+        login.setVisibility(View.VISIBLE);
         login.startAnimation(slideEntry1);
-        signup.startAnimation(slideEntry2);
-        signup.setVisibility(View.GONE);
+        signUp.startAnimation(slideEntry2);
+        signUp.setVisibility(View.GONE);
     }
     public void login(View view){
-        userDetails.setVisibility(View.VISIBLE);
-        login.startAnimation(slideEntry2);
-        userDetails.startAnimation(slideEntry1);
-        //points animation---------
-        int count=150;
-        ValueAnimator animator = new ValueAnimator();
-        animator.setObjectValues(0, count);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                points.setText(String.valueOf(animation.getAnimatedValue()));
-            }
-        });
-        animator.setEvaluator(new TypeEvaluator<Integer>() {
-            public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                return Math.round(startValue + (endValue - startValue) * fraction);
-            }
-        });
-        animator.setDuration(2000);
-        animator.start();
+        //Validation-------------
+        mobileLogin.requestFocus();
+        passwordLogin.requestFocus();
+        mobileLogin.clearFocus();
+        passwordLogin.clearFocus();
+        if(mobileLogin.getError()==null &&passwordLogin.getError()==null){
+            //Proceeding------------------
+            userDetails.setVisibility(View.VISIBLE);
+            login.startAnimation(slideEntry2);
+            userDetails.startAnimation(slideEntry1);
+            //points animation---------
+            int count=150;
+            ValueAnimator animator = new ValueAnimator();
+            animator.setObjectValues(0, count);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    points.setText(String.valueOf(animation.getAnimatedValue()));
+                }
+            });
+            animator.setEvaluator(new TypeEvaluator<Integer>() {
+                public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                    return Math.round(startValue + (endValue - startValue) * fraction);
+                }
+            });
+            animator.setDuration(2000);
+            animator.start();
+        }
+    }
+    public void sign_up_filled(View view){
+        nameSignUp.requestFocus();
+        mobileNoSignUp.requestFocus();
+        emailSignUp.requestFocus();
+        nameSignUp.clearFocus();
+        emailSignUp.clearFocus();
+        mobileNoSignUp.clearFocus();
+        if(nameSignUp.getError()==null && mobileNoSignUp.getError()==null && emailSignUp.getError()==null){
+            Toast.makeText(User.this,"proceeding",Toast.LENGTH_LONG).show();
+        }
     }
     public void logout(View view){
+        mobileLogin.setText("");
+        passwordLogin.setText("");
         userDetails.startAnimation(slideExit2);
         login.startAnimation(slideExit1);
         userDetails.setVisibility(View.GONE);
