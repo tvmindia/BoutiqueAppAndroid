@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BoutiqueDetails extends AppCompatActivity {
+    Constants constants=new Constants();
 ImageView boutiqueImg;
     TextView aboutUs;
     TextView caption;
@@ -116,7 +117,7 @@ ImageView boutiqueImg;
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Boutique";
             HttpURLConnection c = null;
             try {
-                postData = "{\"boutiqueID\":\"" + "470A044A-4DBA-4770-BCA7-331D2C0834AE" + "\"}";
+                postData = "{\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");

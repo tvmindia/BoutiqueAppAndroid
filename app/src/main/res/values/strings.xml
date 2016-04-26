@@ -26,7 +26,6 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="dob">Date of Birth</string>
-    <string name="pick_a_date">Pick a date</string>
     <string name="anniversary">Anniversary</string>
     <string name="wait">Please wait</string>
     <string name="url" translatable="false">http://192.168.1.107:222/</string>
@@ -37,4 +36,7 @@
     <string name="no_pass_error">Enter password</string>
     <string name="name_error">Enter a valid name</string>
     <string name="email_error">Enter valid e-mail</string>
+    <string name="gender_error_msg">Please select gender</string>
+    <string name="enter_otp">Please enter the four digit number you got through sms</string>
+    <string name="rs">₹ : %1$s</string>
 </resources>

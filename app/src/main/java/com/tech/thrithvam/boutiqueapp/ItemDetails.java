@@ -45,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ItemDetails extends AppCompatActivity {
+    Constants constants=new Constants();
 ImageView favorite;
     ImageView share;
     Boolean isFav=false;
@@ -255,7 +256,7 @@ ImageView favorite;
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Products";
             HttpURLConnection c = null;
             try {
-                postData = "{\"productID\":\"" +"570A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"boutiqueID\":\"" + "470A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"userID\":\"" + "2E522A80-5FED-4BDB-A433-15D78ED22162"+ "\"}";
+                postData = "{\"productID\":\"" +"570A044A-4DBA-4770-BCA7-331D2C0834AE" + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + "2E522A80-5FED-4BDB-A433-15D78ED22162"+ "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -343,7 +344,7 @@ ImageView favorite;
                     ab.setTitle(productName);
                 }
                 description.setText(descriptionString);
-                price.setText(priceString);
+                price.setText(getResources().getString(R.string.rs, priceString));
                 if(isOutOfStock){
                     stock.setText("Out of Stock");
                     stock.setTextColor(Color.RED);
