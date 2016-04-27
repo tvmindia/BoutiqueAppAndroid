@@ -50,16 +50,18 @@ public class User extends AppCompatActivity {
     Animation slideExit2;
     ScrollView login, signUp, userDetails;
     EditText dobPicker, anniversaryPicker;
-    Calendar dob, anniversary;
+    Calendar dob=null, anniversary=null;
     TextView points;
     EditText mobileLogin;
-    EditText passwordLogin;
     EditText nameSignUp;
     EditText mobileNoSignUp;
     EditText emailSignUp;
     String genderString;
     int OTP=0;
     String userID;
+    boolean isActive=false;
+    TextView loyaltyCardNo;
+    TextView user_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,19 +85,6 @@ public class User extends AppCompatActivity {
                     mobileLogin.setText(mobileLogin.getText().toString().trim());
                     if( (mobileLogin.length()<constants.MobileNumberMin) || (mobileLogin.length()>constants.MobileNumberMax) || !(mobileLogin.getText().toString().matches(constants.MobileNumberRegularExpression))) {
                         mobileLogin.setError(getResources().getString(R.string.mob_no_error));
-                    }
-                }
-            }
-        });
-        passwordLogin=(EditText)findViewById(R.id.passwordLogin);
-        passwordLogin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {}
-                else {
-                    passwordLogin.setText(passwordLogin.getText().toString().trim());
-                    if( passwordLogin.getText().toString().equals("")) {
-                        passwordLogin.setError(getResources().getString(R.string.no_pass_error));
                     }
                 }
             }
@@ -132,6 +121,25 @@ public class User extends AppCompatActivity {
                 }
             }
         });
+        dobPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Calendar today = Calendar.getInstance();
+                    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            dob.set(Calendar.YEAR, year);
+                            dob.set(Calendar.MONTH, monthOfYear);
+                            dob.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+
+                            dobPicker.setText(formatted.format(dob.getTime()));
+                        }
+                    };
+                    new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
+
+            }
+        });
         anniversaryPicker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -149,6 +157,23 @@ public class User extends AppCompatActivity {
                     };
                     new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
                 }
+            }
+        });
+        anniversaryPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar today = Calendar.getInstance();
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        anniversary.set(Calendar.YEAR, year);
+                        anniversary.set(Calendar.MONTH, monthOfYear);
+                        anniversary.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                        anniversaryPicker.setText(formatted.format(anniversary.getTime()));
+                    }
+                };
+                new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
         //validation------------------
@@ -200,7 +225,7 @@ public class User extends AppCompatActivity {
 
         TextView greeting=(TextView)findViewById(R.id.greeting);
         greeting.setTypeface(fontType2);
-        TextView user_name=(TextView)findViewById(R.id.user_name);
+        user_name=(TextView)findViewById(R.id.user_name);
         user_name.setTypeface(fontType2);
         TextView textView1=(TextView)findViewById(R.id.textView1);
         textView1.setTypeface(fontType1);
@@ -208,7 +233,7 @@ public class User extends AppCompatActivity {
         textView2.setTypeface(fontType1);
         TextView textView10=(TextView)findViewById(R.id.textView10);
         textView10.setTypeface(fontType1);
-        TextView loyaltyCardNo=(TextView)findViewById(R.id.loyalty_card_number);
+        loyaltyCardNo=(TextView)findViewById(R.id.loyalty_card_number);
         loyaltyCardNo.setTypeface(fontType1);
         points=(TextView)findViewById(R.id.points);
 
@@ -224,27 +249,12 @@ public class User extends AppCompatActivity {
             greeting.setText("Good Night");
         }
 
-        //Already logged in--------------------
+        //If Already logged in--------------------
 
-        if(db.GetUserDetail("UserID")!=""){
+        if(db.GetUserDetail("UserID")!=null){
             userDetails.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
-            //points animation---------
-            int count=150;
-            ValueAnimator animator = new ValueAnimator();
-            animator.setObjectValues(0, count);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    points.setText(String.valueOf(animation.getAnimatedValue()));
-                }
-            });
-            animator.setEvaluator(new TypeEvaluator<Integer>() {
-                public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                    return Math.round(startValue + (endValue - startValue) * fraction);
-                }
-            });
-            animator.setDuration(2000);
-            animator.start();
+            new GetUserDetails().execute();
         }
 
     }
@@ -269,30 +279,9 @@ public class User extends AppCompatActivity {
     public void login(View view){
         //Validation-------------
         mobileLogin.requestFocus();
-        passwordLogin.requestFocus();
         mobileLogin.clearFocus();
-        passwordLogin.clearFocus();
-        if(mobileLogin.getError()==null &&passwordLogin.getError()==null){
-            //Proceeding------------------
-            userDetails.setVisibility(View.VISIBLE);
-            login.startAnimation(slideEntry2);
-            userDetails.startAnimation(slideEntry1);
-            //points animation---------
-            int count=150;
-            ValueAnimator animator = new ValueAnimator();
-            animator.setObjectValues(0, count);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    points.setText(String.valueOf(animation.getAnimatedValue()));
-                }
-            });
-            animator.setEvaluator(new TypeEvaluator<Integer>() {
-                public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                    return Math.round(startValue + (endValue - startValue) * fraction);
-                }
-            });
-            animator.setDuration(2000);
-            animator.start();
+        if(mobileLogin.getError()==null){
+            new UserLogin().execute();
         }
     }
     public void sign_up_filled(View view){
@@ -323,7 +312,6 @@ public class User extends AppCompatActivity {
     }
     public void logout(View view){
         mobileLogin.setText("");
-        passwordLogin.setText("");
         userDetails.startAnimation(slideExit2);
         login.startAnimation(slideExit1);
         userDetails.setVisibility(View.GONE);
@@ -412,7 +400,7 @@ public class User extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
-                    pass=jsonObject.optBoolean("Flag");
+                    pass=jsonObject.optBoolean("Flag",true);
                     OTP=jsonObject.optInt("OTP");
                     userID=jsonObject.optString("UserID");
                 }
@@ -441,32 +429,6 @@ public class User extends AppCompatActivity {
                 UserVerification();
             }
         }
-    }
-    public void UserVerification(){
-        Toast.makeText(User.this,Integer.toString(OTP),Toast.LENGTH_LONG).show();
-        AlertDialog.Builder alert = new AlertDialog.Builder(User.this);
-        alert.setTitle(R.string.enter_otp);
-        final EditText otp=new EditText(User.this);
-        otp.setInputType(InputType.TYPE_CLASS_NUMBER);
-        otp.setGravity(Gravity.CENTER_HORIZONTAL);
-        alert.setView(otp);
-        alert.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                if (otp.getText().toString().equals("")) {
-                    UserVerification();
-                }
-                else if(Integer.parseInt(otp.getText().toString())==OTP){
-                    Toast.makeText(User.this,"Matches",Toast.LENGTH_LONG).show();
-                    new UserActivation().execute();
-                }
-                else {
-                    Toast.makeText(User.this,"Not Matching",Toast.LENGTH_LONG).show();
-                    UserVerification();
-                }
-            }
-        });
-        alert.setCancelable(false);
-        alert.show();
     }
     public class UserActivation extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
@@ -570,12 +532,314 @@ public class User extends AppCompatActivity {
                 Intent intentUser = new Intent(User.this, User.class);
                 startActivity(intentUser);
                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                db.GetUserDetail("UserID");
                 finish();
+            }
+        }
+    }
+    public class UserLogin extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(User.this);
+        String mobileString;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+            mobileString=mobileLogin.getText().toString();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UserLogin";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"mobile\":\"" + mobileString + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    userID=jsonObject.optString("UserID","");
+                    isActive=jsonObject.optBoolean("Active");
+                    OTP=jsonObject.optInt("OTP");
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(User.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                if(!isActive){
+                new AlertDialog.Builder(User.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(R.string.activate_account_q)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserVerification();
+                            }
+                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();}
+                else {
+                    UserVerification();
+                }
+
 
             }
         }
     }
+    public class GetUserDetails extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(User.this);
+        String nameString, mobileString,emailString,DOBString,anniversaryString,loyaltyCardNoString;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UserDetails";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"userID\":\"" + db.GetUserDetail("UserID") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    nameString =jsonObject.optString("Name");
+                    mobileString =jsonObject.optString("Mobile");
+                    emailString =jsonObject.optString("Email");
+                    loyaltyCardNoString =jsonObject.optString("LoyaltyCardNo");
+                    DOBString =jsonObject.optString("DOB","").replace("\\/Date(", "").replace(")\\/", "");
+                    anniversaryString =jsonObject.optString("Anniversary","").replace("\\/Date(", "").replace(")\\/", "");
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(User.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+
+                //points animation---------
+                int count=150;
+                ValueAnimator animator = new ValueAnimator();
+                animator.setObjectValues(0, count);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        points.setText(String.valueOf(animation.getAnimatedValue()));
+                    }
+                });
+                animator.setEvaluator(new TypeEvaluator<Integer>() {
+                    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                        return Math.round(startValue + (endValue - startValue) * fraction);
+                    }
+                });
+                animator.setDuration(2000);
+                animator.start();
+
+
+                user_name.setText(nameString);
+                loyaltyCardNo.setText(loyaltyCardNoString);
+                TextView mobno=(TextView)findViewById(R.id.mobile_no);
+                mobno.setText(mobileString);
+                TextView email=(TextView)findViewById(R.id.email);
+                email.setText(emailString);
+                TextView dob=(TextView)findViewById(R.id.dob);
+                TextView anniversary=(TextView)findViewById(R.id.anniversary);
+                SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                Calendar cal = Calendar.getInstance();
+                if (!DOBString.equals("null")) {
+                    cal.setTimeInMillis(Long.parseLong(DOBString));
+                    dob.setText(formatted.format(cal.getTime()));
+                } else dob.setText("");
+                if (!anniversaryString.equals("null")) {
+                    cal.setTimeInMillis(Long.parseLong(anniversaryString));
+                    anniversary.setText(formatted.format(cal.getTime()));
+                } else anniversary.setText("");
+
+            }
+        }
+    }
+
+    public void UserVerification(){
+        Toast.makeText(User.this,Integer.toString(OTP),Toast.LENGTH_LONG).show();
+        AlertDialog.Builder alert = new AlertDialog.Builder(User.this);
+        alert.setTitle(R.string.enter_otp);
+        final EditText otp=new EditText(User.this);
+        otp.setInputType(InputType.TYPE_CLASS_NUMBER);
+        otp.setGravity(Gravity.CENTER_HORIZONTAL);
+        alert.setView(otp);
+        alert.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (otp.getText().toString().equals("")) {
+                    UserVerification();
+                }
+                else if(Integer.parseInt(otp.getText().toString())==OTP){
+                    Toast.makeText(User.this,"Matches",Toast.LENGTH_LONG).show();
+                    if(!isActive){
+                        new UserActivation().execute();
+                    }
+                    else {
+                        db.UserLogin(userID);
+                        Intent intentUser = new Intent(User.this, User.class);
+                        startActivity(intentUser);
+                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                        finish();
+                    }
+                }
+                else {
+                    Toast.makeText(User.this,"Not Matching",Toast.LENGTH_LONG).show();
+                    UserVerification();
+                }
+            }
+        });
+        alert.setCancelable(false);
+        alert.show();
+    }
+
     public boolean isOnline() {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
