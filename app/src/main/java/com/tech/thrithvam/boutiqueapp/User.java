@@ -95,8 +95,6 @@ public class User extends AppCompatActivity {
         nameSignUp=(EditText)findViewById(R.id.user_name_signup);
         mobileNoSignUp=(EditText)findViewById(R.id.mob_no_signup);
         emailSignUp=(EditText)findViewById(R.id.email_signup);
-        dob=Calendar.getInstance();
-        anniversary =Calendar.getInstance();
         dobPicker=(EditText)findViewById(R.id.dob_signup);
        // dobPicker.setEnabled(false);
         anniversaryPicker =(EditText)findViewById(R.id.anniversary_signup);
@@ -109,6 +107,7 @@ public class User extends AppCompatActivity {
                     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            dob=Calendar.getInstance();
                             dob.set(Calendar.YEAR, year);
                             dob.set(Calendar.MONTH, monthOfYear);
                             dob.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -128,6 +127,7 @@ public class User extends AppCompatActivity {
                     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            dob=Calendar.getInstance();
                             dob.set(Calendar.YEAR, year);
                             dob.set(Calendar.MONTH, monthOfYear);
                             dob.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -148,6 +148,7 @@ public class User extends AppCompatActivity {
                     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            anniversary =Calendar.getInstance();
                             anniversary.set(Calendar.YEAR, year);
                             anniversary.set(Calendar.MONTH, monthOfYear);
                             anniversary.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -166,6 +167,7 @@ public class User extends AppCompatActivity {
                 DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        anniversary =Calendar.getInstance();
                         anniversary.set(Calendar.YEAR, year);
                         anniversary.set(Calendar.MONTH, monthOfYear);
                         anniversary.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -340,8 +342,18 @@ public class User extends AppCompatActivity {
             mobileString=mobileNoSignUp.getText().toString();
             emailString=emailSignUp.getText().toString();
             SimpleDateFormat formatted = new SimpleDateFormat("yyyy MM dd", Locale.US);
-            dobString = formatted.format(dob.getTime());
-            anniversaryString=formatted.format(anniversary.getTime());
+            if(dob==null){
+                dobString="null";
+            }
+            else {
+                dobString = formatted.format(dob.getTime());
+            }
+            if(anniversary==null){
+                anniversaryString="null";
+            }
+            else {
+                anniversaryString=formatted.format(anniversary.getTime());
+            }
         }
 
         @Override
