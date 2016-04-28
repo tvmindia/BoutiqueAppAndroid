@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 public class BoutiqueDetails extends AppCompatActivity {
     Constants constants=new Constants();
-ImageView boutiqueImg;
+    ImageView boutiqueImg;
     TextView aboutUs;
     TextView caption;
     TextView year;
@@ -192,14 +192,13 @@ ImageView boutiqueImg;
             super.onPostExecute(result);
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            Toast.makeText(BoutiqueDetails.this,strJson, Toast.LENGTH_LONG).show();
             if(!pass) {
                 new AlertDialog.Builder(BoutiqueDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                finish();
                             }
                         }).setCancelable(false).show();
             }
@@ -258,6 +257,7 @@ ImageView boutiqueImg;
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
+                        intent.putExtra("ownerORdesigner","owner");
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }
@@ -266,6 +266,7 @@ ImageView boutiqueImg;
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(BoutiqueDetails.this, OwnerAndDesigner.class);
+                        intent.putExtra("ownerORdesigner","designer");
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }

@@ -165,11 +165,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/searchView"
             android:queryHint="Search"
-            android:background="#00ffffff"
+            android:background="#9dffffff"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:maxWidth="10000dp"/>
+            android:maxWidth="10000dp"
+            />
 
     </RelativeLayout>
 

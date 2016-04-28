@@ -19,12 +19,12 @@ import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImageViewer extends AppCompatActivity {
-PhotoView photoView;
+    PhotoView photoView;
     Bundle extras;
     ProgressBar progressBar;
     boolean isDetailsVisible=true;
     ObjectAnimator Anim1;
-RelativeLayout imgDetails;
+    RelativeLayout imgDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
