@@ -19,8 +19,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // the emulator or uninstall the application in the phone, to run the application
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_USER_ACCOUNTS_TABLE = "CREATE TABLE IF NOT EXISTS UserAccount (UserID TEXT);";//, Email TEXT, Password TEXT, MobNo TEXT, Gender TEXT);";
+        String CREATE_USER_ACCOUNTS_TABLE = "CREATE TABLE IF NOT EXISTS UserAccount (UserID TEXT);";
         db.execSQL(CREATE_USER_ACCOUNTS_TABLE);
+        String CREATE_NOTIFICATIONS_TABLE = "CREATE TABLE IF NOT EXISTS Notifications (NotificationIDs TEXT, ExpiryDate DATE);";
+        db.execSQL(CREATE_NOTIFICATIONS_TABLE);
     }
     // Upgrading database
     @Override
@@ -48,8 +50,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM UserAccount;",null);
         if (cursor.getCount()>0)
         {cursor.moveToFirst();
-            return cursor.getString(cursor.getColumnIndex(detail));
+            String result=cursor.getString(cursor.getColumnIndex(detail));
+            cursor.close();
+            return result;
         }
         else return null;
+    }
+    //------------------------Notifications table------------------------------
+    public void insertNotificationIDs(String notIds, String date)
+    {
+        db=this.getWritableDatabase();
+        db.execSQL("INSERT INTO Notifications (NotificationIDs,ExpiryDate) VALUES ('"+notIds+"','"+date+"');");
+        db.close();
+    }
+    public String getNotificationIDs()
+    {
+        db=this.getReadableDatabase();
+        String nIDs="";
+        Cursor cursor = db.rawQuery("SELECT (NotificationIDs) FROM Notifications;",null);
+        if (cursor.getCount()>0)
+        {cursor.moveToFirst();
+            nIDs=cursor.getString(cursor.getColumnIndex("NotificationIDs"));
+            do {
+                nIDs=nIDs+","+cursor.getString(cursor.getColumnIndex("NotificationIDs"));
+            }while (cursor.moveToNext());
+            cursor.close();
+            return nIDs;
+        }
+        else return "";
+    }
+    public void flushNotifications()
+    {
+        db=this.getWritableDatabase();
+        long time= System.currentTimeMillis();
+        db.execSQL("DELETE FROM Notifications WHERE ExpiryDate<"+time+";");
+        db.close();
     }
 }

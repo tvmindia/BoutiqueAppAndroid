@@ -36,6 +36,7 @@ LinearLayout homeScreen;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().setElevation(0);
+        startService(new Intent(this, Notification.class)); //calling the service
 
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
