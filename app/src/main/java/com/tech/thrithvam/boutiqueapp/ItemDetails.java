@@ -99,6 +99,7 @@ ImageView favorite;
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ItemDetails.this, OwnerAndDesigner.class);
+                intent.putExtra("ownerORdesigner","designer");
                 startActivity(intent  );
                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }

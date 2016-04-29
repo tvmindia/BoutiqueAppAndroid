@@ -3,8 +3,10 @@ package com.tech.thrithvam.boutiqueapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
@@ -149,7 +151,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     pass=jsonObject.optBoolean("Flag",true);
                     arrayListName.add(jsonObject.optString("Name"));
                     arrayListProfile.add(jsonObject.optString("Profile"));
-                    arrayListPhone.add(jsonObject.optString("Phone",""));
+                    arrayListPhone.add(jsonObject.optString("Mobile"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -181,6 +183,26 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         profile.setText(arrayListProfile.get(spinner.getSelectedItemPosition()));
+                        final String phoneString=arrayListPhone.get(spinner.getSelectedItemPosition());
+                        phone.setText(phoneString);
+                        phone.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Uri number = Uri.parse("tel:" + phoneString);
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                                startActivity(callIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
+                        });
+                        phoneSymbol.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Uri number = Uri.parse("tel:" + phoneString);
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                                startActivity(callIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
+                        });
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {

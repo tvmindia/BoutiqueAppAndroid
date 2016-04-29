@@ -28,7 +28,6 @@ public class Notification extends Service {
     DatabaseHandler db=new DatabaseHandler(this);
     Constants constants=new Constants();
     int TIME_INTERVAL_IN_MINUTE=1;
-    String notificationIDs="";
     public Notification() {
     }
 
@@ -50,9 +49,7 @@ public class Notification extends Service {
             TIME_INTERVAL_IN_MINUTE=Integer.parseInt(db.GetUserDetail("NOT_INTERVAL"));}*/
     //        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
         if(isOnline()){
-
                 new GetNotifications().execute();
-
         }
         stopSelf();
         return START_NOT_STICKY;
@@ -77,7 +74,7 @@ public class Notification extends Service {
         int status;
         StringBuilder sb;
         String strJson, postData; JSONArray jsonArray4Notifications;
-        String Title,Message;
+        String Message;
         Boolean pass=false;
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         ArrayList<String> titles=new ArrayList<>();
