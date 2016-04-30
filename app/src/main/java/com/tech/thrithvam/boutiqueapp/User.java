@@ -672,7 +672,7 @@ public class User extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(User.this);
-        String nameString, mobileString,emailString,DOBString,anniversaryString,loyaltyCardNoString;
+        String nameString, mobileString,emailString,DOBString,anniversaryString,loyaltyCardNoString,loyaltyPointsString;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -744,6 +744,7 @@ public class User extends AppCompatActivity {
                     mobileString =jsonObject.optString("Mobile");
                     emailString =jsonObject.optString("Email");
                     loyaltyCardNoString =jsonObject.optString("LoyaltyCardNo");
+                    loyaltyPointsString=jsonObject.optString("LoyaltyPoints");
                     DOBString =jsonObject.optString("DOB","").replace("\\/Date(", "").replace(")\\/", "");
                     anniversaryString =jsonObject.optString("Anniversary","").replace("\\/Date(", "").replace(")\\/", "");
                 }
@@ -770,22 +771,6 @@ public class User extends AppCompatActivity {
             }
             else {
 
-                //points animation---------
-                int count=150;
-                ValueAnimator animator = new ValueAnimator();
-                animator.setObjectValues(0, count);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        points.setText(String.valueOf(animation.getAnimatedValue()));
-                    }
-                });
-                animator.setEvaluator(new TypeEvaluator<Integer>() {
-                    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                        return Math.round(startValue + (endValue - startValue) * fraction);
-                    }
-                });
-                animator.setDuration(2000);
-                animator.start();
 
 
                 user_name.setText(nameString);
@@ -806,7 +791,28 @@ public class User extends AppCompatActivity {
                     cal.setTimeInMillis(Long.parseLong(anniversaryString));
                     anniversary.setText(formatted.format(cal.getTime()));
                 } else anniversary.setText("");
-
+                if(loyaltyPointsString.equals("null")||loyaltyPointsString.equals("")){
+                    points.setText("0");
+                }
+                else {
+                    points.setText(loyaltyPointsString);
+                    //points animation---------
+                    int count=Integer.parseInt(loyaltyPointsString);
+                    ValueAnimator animator = new ValueAnimator();
+                    animator.setObjectValues(0, count);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            points.setText(String.valueOf(animation.getAnimatedValue()));
+                        }
+                    });
+                    animator.setEvaluator(new TypeEvaluator<Integer>() {
+                        public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                            return Math.round(startValue + (endValue - startValue) * fraction);
+                        }
+                    });
+                    animator.setDuration(2000);
+                    animator.start();
+                }
             }
         }
     }

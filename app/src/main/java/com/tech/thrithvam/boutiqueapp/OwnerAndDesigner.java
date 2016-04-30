@@ -214,6 +214,9 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     {
                             spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
                     }
+                else {
+                    spinner.performClick();                 //to allow user to see the list of owners as a popup- to avoid priority in owners
+                }
             }
         }
     }
