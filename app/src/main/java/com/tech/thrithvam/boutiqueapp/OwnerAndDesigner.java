@@ -56,13 +56,6 @@ public class OwnerAndDesigner extends AppCompatActivity {
         profile=(TextView)findViewById(R.id.profile);
         phone=(TextView)findViewById(R.id.phone);
         phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
-//        for (int i=0;i<4;i++)
-//        {
-//            arrayList.add("Name "+ i);
-//        }
-
-
-
         if (isOnline()){
             new GetDetails().execute();
         }
@@ -181,6 +174,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner=(Spinner)findViewById(R.id.name);
                 spinner.setAdapter(adapter);
+                //--------Setting spinner-------------------
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -210,7 +204,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
-                if("designer".equals(extras.getString("ownerORdesigner")))
+                if("designer".equals(extras.getString("ownerORdesigner")))   //to show specific designer details when comes from product details screen
                     {
                             spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
                     }

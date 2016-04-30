@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 
 public class ItemDetails extends AppCompatActivity {
     Constants constants=new Constants();
-ImageView favorite;
+    ImageView favorite;
     ImageView share;
     Boolean isFav=false;
     Integer favCount;

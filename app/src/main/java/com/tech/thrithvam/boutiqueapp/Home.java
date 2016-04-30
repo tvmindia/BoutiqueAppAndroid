@@ -27,7 +27,7 @@ import com.squareup.picasso.Picasso;
 
 public class Home extends AppCompatActivity implements ObservableScrollViewCallbacks {
 
-
+DatabaseHandler db=new DatabaseHandler(this);
 LinearLayout homeScreen;
     LayoutInflater inflater;
 
@@ -37,6 +37,7 @@ LinearLayout homeScreen;
         setContentView(R.layout.activity_home);
         getSupportActionBar().setElevation(0);
         startService(new Intent(this, Notification.class)); //calling the service
+        db.flushNotifications();
 
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);

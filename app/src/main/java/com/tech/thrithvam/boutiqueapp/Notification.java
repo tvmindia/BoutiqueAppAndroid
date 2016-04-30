@@ -44,9 +44,6 @@ public class Notification extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        /*if(db.GetUserDetail("NOT_COUNT")!=null&&db.GetUserDetail("NOT_INTERVAL")!=null)
-        {count=Integer.parseInt(db.GetUserDetail("NOT_COUNT"));
-            TIME_INTERVAL_IN_MINUTE=Integer.parseInt(db.GetUserDetail("NOT_INTERVAL"));}*/
     //        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
         if(isOnline()){
                 new GetNotifications().execute();
@@ -139,7 +136,7 @@ public class Notification extends Service {
                         JSONObject jsonObject = jsonArray4Notifications.getJSONObject(i);
                         pass=jsonObject.optBoolean("Flag",true);
                         Message=jsonObject.optString("Message","");
-                        if(!jsonObject.optString("NotificationID").equals("")){
+                        if(!jsonObject.optString("NotificationID").equals("")){     //to avoiding inserting null values when NotificationID is absent
                             db.insertNotificationIDs(jsonObject.optString("NotificationID"),jsonObject.optString("EndDate").replace("\\/Date(", "").replace(")\\/", ""));
                         }
                         titles.add(jsonObject.optString("Title"));
@@ -168,7 +165,7 @@ public class Notification extends Service {
                     mBuilder.setContentText(messages.get(i));
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     mBuilder.setSound(alarmSound);
-                    mNotificationManager.notify((int) Math.ceil(Math.random() * 1000), mBuilder.build());
+                    mNotificationManager.notify((int) Math.ceil(Math.random() * 1000), mBuilder.build());//random notification id on phone
                 }
             }
         }

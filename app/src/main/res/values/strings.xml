@@ -24,7 +24,7 @@
     <string name="wait">Please wait</string>
     <string name="url" translatable="false">http://192.168.1.107:222/</string>
     <string name="ok_button">OK</string>
-    <string name="network_off_alert">Plean turn on internet</string>
+    <string name="network_off_alert">Please turn on internet</string>
     <string name="since">Since : %1$s</string>
     <string name="mob_no_error">Enter valid mobile number</string>
     <string name="name_error">Enter a valid name</string>

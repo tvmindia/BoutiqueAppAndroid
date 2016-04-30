@@ -70,6 +70,7 @@ public class ImageViewer extends AppCompatActivity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+    //for rotating the image
     public void rotateImage(View view){
         photoView.setRotationBy(90f);
     }

@@ -56,7 +56,7 @@ public class BoutiqueDetails extends AppCompatActivity {
             Toast.makeText(BoutiqueDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
         }
 
-
+        //----------------setting fonts------------------------
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         Typeface fontType2 = Typeface.createFromAsset(getAssets(), "fonts/handwriting.ttf");
 
@@ -216,7 +216,7 @@ public class BoutiqueDetails extends AppCompatActivity {
                 phone.setText(phoneString);
                 phone.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v) {                                   //Phone call function
                         Uri number = Uri.parse("tel:" + phoneString);
                         Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
                         startActivity(callIntent);
@@ -238,7 +238,7 @@ public class BoutiqueDetails extends AppCompatActivity {
 
                 fbLink.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v) {                                                   //opening links
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fBLinkString));
                         startActivity(browserIntent);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
@@ -247,7 +247,7 @@ public class BoutiqueDetails extends AppCompatActivity {
 
                 instagramLink.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v) {                                           //opening links
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramLinkString));
                         startActivity(browserIntent);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
