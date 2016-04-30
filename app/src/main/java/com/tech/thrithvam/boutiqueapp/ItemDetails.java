@@ -95,15 +95,7 @@ ImageView favorite;
         itemImages.stopAutoCycle();
 
         viewDesigner=(TextView)findViewById(R.id.view_designer);
-        viewDesigner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(ItemDetails.this, OwnerAndDesigner.class);
-                intent.putExtra("ownerORdesigner","designer");
-                startActivity(intent  );
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-            }
-        });
+
 
         price=(TextView)findViewById(R.id.price);
         stock=(TextView)findViewById(R.id.stock);
@@ -328,7 +320,6 @@ ImageView favorite;
             super.onPostExecute(result);
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            Toast.makeText(ItemDetails.this,strJson, Toast.LENGTH_LONG).show();
             if(!pass) {
                 new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -357,6 +348,16 @@ ImageView favorite;
                     favorite.setImageResource(R.drawable.fav_no);
                     favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
                 }
+                viewDesigner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(ItemDetails.this, OwnerAndDesigner.class);
+                        intent.putExtra("ownerORdesigner","designer");
+                        intent.putExtra("designerID",designerID);
+                        startActivity(intent  );
+                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                    }
+                });
             }
         }
     }

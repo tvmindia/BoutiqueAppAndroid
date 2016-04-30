@@ -8,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +41,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
     ArrayList<String> arrayListName;
     ArrayList<String> arrayListProfile;
     ArrayList<String> arrayListPhone;
+    ArrayList<String> designerID;
     ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +52,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
         arrayListName = new ArrayList<>();
         arrayListProfile=new ArrayList<>();
         arrayListPhone=new ArrayList<>();
+        designerID =new ArrayList<>();
         profile=(TextView)findViewById(R.id.profile);
         phone=(TextView)findViewById(R.id.phone);
         phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
@@ -152,6 +153,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     arrayListName.add(jsonObject.optString("Name"));
                     arrayListProfile.add(jsonObject.optString("Profile"));
                     arrayListPhone.add(jsonObject.optString("Mobile"));
+                    designerID.add(jsonObject.optString("DesignerID"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -208,6 +210,10 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
+                if("designer".equals(extras.getString("ownerORdesigner")))
+                    {
+                            spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
+                    }
             }
         }
     }
