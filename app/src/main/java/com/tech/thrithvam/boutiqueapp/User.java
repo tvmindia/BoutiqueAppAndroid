@@ -660,8 +660,6 @@ public class User extends AppCompatActivity {
                 else {
                     UserVerification();
                 }
-
-
             }
         }
     }
@@ -832,16 +830,14 @@ public class User extends AppCompatActivity {
                 }
                 else if(Integer.parseInt(otp.getText().toString())==OTP){
                     Toast.makeText(User.this,"Matches",Toast.LENGTH_LONG).show();
-                    if(!isActive){
+
                         new UserActivation().execute();
-                    }
-                    else {
                         db.UserLogin(userID);
                         Intent intentUser = new Intent(User.this, User.class);
                         startActivity(intentUser);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         finish();
-                    }
+
                 }
                 else {
                     Toast.makeText(User.this,"Not Matching",Toast.LENGTH_LONG).show();
