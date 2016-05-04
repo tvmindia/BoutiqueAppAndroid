@@ -58,7 +58,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     LayoutInflater inflater;
     ListView sideBar;
     ArrayList<String> categoryList;
-    Dictionary categoryCode=new Hashtable();
+    Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

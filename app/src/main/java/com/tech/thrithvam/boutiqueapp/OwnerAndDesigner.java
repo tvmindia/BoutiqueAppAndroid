@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,11 +46,16 @@ public class OwnerAndDesigner extends AppCompatActivity {
     ArrayList<String> arrayListPhone;
     ArrayList<String> designerID;
     ArrayAdapter<String> adapter;
+    ListView sideBar;
+    ArrayList<String> categoryList;
+    Dictionary<String,String> categoryCode=new Hashtable<>();
+    ArrayAdapter categoryAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner_and_designer);
         getSupportActionBar().setElevation(0);
+        sideBar=(ListView)findViewById(R.id.left_drawer);
         extras= getIntent().getExtras();
         arrayListName = new ArrayList<>();
         arrayListProfile=new ArrayList<>();
@@ -58,6 +66,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
         phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
         if (isOnline()){
             new GetDetails().execute();
+            new GetCategories().execute();
         }
         else {
             Toast.makeText(OwnerAndDesigner.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -211,6 +220,118 @@ public class OwnerAndDesigner extends AppCompatActivity {
                 else {
                     spinner.performClick();                 //to allow user to see the list of owners as a popup- to avoid priority in owners
                 }
+
+            }
+        }
+    }
+    public class GetCategories extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(OwnerAndDesigner.this);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            categoryList=new ArrayList<>();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Categories";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    categoryList.add(jsonObject.optString("Name"));
+                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(OwnerAndDesigner.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                categoryAdapter = new ArrayAdapter<>(OwnerAndDesigner.this, R.layout.spinner_item, categoryList);
+                sideBar.setAdapter(categoryAdapter);
+                sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(OwnerAndDesigner.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }
