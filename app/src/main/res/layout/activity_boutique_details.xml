@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tech.thrithvam.boutiqueapp.BoutiqueDetails"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:animateLayoutChanges="true">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

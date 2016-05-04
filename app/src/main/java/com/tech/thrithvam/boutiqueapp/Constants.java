@@ -2,6 +2,7 @@ package com.tech.thrithvam.boutiqueapp;
 
 
 public class Constants {
+    String AppID="ADB68305-64C5-4181-830F-43BA6210B226";  //Find way to generate this
     String BoutiqueID="470A044A-4DBA-4770-BCA7-331D2C0834AE";           //Define which is the boutiquq
     int MobileNumberMax=10;
     int MobileNumberMin=10;

@@ -54,6 +54,7 @@ public class BoutiqueDetails extends AppCompatActivity {
         }
         else {
             Toast.makeText(BoutiqueDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
+            finish();
         }
 
         //----------------setting fonts------------------------

@@ -1,12 +1,20 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,9 +22,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
@@ -25,12 +37,29 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Home extends AppCompatActivity implements ObservableScrollViewCallbacks {
-
-DatabaseHandler db=new DatabaseHandler(this);
-LinearLayout homeScreen;
+    Constants constants=new Constants();
+    DatabaseHandler db=new DatabaseHandler(this);
+    LinearLayout homeScreen;
     LayoutInflater inflater;
-
+    ListView sideBar;
+    ArrayList<String> categoryList;
+    Dictionary categoryCode=new Hashtable();
+    ArrayAdapter categoryAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,21 +67,29 @@ LinearLayout homeScreen;
         getSupportActionBar().setElevation(0);
         startService(new Intent(this, Notification.class)); //calling the service
         db.flushNotifications();
+        if (isOnline()){
+            new GetCategories().execute();
+        }
+        else {
+            Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
+        }
 
+        sideBar=(ListView)findViewById(R.id.left_drawer);
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
-      /*  final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
+       // final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
-        newArrivalsLabel.setTypeface(type);
-       */
+
+
+
         //-------------------------hide actionbar on scroll----------------------------
       final ObservableScrollView scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
       scrollView.setScrollViewCallbacks(this);
 
+        //------------------------------slider for new arrivals-------------------------------
         SliderLayout sliderShow6 = (SliderLayout) findViewById(R.id.slider6);
         for (int i = 0; i < 5; i++) {
-            final int Finali = i;
-            final String image = "na" + (Integer.toString(Finali + 1));
+            final String image = "na" + (Integer.toString(i + 1));
             TextSliderView textSliderViews = new TextSliderView(this);
             textSliderViews
                     .description(SliderLayout.Transformer.Accordion.toString())
@@ -181,14 +218,10 @@ LinearLayout homeScreen;
     //--------------Actionbar hiding while scrolling-------------------------------
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-
     }
-
     @Override
     public void onDownMotionEvent() {
-
     }
-
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         ActionBar ab = getSupportActionBar();
@@ -203,5 +236,123 @@ LinearLayout homeScreen;
                 }
             }
         }
+    }
+
+    //------------------------------Async Tasks-----------------------------
+    public class GetCategories extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(Home.this);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            categoryList=new ArrayList<>();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Categories";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    categoryList.add(jsonObject.optString("Name"));
+                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(Home.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.spinner_item, categoryList);
+                sideBar.setAdapter(categoryAdapter);
+                sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(Home.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
