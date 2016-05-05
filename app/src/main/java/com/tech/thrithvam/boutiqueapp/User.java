@@ -834,10 +834,9 @@ public class User extends AppCompatActivity {
                         new UserActivation().execute();
                         db.UserLogin(userID);
                         Intent intentUser = new Intent(User.this, User.class);
+                    finish();
                         startActivity(intentUser);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                        finish();
-
                 }
                 else {
                     Toast.makeText(User.this,"Not Matching",Toast.LENGTH_LONG).show();

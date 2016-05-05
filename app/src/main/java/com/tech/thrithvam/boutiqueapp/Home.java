@@ -339,7 +339,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.spinner_item, categoryList);
+                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar__item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

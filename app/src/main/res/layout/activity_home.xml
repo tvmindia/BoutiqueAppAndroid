@@ -243,13 +243,34 @@
         </LinearLayout>
 </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
     </FrameLayout>
-    <ListView
-        android:id="@+id/left_drawer"
+    <RelativeLayout
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@color/divider"
-        android:dividerHeight="0.5dp"
-        android:background="@android:color/white"/>
+        android:background="@android:color/white">
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:divider="@color/divider"
+            android:dividerHeight="0.5dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"
+            android:layout_below="@id/left_drawer"
+            />
+        <TextView
+            android:id="@+id/favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:paddingTop="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/my_favorites"
+            android:layout_below="@id/left_drawer"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
