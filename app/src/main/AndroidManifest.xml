@@ -45,7 +45,9 @@
         <service
             android:name=".Notification"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".GridOfProducts"></activity>
     </application>
 
 </manifest>

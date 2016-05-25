@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -75,6 +74,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         }
 
         sideBar=(ListView)findViewById(R.id.left_drawer);
+
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
        // final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
@@ -314,8 +314,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add(jsonObject.optString("Name"));
-                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -339,12 +339,16 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar__item, categoryList);
+                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(Home.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                        Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                        Toast.makeText(Home.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
+                        startActivity(categoryIntent);
                     }
                 });
             }

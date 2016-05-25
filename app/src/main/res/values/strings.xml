@@ -33,5 +33,5 @@
     <string name="enter_otp">Please enter the four digit number you got through sms</string>
     <string name="rs">₹ : %1$s</string>
     <string name="activate_account_q">Your account is Locked. Contact boutique.</string>
-    <string name="my_favorites">My Favorites</string>
+    <string name="my_favorites">✩ My Favorites</string>
 </resources>

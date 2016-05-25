@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:textColor="@color/primary_text"
-    android:padding="10dp"
+    android:padding="15dp"
     android:textAppearance="?android:attr/textAppearanceMedium"/>
