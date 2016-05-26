@@ -56,7 +56,7 @@ public class ItemDetails extends AppCompatActivity {
     ImageView favorite;
     ImageView share;
     Boolean isFav=false;
-    Integer favCount;
+    Integer favCount=0;
     TextView favCountString;
     SliderLayout itemImages;
     LayoutInflater inflater;
@@ -64,7 +64,7 @@ public class ItemDetails extends AppCompatActivity {
     TextView viewDesigner;
     TextView price;
     TextView stock;
-    String productID="570A044A-4DBA-4770-BCA7-331D2C0834AE";
+    String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
 
     ListView sideBar;
     ArrayList<String> categoryList;
@@ -79,6 +79,7 @@ public class ItemDetails extends AppCompatActivity {
         if (isOnline()){
             new ProductDetails().execute();
             new GetCategories().execute();
+            new ProductImages().execute();
         }
         else {
             Toast.makeText(ItemDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -89,9 +90,8 @@ public class ItemDetails extends AppCompatActivity {
         description=(TextView)findViewById(R.id.description);
         description.setTypeface(fontType1);
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
-        for (int i = 0; i < 3; i++) {
+       /* for (int i = 0; i < 3; i++) {
             final String image = "f" + (Integer.toString(i + 1));
-            DefaultSliderView sliderViews = new DefaultSliderView(this);
             sliderViews
                     .description(SliderLayout.Transformer.DepthPage.toString())
                     .image(getResources().getIdentifier(image, "drawable", getPackageName())).setScaleType(BaseSliderView.ScaleType.CenterInside);
@@ -105,9 +105,8 @@ public class ItemDetails extends AppCompatActivity {
                 }
             });
             itemImages.addSlider(sliderViews);
-        }
-        itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
-        itemImages.stopAutoCycle();
+        }*/
+
 
         viewDesigner=(TextView)findViewById(R.id.view_designer);
 
@@ -597,6 +596,128 @@ public class ItemDetails extends AppCompatActivity {
             }
             else {
                 Toast.makeText(ItemDetails.this,msg, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public class ProductImages extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
+        ArrayList<String> imgurls=new ArrayList<>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductImages";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"productID\":\"" + productID + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    imgurls.add(getResources().getString(R.string.url) + jsonObject.optString("Image").substring((jsonObject.optString("Image")).indexOf("Media")));
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+
+                Toast.makeText(ItemDetails.this,Integer.toString(imgurls.size()),Toast.LENGTH_LONG).show();
+                for (int i=0;i<imgurls.size();i++) {
+                    final int fi=i;
+                    DefaultSliderView sliderViews = new DefaultSliderView(ItemDetails.this);
+                    sliderViews
+                            .description(SliderLayout.Transformer.DepthPage.toString())
+                            .image(imgurls.get(i))
+                            .setScaleType(BaseSliderView.ScaleType.CenterInside);
+                    sliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                        @Override
+                        public void onSliderClick(BaseSliderView slider) {
+                            Toast.makeText(ItemDetails.this,imgurls.get(fi),Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    itemImages.addSlider(sliderViews);
+                    itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+                    itemImages.stopAutoCycle();
+                }
+
             }
         }
     }
