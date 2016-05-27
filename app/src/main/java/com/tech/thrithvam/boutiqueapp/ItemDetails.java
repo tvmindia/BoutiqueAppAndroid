@@ -311,8 +311,8 @@ public class ItemDetails extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add(jsonObject.optString("Name"));
-                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -336,12 +336,16 @@ public class ItemDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(ItemDetails.this, R.layout.spinner_item, categoryList);
+                categoryAdapter = new ArrayAdapter<>(ItemDetails.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(ItemDetails.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                        Intent categoryIntent=new Intent(ItemDetails.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                        Toast.makeText(ItemDetails.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
+                        startActivity(categoryIntent);
                     }
                 });
             }
@@ -698,8 +702,6 @@ public class ItemDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-
-                Toast.makeText(ItemDetails.this,Integer.toString(imgurls.size()),Toast.LENGTH_LONG).show();
                 for (int i=0;i<imgurls.size();i++) {
                     final int fi=i;
                     DefaultSliderView sliderViews = new DefaultSliderView(ItemDetails.this);
@@ -710,14 +712,16 @@ public class ItemDetails extends AppCompatActivity {
                     sliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                         @Override
                         public void onSliderClick(BaseSliderView slider) {
-                            Toast.makeText(ItemDetails.this,imgurls.get(fi),Toast.LENGTH_LONG).show();
+                            Intent intent=new Intent(ItemDetails.this,ImageViewer.class);
+                            intent.putExtra("Imageurl",imgurls.get(fi));
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         }
                     });
                     itemImages.addSlider(sliderViews);
                     itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
                     itemImages.stopAutoCycle();
                 }
-
             }
         }
     }

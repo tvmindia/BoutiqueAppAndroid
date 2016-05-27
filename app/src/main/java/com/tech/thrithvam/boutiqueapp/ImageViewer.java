@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -32,7 +33,7 @@ public class ImageViewer extends AppCompatActivity {
         extras=getIntent().getExtras();
         imgDetails =(RelativeLayout)findViewById(R.id.imgDetails);
         TextView imagename=(TextView)findViewById(R.id.imgName);
-        imagename.setText(extras.getString("Image"));
+        imagename.setText(extras.getString("Imageurl"));
         Anim1 = ObjectAnimator.ofFloat(imgDetails, "y", 1500);
         Anim1.setDuration(300);
         extras=getIntent().getExtras();
@@ -51,8 +52,9 @@ public class ImageViewer extends AppCompatActivity {
                 }
             }
         });
+        if (isOnline()){
         Picasso.with(ImageViewer.this)
-                .load(getResources().getIdentifier(extras.getString("Image"), "drawable", getPackageName()))
+                .load(extras.getString("Imageurl"))
                         .into(photoView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -64,6 +66,11 @@ public class ImageViewer extends AppCompatActivity {
 
                             }
                         });
+        }
+        else {
+        Toast.makeText(ImageViewer.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
+        finish();
+    }
     }
     public boolean isOnline() {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
