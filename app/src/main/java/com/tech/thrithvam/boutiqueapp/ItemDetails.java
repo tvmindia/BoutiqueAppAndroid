@@ -4,14 +4,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -40,6 +45,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -65,6 +73,7 @@ public class ItemDetails extends AppCompatActivity {
     TextView price;
     TextView stock;
     String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
+    String productName;
 
     ListView sideBar;
     ArrayList<String> categoryList;
@@ -133,21 +142,7 @@ public class ItemDetails extends AppCompatActivity {
         });
 
         share=(ImageView)findViewById(R.id.share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ItemDetails.this,R.string.share_image,Toast.LENGTH_LONG).show();
-                try {
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("image/jpeg");
-                    share.putExtra(Intent.EXTRA_STREAM, Uri.parse("android.resource://" + getPackageName() + "/drawable/" + "f" + Integer.toString(itemImages.getCurrentPosition() + 1)));
-                    startActivity(Intent.createChooser(share, getString(R.string.share_image)));
-                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                } catch (Exception e) {
-                    Toast.makeText(ItemDetails.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+
         //-----------------------Similar items grid---------------------------
         itemsGrid((LinearLayout)findViewById(R.id.similarProducts));
         //-----------------------Related items grid---------------------------
@@ -358,7 +353,7 @@ public class ItemDetails extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
-        String productName,descriptionString,priceString,designerID;
+        String descriptionString,priceString,designerID,designerName;
         Boolean isOutOfStock;
         @Override
         protected void onPreExecute() {
@@ -432,6 +427,7 @@ public class ItemDetails extends AppCompatActivity {
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
                     designerID=jsonObject.optString("DesignerID");
+                    designerName=jsonObject.optString("DesignerName");
                     isFav=jsonObject.optBoolean("isFav");
                     favCount=jsonObject.optInt("FavCount");
                 }
@@ -484,6 +480,9 @@ public class ItemDetails extends AppCompatActivity {
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }
                 });
+                if(!designerName.equals("null")){
+                    viewDesigner.setText(getResources().getString(R.string.designer_name, designerName));
+                }
             }
         }
     }
@@ -721,6 +720,35 @@ public class ItemDetails extends AppCompatActivity {
                     itemImages.addSlider(sliderViews);
                     itemImages.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
                     itemImages.stopAutoCycle();
+
+                    share.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(ItemDetails.this,R.string.share_image,Toast.LENGTH_LONG).show();
+
+                            // Get access to bitmap image from view
+                            final ImageView ivImage = new ImageView(ItemDetails.this);
+                            Picasso.with(ItemDetails.this)
+                                    .load(imgurls.get(itemImages.getCurrentPosition()))
+                                    .into(ivImage, new com.squareup.picasso.Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    Uri bmpUri = getLocalBitmapUri(ivImage,productName+"@"+constants.BoutiqueName);
+                                    if (bmpUri != null) {
+                                        Intent shareIntent = new Intent();
+                                        shareIntent.setAction(Intent.ACTION_SEND);
+                                        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+                                        shareIntent.setType("image/*");
+                                        shareIntent.putExtra(Intent.EXTRA_TEXT, productName+"\t@\t"+constants.BoutiqueName);
+                                        startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                                    }
+                                }
+                                @Override
+                                public void onError() {
+                                }
+                            });
+                        }
+                    });
                 }
             }
         }
@@ -729,5 +757,31 @@ public class ItemDetails extends AppCompatActivity {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+    // Returns the URI path to the Bitmap displayed in specified ImageView
+    public Uri getLocalBitmapUri(ImageView imageView,String fileName) {
+        // Extract Bitmap from ImageView drawable
+        Drawable drawable = imageView.getDrawable();
+        Bitmap bmp = null;
+        if (drawable instanceof BitmapDrawable){
+            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            return null;
+        }
+        // Store image to default external storage directory
+        Uri bmpUri = null;
+        try {
+            // Use methods on Context to access package-specific directories on external storage.
+            // This way, you don't need to request external read/write permission.
+            // See https://youtu.be/5xVh-7ywKpE?t=25m25s
+            File file =  new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName + ".jpg");
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bmpUri;
     }
 }

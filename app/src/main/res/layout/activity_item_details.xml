@@ -135,8 +135,8 @@
                 android:layout_below="@+id/stock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Designer: "
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="View Designer"
                 android:textIsSelectable="false"
                 android:textColor="@color/accent"
                 android:id="@+id/view_designer" />

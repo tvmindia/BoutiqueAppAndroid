@@ -57,6 +57,15 @@ public class OwnerAndDesigner extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         sideBar=(ListView)findViewById(R.id.left_drawer);
         extras= getIntent().getExtras();
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            if(extras.getString("ownerORdesigner").equals("designer")){
+                ab.setTitle("Designer");
+            }
+            else {
+                ab.setTitle("Owner");
+            }
+        }
         arrayListName = new ArrayList<>();
         arrayListProfile=new ArrayList<>();
         arrayListPhone=new ArrayList<>();
@@ -299,8 +308,8 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add(jsonObject.optString("Name"));
-                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -324,12 +333,16 @@ public class OwnerAndDesigner extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(OwnerAndDesigner.this, R.layout.spinner_item, categoryList);
+                categoryAdapter = new ArrayAdapter<>(OwnerAndDesigner.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(OwnerAndDesigner.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                        Intent categoryIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                        Toast.makeText(OwnerAndDesigner.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
+                        startActivity(categoryIntent);
                     }
                 });
             }

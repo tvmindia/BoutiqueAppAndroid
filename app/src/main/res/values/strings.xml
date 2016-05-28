@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">BoutiqueApp</string>
-    <string name="add_fav_msg">Added to favorites..</string>
-    <string name="remove_fav_msg">Removed from favorites..</string>
-    <string name="favorite_count">☆ %1$d people favorited it ☆</string>
-    <string name="share_image">Share Image</string>
+    <string name="add_fav_msg">Added to favorites…</string>
+    <string name="remove_fav_msg">Removed from favorites…</string>
+    <string name="favorite_count">☆ %1$d people favorites it ☆</string>
+    <string name="share_image">Preparing high quality image to share…</string>
     <string name="similar_products">Similar products in %1$s</string>
     <string name="related_products">Complete your looks</string>
     <string name="email">E-mail</string>
@@ -37,4 +37,5 @@
     <string name="exit_q">Are you sure you want to exit?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="designer_name">Designer : %1$s</string>
 </resources>
