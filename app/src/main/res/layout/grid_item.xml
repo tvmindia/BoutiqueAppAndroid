@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/gridImg"
-            android:background="@color/labelBackground"
+            android:background="@color/primary_dark"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
 
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:text="TextView"
-                android:textColor="#ffffff"
+                android:textColor="@android:color/white"
                 android:layout_centerVertical="true"
                 android:maxLines="2" />
 

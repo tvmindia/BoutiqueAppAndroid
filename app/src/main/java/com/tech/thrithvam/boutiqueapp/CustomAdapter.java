@@ -54,7 +54,7 @@ public class CustomAdapter extends BaseAdapter {
         Holder holder;
         switch (calledFrom) {
             //--------------------------for home screen items------------------
-            case "Home":
+            case "categoryGrid":
                 if (convertView == null) {
                     holder = new Holder();
                     convertView = inflater.inflate(R.layout.grid_item, null);
@@ -66,9 +66,10 @@ public class CustomAdapter extends BaseAdapter {
                 }
                 holder.title.setText(objects.get(position)[1]);
                 Picasso.with(adapterContext)
-                        .load(adapterContext.getResources().getIdentifier(objects.get(position)[0], "drawable", adapterContext.getPackageName()))
+                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
                         .into(holder.imageView)
                 ;
+
 
                 final int FinalPosition = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
