@@ -278,7 +278,7 @@ public class GridOfProducts extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                CustomAdapter adapter=new CustomAdapter(getApplicationContext(), R.layout.grid_item, productItems,"categoryGrid");
+                CustomAdapter adapter=new CustomAdapter(GridOfProducts.this, productItems,"categoryGrid");
                 GridView productGrid=(GridView)findViewById(R.id.productGrid);
                 productGrid.setAdapter(adapter);
             }

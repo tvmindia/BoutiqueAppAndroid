@@ -1,6 +1,8 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -20,7 +23,7 @@ public class CustomAdapter extends BaseAdapter {
     private ArrayList<String[]> objects;
     private String calledFrom;
 //    DatabaseHandler db;
-    public CustomAdapter(Context context, int textViewResourceId, ArrayList<String[]> objects, String calledFrom) {
+    public CustomAdapter(Context context, ArrayList<String[]> objects, String calledFrom) {
        // super(context, textViewResourceId, objects);
         adapterContext=context;
         inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -69,17 +72,19 @@ public class CustomAdapter extends BaseAdapter {
                         .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
                         .into(holder.imageView)
                 ;
-
-
                 final int FinalPosition = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if(isOnline()) {
-
+                            Intent intent=new Intent(adapterContext,ItemDetails.class);
+                            intent.putExtra("ProductID",objects.get(FinalPosition)[0]);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            adapterContext.startActivity(intent);
+                            ((Activity)adapterContext).overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         }
                         else {
-                           // Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+                            Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

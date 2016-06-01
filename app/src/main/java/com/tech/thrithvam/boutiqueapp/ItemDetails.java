@@ -74,6 +74,7 @@ public class ItemDetails extends AppCompatActivity {
     TextView stock;
     String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
     String productName;
+    Bundle extras;
 
     ListView sideBar;
     ArrayList<String> categoryList;
@@ -83,6 +84,8 @@ public class ItemDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        extras=getIntent().getExtras();
+        productID=extras.getString("ProductID");
         getSupportActionBar().setElevation(0);
         sideBar=(ListView)findViewById(R.id.left_drawer);
         if (isOnline()){
