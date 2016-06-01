@@ -33,7 +33,7 @@ public class CustomAdapter extends BaseAdapter {
     }
     public class Holder
     {
-        //Home items-----------------------------------------------
+        //Grid items-----------------------------------------------
         ImageView imageView;
         TextView title;
     }
@@ -88,7 +88,6 @@ public class CustomAdapter extends BaseAdapter {
                         }
                     }
                 });
-
                 break;
             default:
                 break;

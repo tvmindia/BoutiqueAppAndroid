@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -320,7 +321,13 @@ public class User extends AppCompatActivity {
         login.setVisibility(View.VISIBLE);
         db.UserLogout();
     }
-
+    public void shareApp(View view){
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_text_sub,constants.BoutiqueName));
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.share_text_detail, loyaltyCardNo.getText(),constants.BoutiqueName));
+        startActivity(Intent.createChooser(sharingIntent, "Share the app"));
+    }
     //-------------------- Async tasks---------------------------------
     public class UserRegistration extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
