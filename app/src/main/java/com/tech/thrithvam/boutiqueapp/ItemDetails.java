@@ -346,6 +346,16 @@ public class ItemDetails extends AppCompatActivity {
                         startActivity(categoryIntent);
                     }
                 });
+                TextView myFav=(TextView)findViewById(R.id.favorites);
+                myFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(ItemDetails.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode","myfav");
+                        categoryIntent.putExtra("Category",R.string.my_favorites);
+                        startActivity(categoryIntent);
+                    }
+                });
             }
         }
     }

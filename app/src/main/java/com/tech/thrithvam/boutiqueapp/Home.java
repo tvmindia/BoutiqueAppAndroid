@@ -352,6 +352,16 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         startActivity(categoryIntent);
                     }
                 });
+                TextView myFav=(TextView)findViewById(R.id.favorites);
+                myFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode","myfav");
+                        categoryIntent.putExtra("Category",R.string.my_favorites);
+                        startActivity(categoryIntent);
+                    }
+                });
             }
         }
     }

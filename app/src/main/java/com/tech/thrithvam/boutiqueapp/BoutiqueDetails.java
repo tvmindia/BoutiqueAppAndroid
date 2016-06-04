@@ -363,8 +363,8 @@ public class BoutiqueDetails extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add(jsonObject.optString("Name"));
-                    categoryCode.put(jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -388,12 +388,26 @@ public class BoutiqueDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(BoutiqueDetails.this, R.layout.spinner_item, categoryList);
+                categoryAdapter = new ArrayAdapter<>(BoutiqueDetails.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(BoutiqueDetails.this,categoryAdapter.getItem(position)+"-"+categoryCode.get(categoryAdapter.getItem(position)),Toast.LENGTH_SHORT).show();
+                        Intent categoryIntent=new Intent(BoutiqueDetails.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                        Toast.makeText(BoutiqueDetails.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
+                        startActivity(categoryIntent);
+                    }
+                });
+                TextView myFav=(TextView)findViewById(R.id.favorites);
+                myFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(BoutiqueDetails.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode","myfav");
+                        categoryIntent.putExtra("Category",R.string.my_favorites);
+                        startActivity(categoryIntent);
                     }
                 });
             }

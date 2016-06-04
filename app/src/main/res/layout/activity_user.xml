@@ -83,7 +83,7 @@
         android:layout_height="match_parent"
         android:id="@+id/SignUp"
         android:background="@drawable/bg"
-        android:visibility="visible">
+        android:visibility="gone">
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

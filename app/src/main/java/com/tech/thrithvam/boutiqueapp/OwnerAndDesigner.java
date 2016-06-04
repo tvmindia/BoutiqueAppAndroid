@@ -345,6 +345,16 @@ public class OwnerAndDesigner extends AppCompatActivity {
                         startActivity(categoryIntent);
                     }
                 });
+                TextView myFav=(TextView)findViewById(R.id.favorites);
+                myFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode","myfav");
+                        categoryIntent.putExtra("Category",R.string.my_favorites);
+                        startActivity(categoryIntent);
+                    }
+                });
             }
         }
     }

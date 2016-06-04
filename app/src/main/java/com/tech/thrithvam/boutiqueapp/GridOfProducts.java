@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -169,7 +170,16 @@ public class GridOfProducts extends AppCompatActivity {
                         categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
                         Toast.makeText(GridOfProducts.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
                         startActivity(categoryIntent);
-                        finish();
+                    }
+                });
+                TextView myFav=(TextView)findViewById(R.id.favorites);
+                myFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(GridOfProducts.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode","myfav");
+                        categoryIntent.putExtra("Category",R.string.my_favorites);
+                        startActivity(categoryIntent);
                     }
                 });
             }
