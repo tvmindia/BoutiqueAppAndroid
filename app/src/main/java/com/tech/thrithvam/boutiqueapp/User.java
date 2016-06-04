@@ -57,6 +57,7 @@ public class User extends AppCompatActivity {
     EditText nameSignUp;
     EditText mobileNoSignUp;
     EditText emailSignUp;
+    EditText referral;
     String genderString;
     int OTP=0;
     String userID;
@@ -179,6 +180,7 @@ public class User extends AppCompatActivity {
                 new DatePickerDialog(User.this, dateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        referral =(EditText)findViewById(R.id.referralLoyalty);
         //validation------------------
         nameSignUp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -336,7 +338,7 @@ public class User extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(User.this);
-        String nameString,mobileString,emailString,dobString,anniversaryString;
+        String nameString,mobileString,emailString,dobString,anniversaryString,referralString;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -361,6 +363,12 @@ public class User extends AppCompatActivity {
             else {
                 anniversaryString=formatted.format(anniversary.getTime());
             }
+            if(referral==null){
+                referralString="null";
+            }
+            else {
+                referralString=referral.getText().toString();
+            }
         }
 
         @Override
@@ -368,7 +376,7 @@ public class User extends AppCompatActivity {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UserRegistration";
             HttpURLConnection c = null;
             try {
-                postData = "{\"name\":\"" + nameString + "\",\"mobile\":\"" + mobileString + "\",\"email\":\"" + emailString + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"dob\":\"" + dobString + "\",\"anniversary\":\"" + anniversaryString + "\",\"gender\":\"" + genderString+ "\"}";
+                postData = "{\"name\":\"" + nameString + "\",\"mobile\":\"" + mobileString + "\",\"email\":\"" + emailString + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"dob\":\"" + dobString + "\",\"anniversary\":\"" + anniversaryString + "\",\"gender\":\"" + genderString + "\",\"referral\":\"" + referralString+ "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -555,7 +563,7 @@ public class User extends AppCompatActivity {
             }
         }
     }
-    public class UserLogin extends AsyncTask<Void , Void, Void> {
+    public class  UserLogin extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
         String strJson, postData;
         JSONArray jsonArray;

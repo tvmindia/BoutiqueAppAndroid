@@ -41,4 +41,5 @@
     <string name="share_text">Share the app to get points. Enter your loyalty card number while their registration to get points.</string>
     <string name="share_text_detail">https://play.google.com/store/apps/details?id=com.android.example&#13; Checkout this app and use %1$s referral number while registration. You will get loyalty points which can be used to redeem on purchase at %2$s.</string>
     <string name="share_text_sub">See this app of %1$s for new styles</string>
+    <string name="referral_loyalty">Referral Loyalty Card Number (Optional)</string>
 </resources>
