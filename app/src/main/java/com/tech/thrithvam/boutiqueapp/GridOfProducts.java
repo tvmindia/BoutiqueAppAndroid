@@ -49,6 +49,18 @@ public class GridOfProducts extends AppCompatActivity {
         if (ab != null) {
             ab.setTitle(extras.getString("Category"));
         }
+        //----------------force to login if not logged in and wanna see favorites---------------
+        if("myfav".equals(extras.getString("CategoryCode")))  {
+            ab.setTitle(R.string.favorites);
+            if(db.GetUserDetail("UserID")==null){
+            Toast.makeText(GridOfProducts.this,R.string.please_login,Toast.LENGTH_LONG).show();
+            Intent intentUser = new Intent(GridOfProducts.this, User.class);
+            startActivity(intentUser);
+            finish();
+            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+            }
+        }
+        //---------threading----------------
         if (isOnline()){
             new GetCategories().execute();
             new GetProductsByCategory().execute();
@@ -208,7 +220,7 @@ public class GridOfProducts extends AppCompatActivity {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
             HttpURLConnection c = null;
             try {
-                postData =  "{\"CategoryCode\":\"" + extras.getString("CategoryCode") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                postData =  "{\"CategoryCode\":\"" + extras.getString("CategoryCode") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -279,7 +291,7 @@ public class GridOfProducts extends AppCompatActivity {
                 pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(GridOfProducts.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
-                        .setMessage(msg)
+                        .setMessage(R.string.no_items)
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
