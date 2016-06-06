@@ -352,19 +352,19 @@ public class User extends AppCompatActivity {
             emailString=emailSignUp.getText().toString();
             SimpleDateFormat formatted = new SimpleDateFormat("yyyy MM dd", Locale.US);
             if(dob==null){
-                dobString="null";
+                dobString="";
             }
             else {
                 dobString = formatted.format(dob.getTime());
             }
             if(anniversary==null){
-                anniversaryString="null";
+                anniversaryString="";
             }
             else {
                 anniversaryString=formatted.format(anniversary.getTime());
             }
             if(referral==null){
-                referralString="null";
+                referralString="";
             }
             else {
                 referralString=referral.getText().toString();
