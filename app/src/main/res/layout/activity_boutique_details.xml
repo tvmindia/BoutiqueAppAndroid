@@ -117,13 +117,44 @@
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:text="@string/view_on_map"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/view_map"
+        android:onClick="viewMap"
+        android:textColor="@color/accent"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/map"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:src="@drawable/map"
+        android:id="@+id/map"
+        android:layout_below="@+id/address"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="Phone"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/phone"
-        android:layout_below="@+id/address"
         android:textColor="@color/accent"
-        android:layout_toLeftOf="@+id/callSymbol"
-        android:layout_toStartOf="@+id/callSymbol" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/callSymbol"
+        android:layout_alignRight="@+id/location"
+        android:layout_alignEnd="@+id/location" />
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -133,9 +164,9 @@
         android:paddingRight="10dp"
         android:src="@drawable/call"
         android:id="@+id/callSymbol"
-        android:layout_alignBottom="@+id/phone"
-        android:layout_alignRight="@+id/location"
-        android:layout_alignEnd="@+id/location"/>
+        android:layout_below="@+id/view_map"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>
@@ -209,8 +240,24 @@
                     android:text="View us on Facebook"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/fbLink"
+                    android:textColor="@color/accent"
+                    android:layout_alignBottom="@+id/facebook"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignRight="@+id/timing"
+                    android:layout_alignEnd="@+id/timing" />
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/facebook"
+                    android:id="@+id/facebook"
                     android:layout_below="@+id/workingDays"
-                    android:textColor="@color/accent"/>
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -222,8 +269,24 @@
                     android:text="View us on Instagram"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/instagramLink"
-                    android:layout_below="@+id/fbLink"
-                    android:textColor="@color/accent"/>
+                    android:textColor="@color/accent"
+                    android:layout_alignBottom="@+id/insta"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/insta"
+                    android:id="@+id/insta"
+                    android:layout_below="@+id/facebook"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 

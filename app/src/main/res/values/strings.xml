@@ -44,4 +44,5 @@
     <string name="referral_loyalty">Referral Loyalty Card Number (Optional)</string>
     <string name="no_items">No items to display</string>
     <string name="favorites">Favorites</string>
+    <string name="view_on_map">View on Map</string>
 </resources>

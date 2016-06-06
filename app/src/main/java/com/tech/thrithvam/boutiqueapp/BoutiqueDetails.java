@@ -43,8 +43,8 @@ public class BoutiqueDetails extends AppCompatActivity {
     TextView year;
     TextView location;
     TextView address;
+    TextView viewMap;
     TextView phone;
-    ImageView phoneSymbol;
     TextView timing;
     TextView workingDays;
     TextView fbLink;
@@ -80,8 +80,8 @@ public class BoutiqueDetails extends AppCompatActivity {
         year=(TextView)findViewById(R.id.year);
         location=(TextView)findViewById(R.id.location);
         address=(TextView)findViewById(R.id.address);
+        viewMap=(TextView)findViewById(R.id.view_map);
         phone=(TextView)findViewById(R.id.phone);
-        phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
         timing=(TextView)findViewById(R.id.timing);
         workingDays=(TextView)findViewById(R.id.workingDays);
         fbLink=(TextView)findViewById(R.id.fbLink);
@@ -100,6 +100,7 @@ public class BoutiqueDetails extends AppCompatActivity {
         year.setTypeface(fontType1);
         location.setTypeface(fontType1);
         address.setTypeface(fontType1);
+        viewMap.setTypeface(fontType1);
         phone.setTypeface(fontType1);
     }
     @Override
@@ -115,7 +116,7 @@ public class BoutiqueDetails extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(BoutiqueDetails.this);
-        String nameString, startedYearString, aboutUsString, captionString, locationString, addressString, phoneString, timingString, workingDaysString, fBLinkString, instagramLinkString;
+        String nameString, startedYearString, aboutUsString, captionString, locationString, addressString, phoneString, timingString, workingDaysString, fBLinkString, instagramLinkString,latlong;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -194,6 +195,7 @@ public class BoutiqueDetails extends AppCompatActivity {
                     workingDaysString =jsonObject.optString("WorkingDays");
                     fBLinkString ="https://"+jsonObject.optString("FBLink");
                     instagramLinkString ="https://"+jsonObject.optString("InstagramLink");
+                    latlong=jsonObject.optString("latlong");
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -226,6 +228,17 @@ public class BoutiqueDetails extends AppCompatActivity {
                 year.setText(getResources().getString(R.string.since,startedYearString));
                 location.setText(locationString);
                 address.setText(addressString);
+                viewMap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + (latlong)));
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
 
                 phone.setText(phoneString);
                 phone.setOnClickListener(new View.OnClickListener() {
@@ -237,15 +250,7 @@ public class BoutiqueDetails extends AppCompatActivity {
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }
                 });
-                phoneSymbol.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Uri number = Uri.parse("tel:" + phoneString);
-                        Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
-                        startActivity(callIntent);
-                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                    }
-                });
+
 
                 timing.setText(timingString);
                 workingDays.setText(workingDaysString);
