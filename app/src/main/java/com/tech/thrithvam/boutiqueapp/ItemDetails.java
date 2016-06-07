@@ -17,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -72,7 +71,8 @@ public class ItemDetails extends AppCompatActivity {
     TextView description;
     TextView viewDesigner;
     TextView price;
-    TextView actualprice;
+    TextView actualPrice;
+    ImageView offer;
     TextView stock;
     String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
     String productName;
@@ -125,7 +125,8 @@ public class ItemDetails extends AppCompatActivity {
         viewDesigner=(TextView)findViewById(R.id.view_designer);
 
         price=(TextView)findViewById(R.id.price);
-        actualprice=(TextView)findViewById(R.id.actualPrice);
+        actualPrice =(TextView)findViewById(R.id.actualPrice);
+        offer=(ImageView)findViewById(R.id.offer);
         stock=(TextView)findViewById(R.id.stock);
         //-----------Add to favorite and Sharing--------------------------
         favorite=(ImageView)findViewById(R.id.fav);
@@ -480,9 +481,10 @@ public class ItemDetails extends AppCompatActivity {
                     if(Integer.parseInt(discount)>0){
                         discount=String.format(Locale.US,"%.2f", Double.parseDouble(discount));
                         price.setText(getResources().getString(R.string.rs, String.format(Locale.US,"%.2f",(Double.parseDouble(priceString)-Double.parseDouble(discount)))));
-                        actualprice.setVisibility(View.VISIBLE);
-                        actualprice.setText(getResources().getString(R.string.rs, priceString));
-                        actualprice.setPaintFlags(actualprice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        actualPrice.setVisibility(View.VISIBLE);
+                        actualPrice.setText(getResources().getString(R.string.rs, priceString));
+                        actualPrice.setPaintFlags(actualPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        offer.setVisibility(View.VISIBLE);
                     }
                     else {
                         price.setText(getResources().getString(R.string.rs, priceString));

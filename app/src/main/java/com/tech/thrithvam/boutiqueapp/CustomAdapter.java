@@ -36,7 +36,7 @@ public class CustomAdapter extends BaseAdapter {
         //Grid items-----------------------------------------------
         ImageView imageView;
         TextView title;
-        TextView offer;
+        ImageView offer;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CustomAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.grid_item, null);
                     holder.imageView = (ImageView) convertView.findViewById(R.id.gridImg);
                     holder.title = (TextView) convertView.findViewById(R.id.gridTxt);
-                    holder.offer=(TextView)convertView.findViewById(R.id.offerTxt);
+                    holder.offer=(ImageView)convertView.findViewById(R.id.offer);
                     convertView.setTag(holder);
                 } else {
                     holder = (Holder) convertView.getTag();

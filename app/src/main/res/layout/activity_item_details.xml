@@ -40,6 +40,16 @@
             android:layout_below="@id/itemImages"
             style="@style/AndroidImageSlider_Magnifier_Oval_Black"
             />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:id="@+id/offer"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/offerlabel"
+                android:visibility="gone"
+                android:scaleType="fitStart"/>
         </RelativeLayout>
 
 
