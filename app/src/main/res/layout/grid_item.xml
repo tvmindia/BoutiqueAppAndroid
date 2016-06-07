@@ -10,6 +10,7 @@
         android:paddingTop="2dp"
         android:paddingRight="2dp"
         android:paddingLeft="2dp">
+
         <ImageView
             android:id="@+id/gridImg"
             android:layout_gravity="center"
@@ -41,6 +42,21 @@
 
 
         </RelativeLayout>
+        <TextView
+            android:id="@+id/offerTxt"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="Offer!!"
+            android:textColor="@android:color/white"
+            android:maxLines="1"
+            android:background="@color/offerlabelBackground"
+            android:layout_alignTop="@+id/gridImg"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -272,10 +272,11 @@ public class GridOfProducts extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    String[] data=new String[3];
+                    String[] data=new String[4];
                     data[0]=jsonObject.optString("ProductID");
                     data[1]=jsonObject.optString("Name");
                     data[2]=jsonObject.optString("Image");
+                    data[3]=jsonObject.optString("Discount");
                     productItems.add(data);
                 }
             } catch (Exception ex) {

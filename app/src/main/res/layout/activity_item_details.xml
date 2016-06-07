@@ -128,6 +128,21 @@
                 android:textIsSelectable="false"
                 android:textColor="@color/primary_text"
                 android:id="@+id/price" />
+        <TextView
+            android:layout_below="@+id/price"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="₹ :"
+            android:textSize="20sp"
+            android:textIsSelectable="false"
+            android:textColor="@color/primary_text"
+            android:id="@+id/actualPrice"
+            android:visibility="gone"/>
             <TextView
                 android:paddingRight="15dp"
                 android:paddingLeft="15dp"
@@ -139,7 +154,9 @@
                 android:text="View Designer"
                 android:textIsSelectable="false"
                 android:textColor="@color/accent"
-                android:id="@+id/view_designer" />
+                android:id="@+id/view_designer"
+                android:layout_toLeftOf="@+id/actualPrice"
+                android:layout_toStartOf="@+id/actualPrice" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

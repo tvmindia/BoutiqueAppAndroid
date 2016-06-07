@@ -36,6 +36,7 @@ public class CustomAdapter extends BaseAdapter {
         //Grid items-----------------------------------------------
         ImageView imageView;
         TextView title;
+        TextView offer;
     }
 
     @Override
@@ -63,15 +64,30 @@ public class CustomAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.grid_item, null);
                     holder.imageView = (ImageView) convertView.findViewById(R.id.gridImg);
                     holder.title = (TextView) convertView.findViewById(R.id.gridTxt);
+                    holder.offer=(TextView)convertView.findViewById(R.id.offerTxt);
                     convertView.setTag(holder);
                 } else {
                     holder = (Holder) convertView.getTag();
                 }
+                //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
+                //Image Loading-------------------
                 Picasso.with(adapterContext)
                         .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
                         .into(holder.imageView)
                 ;
+                //Offer Label-----------------
+                if(!objects.get(position)[3].equals("null")){
+                    if(Integer.parseInt(objects.get(position)[3])>0){
+                        holder.offer.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        holder.offer.setVisibility(View.GONE);
+                    }
+                }else {
+                    holder.offer.setVisibility(View.GONE);
+                }
+                //Navigation------------------
                 final int FinalPosition = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

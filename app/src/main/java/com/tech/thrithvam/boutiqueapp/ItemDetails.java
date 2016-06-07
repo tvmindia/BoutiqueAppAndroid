@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -71,6 +72,7 @@ public class ItemDetails extends AppCompatActivity {
     TextView description;
     TextView viewDesigner;
     TextView price;
+    TextView actualprice;
     TextView stock;
     String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
     String productName;
@@ -123,6 +125,7 @@ public class ItemDetails extends AppCompatActivity {
         viewDesigner=(TextView)findViewById(R.id.view_designer);
 
         price=(TextView)findViewById(R.id.price);
+        actualprice=(TextView)findViewById(R.id.actualPrice);
         stock=(TextView)findViewById(R.id.stock);
         //-----------Add to favorite and Sharing--------------------------
         favorite=(ImageView)findViewById(R.id.fav);
@@ -366,7 +369,7 @@ public class ItemDetails extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
-        String descriptionString,priceString,designerID,designerName;
+        String descriptionString,priceString,discount,designerID,designerName;
         Boolean isOutOfStock;
         @Override
         protected void onPreExecute() {
@@ -438,6 +441,7 @@ public class ItemDetails extends AppCompatActivity {
                     productName=jsonObject.optString("Name");
                     descriptionString=jsonObject.optString("Description");
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
+                    discount=jsonObject.optString("Discount");
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
                     designerID=jsonObject.optString("DesignerID");
                     designerName=jsonObject.optString("DesignerName");
@@ -472,6 +476,22 @@ public class ItemDetails extends AppCompatActivity {
                 }
                 description.setText(descriptionString);
                 price.setText(getResources().getString(R.string.rs, priceString));
+                if(!discount.equals("null")){
+                    if(Integer.parseInt(discount)>0){
+                        discount=String.format(Locale.US,"%.2f", Double.parseDouble(discount));
+                        price.setText(getResources().getString(R.string.rs, String.format(Locale.US,"%.2f",(Double.parseDouble(priceString)-Double.parseDouble(discount)))));
+                        actualprice.setVisibility(View.VISIBLE);
+                        actualprice.setText(getResources().getString(R.string.rs, priceString));
+                        actualprice.setPaintFlags(actualprice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    }
+                    else {
+                        price.setText(getResources().getString(R.string.rs, priceString));
+                    }
+                }
+                else {
+                    price.setText(getResources().getString(R.string.rs, priceString));
+                }
+
                 if(isOutOfStock){
                     stock.setText("Out of Stock");
                     stock.setTextColor(Color.RED);
