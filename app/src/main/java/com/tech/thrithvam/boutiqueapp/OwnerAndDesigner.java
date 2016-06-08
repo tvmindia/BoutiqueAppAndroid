@@ -198,6 +198,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         profile.setText(arrayListProfile.get(spinner.getSelectedItemPosition()));
                         final String phoneString=arrayListPhone.get(spinner.getSelectedItemPosition());
+                        if(!phoneString.equals("null")){
                         phone.setText(phoneString);
                         phone.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -216,7 +217,11 @@ public class OwnerAndDesigner extends AppCompatActivity {
                                 startActivity(callIntent);
                                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                             }
-                        });
+                        });}
+                        else {
+                            phone.setVisibility(View.GONE);
+                            phoneSymbol.setVisibility(View.GONE);
+                        }
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
