@@ -10,4 +10,5 @@ public class Constants {
     String MobileNumberRegularExpression = "^[0-9]*$";
     String UserNameRegularExpression="^[a-zA-Z\\. ]+$";                 //^[a-z0-9_-]{3,15}$
     int UserNameMin=3;
+    int productsCountLimit=2;
 }

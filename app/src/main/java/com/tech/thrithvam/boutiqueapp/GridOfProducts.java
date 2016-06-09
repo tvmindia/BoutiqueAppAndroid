@@ -147,7 +147,7 @@ public class GridOfProducts extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name").replace("\\u0026", "&"));
                     categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
@@ -220,7 +220,7 @@ public class GridOfProducts extends AppCompatActivity {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
             HttpURLConnection c = null;
             try {
-                postData =  "{\"CategoryCode\":\"" + extras.getString("CategoryCode") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\"}";
+                postData =  "{\"CategoryCode\":\"" + extras.getString("CategoryCode") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + "" + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -274,7 +274,7 @@ public class GridOfProducts extends AppCompatActivity {
                     pass=jsonObject.optBoolean("Flag",true);
                     String[] data=new String[4];
                     data[0]=jsonObject.optString("ProductID");
-                    data[1]=jsonObject.optString("Name");
+                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
                     data[2]=jsonObject.optString("Image");
                     data[3]=jsonObject.optString("Discount");
                     productItems.add(data);

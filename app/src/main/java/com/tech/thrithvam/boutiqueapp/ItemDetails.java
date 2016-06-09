@@ -313,7 +313,7 @@ public class ItemDetails extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name").replace("\\u0026", "&"));
                     categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
@@ -439,8 +439,8 @@ public class ItemDetails extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    productName=jsonObject.optString("Name");
-                    descriptionString=jsonObject.optString("Description");
+                    productName=jsonObject.optString("Name").replace("\\u0026", "&");
+                    descriptionString=jsonObject.optString("Description").replace("\\u0026", "&");
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
                     discount=jsonObject.optString("Discount");
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");

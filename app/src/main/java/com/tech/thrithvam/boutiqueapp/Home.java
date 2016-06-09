@@ -1,5 +1,6 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -60,6 +61,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
+    int loadedCategoryCount=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +83,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
        // final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
 
-
-
         //-------------------------hide actionbar on scroll----------------------------
       final ObservableScrollView scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
       scrollView.setScrollViewCallbacks(this);
@@ -99,27 +99,28 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
             sliderShow6.setPresetTransformer(SliderLayout.Transformer.Accordion);
         }
-        //-------------------------------- Items Grid----------------------------------
+
+        //Offer--------
+            ImageView offer=(ImageView)findViewById(R.id.offer);
+            offer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                    categoryIntent.putExtra("CategoryCode","OFR");
+                    categoryIntent.putExtra("Category","Offers");
+                    startActivity(categoryIntent);
+                }
+            });
 
 
 
-        itemhorizontal("Saree", true); //temporary logic
-        itemhorizontal("", false);
-        itemhorizontal("Tops",true);
-        itemhorizontal("",false);
-        itemhorizontal("Skirts",true);
-        itemhorizontal("",false);
-        itemhorizontal("Kids",true);
-        itemhorizontal("",false);
-        itemhorizontal("Kurthas",true);
-        itemhorizontal("",false);
 
     }
-    public void itemhorizontal(String category, Boolean isNewCat){
-        if(isNewCat) { //temporary logic
+    //-------------------------------- Items Grid----------------------------------
+    public void productsofCategory(){
             //Title-----------
             TextView categoryTitle = new TextView(Home.this);
-            categoryTitle.setText(category);
+            categoryTitle.setText(categoryList.get(loadedCategoryCount).replace("\uD83D\uDC49\t",""));
             if (Build.VERSION.SDK_INT < 23) {
                 categoryTitle.setTextAppearance(this, android.R.style.TextAppearance_Medium);
             } else {
@@ -135,9 +136,24 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             else {
                 categoryTitle.setTextColor(getResources().getColor(R.color.accent));
             categoryTitle.setBackgroundColor(getResources().getColor(R.color.whiteBackground));}
+            categoryTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                    categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(loadedCategoryCount)));
+                    categoryIntent.putExtra("Category",categoryList.get(loadedCategoryCount).replace("\uD83D\uDC49\t",""));
+                    startActivity(categoryIntent);
+                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                }
+            });
             homeScreen.addView(categoryTitle);
-        }
-        LinearLayout itemRow=new LinearLayout(Home.this);
+
+            //Products---------------------
+
+            new GetProductsByCategory().execute();
+
+
+       /* LinearLayout itemRow=new LinearLayout(Home.this);
         itemRow.setOrientation(LinearLayout.HORIZONTAL);
         itemRow= (LinearLayout) inflater.inflate(R.layout.items_two_coloum_frame,null);
         LinearLayout leftItem=(LinearLayout)itemRow.findViewById(R.id.LinearLeft);
@@ -189,7 +205,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             more.setPadding(5, 5, 5, 5);
             more.setTextColor(Color.BLUE);
             homeScreen.addView(more);
-        }
+        }*/
     }
 
     //---------------Menu creation---------------------------------------------
@@ -315,7 +331,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name").replace("\\u0026", "&"));
                     categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
                 }
             } catch (Exception ex) {
@@ -362,6 +378,171 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         startActivity(categoryIntent);
                     }
                 });
+
+                //products under category loading on Home screen
+                productsofCategory();
+            }
+        }
+    }
+    public class GetProductsByCategory extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(Home.this);
+        ArrayList<String[]> productItems=new ArrayList<>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
+            HttpURLConnection c = null;
+            try {
+                postData =  "{\"CategoryCode\":\"" + categoryCode.get(categoryList.get(loadedCategoryCount)) + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + "4" + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    String[] data=new String[4];
+                    data[0]=jsonObject.optString("ProductID");
+                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[2]=jsonObject.optString("Image");
+                    data[3]=jsonObject.optString("Discount");
+                    productItems.add(data);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(Home.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(R.string.no_items)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+              //  CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"categoryGrid");
+                android.support.v7.widget.GridLayout productGrid=new android.support.v7.widget.GridLayout(Home.this);
+                //productGrid.setColumnCount();//setNumColumns(2);
+               // productGrid.setpa//setVerticalSpacing(10);
+              //  productGrid.setHorizontalSpacing(10);
+                productGrid.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
+                productGrid.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            for(int i=0;i<productItems.size();i++){
+
+                View itemView = inflater.inflate(R.layout.grid_item, null);
+                ImageView imageView = (ImageView) itemView.findViewById(R.id.gridImg);
+                TextView title = (TextView) itemView.findViewById(R.id.gridTxt);
+                ImageView offer=(ImageView)itemView.findViewById(R.id.offer);
+                //Label loading--------------------
+                title.setText(productItems.get(i)[1]);
+                //Image Loading-------------------
+                Picasso.with(Home.this)
+                        .load(getResources().getString(R.string.url) + productItems.get(i)[2].substring((productItems.get(i)[2]).indexOf("Media")))
+                        .into(imageView)
+                ;
+                //Offer Label-----------------
+                if(!productItems.get(i)[3].equals("null")){
+                    if(Integer.parseInt(productItems.get(i)[3])>0){
+                        offer.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        offer.setVisibility(View.GONE);
+                    }
+                }else {
+                    offer.setVisibility(View.GONE);
+                }
+                //Navigation------------------
+                final int FinalPosition = i;
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(isOnline()) {
+                            Intent intent=new Intent(Home.this,ItemDetails.class);
+                            intent.putExtra("ProductID",productItems.get(FinalPosition)[0]);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                        }
+                        else {
+                            Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+                productGrid.addView(itemView);//setada(adapter);
+            }
+
+
+                homeScreen.addView(productGrid);
             }
         }
     }
