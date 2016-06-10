@@ -39,6 +39,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lucasr.twowayview.TwoWayView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -483,67 +484,23 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finish();
+                             //   finish();
                             }
                         }).setCancelable(false).show();
             }
             else {
-              //  CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"categoryGrid");
-                android.support.v7.widget.GridLayout productGrid=new android.support.v7.widget.GridLayout(Home.this);
-                //productGrid.setColumnCount();//setNumColumns(2);
-               // productGrid.setpa//setVerticalSpacing(10);
-              //  productGrid.setHorizontalSpacing(10);
-                productGrid.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
-                productGrid.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"categoryGrid");
+                TwoWayView horizontalGrid=new TwoWayView(Home.this);
+                horizontalGrid.setOrientation(TwoWayView.Orientation.HORIZONTAL);
+                //horizontalGrid.setPadding(15,0,15,0);
+                horizontalGrid.setItemMargin(15);
+                horizontalGrid.setAdapter(adapter);
+                homeScreen.addView(horizontalGrid);
 
-            for(int i=0;i<productItems.size();i++){
-
-                View itemView = inflater.inflate(R.layout.grid_item, null);
-                ImageView imageView = (ImageView) itemView.findViewById(R.id.gridImg);
-                TextView title = (TextView) itemView.findViewById(R.id.gridTxt);
-                ImageView offer=(ImageView)itemView.findViewById(R.id.offer);
-                //Label loading--------------------
-                title.setText(productItems.get(i)[1]);
-                //Image Loading-------------------
-                Picasso.with(Home.this)
-                        .load(getResources().getString(R.string.url) + productItems.get(i)[2].substring((productItems.get(i)[2]).indexOf("Media")))
-                        .into(imageView)
-                ;
-                //Offer Label-----------------
-                if(!productItems.get(i)[3].equals("null")){
-                    if(Integer.parseInt(productItems.get(i)[3])>0){
-                        offer.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        offer.setVisibility(View.GONE);
-                    }
-                }else {
-                    offer.setVisibility(View.GONE);
-                }
-                //Navigation------------------
-                final int FinalPosition = i;
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(isOnline()) {
-                            Intent intent=new Intent(Home.this,ItemDetails.class);
-                            intent.putExtra("ProductID",productItems.get(FinalPosition)[0]);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                        }
-                        else {
-                            Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-                productGrid.addView(itemView);//setada(adapter);
             }
-
-
-                homeScreen.addView(productGrid);
-            }
+            loadedCategoryCount++;
+            if(loadedCategoryCount<categoryList.size())
+                productsofCategory();
         }
     }
     public boolean isOnline() {
