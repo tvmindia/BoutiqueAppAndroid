@@ -170,6 +170,36 @@
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginBottom="5dp"
+            app:cardCornerRadius="4dp"
+            >
+            <LinearLayout
+                android:paddingRight="2dp"
+                android:paddingTop="10dp"
+                android:paddingLeft="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/relatedProducts">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/related_products"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/primary_text"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -202,36 +232,7 @@
 
 </LinearLayout>
         </android.support.v7.widget.CardView>
-<android.support.v7.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="7dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginRight="7dp"
-    android:layout_marginBottom="5dp"
-    app:cardCornerRadius="4dp"
-    >
-        <LinearLayout
-            android:paddingRight="2dp"
-            android:paddingTop="10dp"
-            android:paddingLeft="2dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/relatedProducts">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/related_products"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/primary_text"
-                android:textStyle="bold" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider" />
-        </LinearLayout>
-        </android.support.v7.widget.CardView>
+
 </LinearLayout>
 </ScrollView>
     </FrameLayout>

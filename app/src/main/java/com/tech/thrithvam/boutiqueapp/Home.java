@@ -1,27 +1,23 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -35,7 +31,6 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,7 +57,9 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
-    int loadedCategoryCount=1;
+  //  int loadedCategoryCount=0;
+ //   ArrayList<View> cards=new ArrayList<>();
+    ObservableScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +82,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
 
         //-------------------------hide actionbar on scroll----------------------------
-      final ObservableScrollView scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
+        scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
       scrollView.setScrollViewCallbacks(this);
 
         //------------------------------slider for new arrivals-------------------------------
@@ -113,100 +110,24 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 }
             });
 
+//see whether reached scroll bottom
+      //  ScrollView scrollView=(ScrollView)findViewById(R.id.ScrlViewOfSPDetails);
 
 
 
     }
     //-------------------------------- Items Grid----------------------------------
-    public void productsofCategory(){
-            //Title-----------
-            TextView categoryTitle = new TextView(Home.this);
-            categoryTitle.setText(categoryList.get(loadedCategoryCount).replace("\uD83D\uDC49\t",""));
-            if (Build.VERSION.SDK_INT < 23) {
-                categoryTitle.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-            } else {
-                categoryTitle.setTextAppearance(android.R.style.TextAppearance_Medium);
-            }
-            categoryTitle.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            categoryTitle.setPadding(5, 5, 0, 5);
-            categoryTitle.setTextColor(Color.BLUE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                categoryTitle.setTextColor(Home.this.getColor(R.color.accent));
-                categoryTitle.setBackgroundColor(Home.this.getColor(R.color.whiteBackground));
-            }
-            else {
-                categoryTitle.setTextColor(getResources().getColor(R.color.accent));
-            categoryTitle.setBackgroundColor(getResources().getColor(R.color.whiteBackground));}
-            categoryTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                    categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(loadedCategoryCount)));
-                    categoryIntent.putExtra("Category",categoryList.get(loadedCategoryCount).replace("\uD83D\uDC49\t",""));
-                    startActivity(categoryIntent);
-                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                }
-            });
-            homeScreen.addView(categoryTitle);
-
-            //Products---------------------
-
-            new GetProductsByCategory().execute();
-
-
-       /* LinearLayout itemRow=new LinearLayout(Home.this);
-        itemRow.setOrientation(LinearLayout.HORIZONTAL);
-        itemRow= (LinearLayout) inflater.inflate(R.layout.items_two_coloum_frame,null);
-        LinearLayout leftItem=(LinearLayout)itemRow.findViewById(R.id.LinearLeft);
-        LinearLayout rightItem=(LinearLayout)itemRow.findViewById(R.id.LinearRight);
-        View item=inflater.inflate(R.layout.grid_item, null);
-        ImageView imageView=(ImageView)item.findViewById(R.id.gridImg);
-        if(isNewCat) {
-        Picasso.with(Home.this).load(R.drawable.s1).into(imageView);}
-        else {
-            Picasso.with(Home.this).load(R.drawable.s3).into(imageView);
+    public void productsOfCategory(Integer loadedCategoryCount){
+        int currentPos=loadedCategoryCount+1;
+        if(currentPos>categoryList.size())
+        {
+            return;
         }
-        leftItem.addView(item);
-        View item2=inflater.inflate(R.layout.grid_item, null);
-        ImageView imageView2=(ImageView)item2.findViewById(R.id.gridImg);
-        if(isNewCat) {
-        Picasso.with(Home.this).load(R.drawable.s2).into(imageView2);}
-        else {
-            Picasso.with(Home.this).load(R.drawable.s4).into(imageView2);
-        }
-        rightItem.addView(item2);
-        homeScreen.addView(itemRow);
-        item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Home.this, ItemDetails.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-            }
-        });
-        item2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Home.this,ItemDetails.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-            }
-        });
-        if(!isNewCat) { ////////temporary logic
-            //More---------------
-            TextView more = new TextView(Home.this);
-            more.setText("more");
-            more.setGravity(Gravity.RIGHT);
-            if (Build.VERSION.SDK_INT < 23) {
-                more.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-            } else {
-                more.setTextAppearance(android.R.style.TextAppearance_Medium);
-            }
-            more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            more.setPadding(5, 5, 5, 5);
-            more.setTextColor(Color.BLUE);
-            homeScreen.addView(more);
-        }*/
+
+        new GetProductsByCategory().execute(currentPos);
+       // homeScreen.addView(cards.get(loadedCategoryCount));
+
+
     }
 
     //---------------Menu creation---------------------------------------------
@@ -370,22 +291,25 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     }
                 });
                 TextView myFav=(TextView)findViewById(R.id.favorites);
-                myFav.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                        categoryIntent.putExtra("CategoryCode","myfav");
-                        categoryIntent.putExtra("Category",R.string.my_favorites);
-                        startActivity(categoryIntent);
-                    }
-                });
+
+                    myFav.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                            categoryIntent.putExtra("CategoryCode","myfav");
+                            categoryIntent.putExtra("Category",R.string.my_favorites);
+                            startActivity(categoryIntent);
+                        }
+                    });
+
 
                 //products under category loading on Home screen
-                productsofCategory();
+                productsOfCategory(-1);
             }
         }
     }
-    public class GetProductsByCategory extends AsyncTask<Void , Void, Void> {
+
+    public class GetProductsByCategory extends AsyncTask<Integer, Void, Integer> {
         int status;StringBuilder sb;
         String strJson, postData;
         JSONArray jsonArray;
@@ -404,11 +328,11 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Integer doInBackground(Integer... arg0) {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
             HttpURLConnection c = null;
             try {
-                postData =  "{\"CategoryCode\":\"" + categoryCode.get(categoryList.get(loadedCategoryCount)) + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + "4" + "\"}";
+                postData =  "{\"CategoryCode\":\"" + categoryCode.get(categoryList.get(arg0[0])) + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + "4" + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -470,37 +394,76 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             } catch (Exception ex) {
                 msg=ex.getMessage();
             }}
-            return null;
+            return arg0[0];
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(final Integer viewPos) {
+           // super.onPostExecute(result);
             if (pDialog.isShowing())
                 pDialog.dismiss();
+            final LinearLayout categoryCard= (LinearLayout) inflater.inflate(R.layout.products_of_category,null);
+
             if(!pass) {
-                new AlertDialog.Builder(Home.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+              /*  new AlertDialog.Builder(Home.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(R.string.no_items)
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                              //   finish();
                             }
-                        }).setCancelable(false).show();
+                        }).setCancelable(false).show();*/
             }
             else {
+                TextView categoryTitle =(TextView)categoryCard.findViewById(R.id.title);
+                categoryTitle.setText(categoryList.get(viewPos).replace("\uD83D\uDC49\t",""));
+                categoryTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(viewPos)));
+                        categoryIntent.putExtra("Category",categoryList.get(viewPos).replace("\uD83D\uDC49\t",""));
+                        startActivity(categoryIntent);
+                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                    }
+                });
+            //    cards.add(categoryCard);
+
                 CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"categoryGrid");
-                TwoWayView horizontalGrid=new TwoWayView(Home.this);
+                TwoWayView horizontalGrid=(TwoWayView)categoryCard.findViewById(R.id.gridHorizontal);
                 horizontalGrid.setOrientation(TwoWayView.Orientation.HORIZONTAL);
-                //horizontalGrid.setPadding(15,0,15,0);
                 horizontalGrid.setItemMargin(15);
                 horizontalGrid.setAdapter(adapter);
-                homeScreen.addView(horizontalGrid);
 
+
+                homeScreen.addView(categoryCard);
             }
-            loadedCategoryCount++;
-            if(loadedCategoryCount<categoryList.size())
-                productsofCategory();
+
+
+
+            productsOfCategory(viewPos);
+           /* scrollView.getViewTreeObserver().removeOnScrollChangedListener(null);
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    // if(!otherTypesLoaded){
+                    int diff = homeScreen.getBottom()-(scrollView.getHeight()+scrollView.getScrollY());
+                    if( diff <= 0 )
+                    { //  Toast.makeText(BeautyParlour.this, "Bottom has been reached",Toast.LENGTH_LONG).show();
+                        //  new GetDetailsOfOtherStyles().execute();
+                        //    otherTypesLoaded =true;
+                        // loadedCategoryCount++;
+                        productsOfCategory(viewPos);
+
+                    } // super.onScrollChanged(l, t, oldl, oldt);
+                    //  }
+                }
+            });*/
+
+
+
+
+
         }
     }
     public boolean isOnline() {
