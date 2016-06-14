@@ -391,6 +391,12 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     data[3]=jsonObject.optString("Discount");
                     productItems.add(data);
                 }
+                String[] data=new String[4];
+                data[0]="";
+                data[1]=categoryCode.get(categoryList.get(arg0[0]));
+                data[2]=categoryList.get(arg0[0]);
+                data[3]="";
+                productItems.add(data);
             } catch (Exception ex) {
                 msg=ex.getMessage();
             }}
@@ -429,7 +435,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 });
             //    cards.add(categoryCard);
 
-                CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"categoryGrid");
+                CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"homeGrid");
                 TwoWayView horizontalGrid=(TwoWayView)categoryCard.findViewById(R.id.gridHorizontal);
                 horizontalGrid.setOrientation(TwoWayView.Orientation.HORIZONTAL);
                 horizontalGrid.setItemMargin(15);

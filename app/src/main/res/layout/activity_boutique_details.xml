@@ -154,7 +154,8 @@
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/callSymbol"
         android:layout_alignRight="@+id/location"
-        android:layout_alignEnd="@+id/location" />
+        android:layout_alignEnd="@+id/location"
+        android:layout_toLeftOf="@+id/callSymbol" />
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
