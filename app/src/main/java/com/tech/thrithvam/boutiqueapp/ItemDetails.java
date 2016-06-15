@@ -74,7 +74,7 @@ public class ItemDetails extends AppCompatActivity {
     TextView actualPrice;
     ImageView offer;
     TextView stock;
-    String productID="8c9b8e83-dc8f-48d7-994b-8688516a8771";
+    String productID;
     String productName;
     Bundle extras;
 

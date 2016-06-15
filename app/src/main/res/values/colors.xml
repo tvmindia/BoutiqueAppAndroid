@@ -19,5 +19,6 @@
     <color name="icons">#212121</color>
     <color name="divider">#B6B6B6</color>
     <color name="background">#eeeeee</color>
+    <color name="green">#388e3c</color>
 
 </resources>

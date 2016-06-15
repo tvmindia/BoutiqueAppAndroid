@@ -46,7 +46,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:src="@drawable/offerlabel"
-            android:scaleType="fitStart"/>
+            android:scaleType="fitStart"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

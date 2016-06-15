@@ -8,11 +8,10 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -329,6 +328,12 @@ public class User extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_text_sub,constants.BoutiqueName));
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.share_text_detail, loyaltyCardNo.getText(),constants.BoutiqueName));
         startActivity(Intent.createChooser(sharingIntent, "Share the app"));
+    }
+    public void myOrders(View view){
+        Intent intentOrder = new Intent(this, OrderStatus.class);
+        startActivity(intentOrder);
+        finish();
+        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
     }
     //-------------------- Async tasks---------------------------------
     public class UserRegistration extends AsyncTask<Void , Void, Void> {

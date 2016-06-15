@@ -27,7 +27,6 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".User"
-
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -48,7 +47,11 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".GridOfProducts"></activity>
+        <activity android:name=".GridOfProducts"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".OrderStatus"
+            android:configChanges="orientation|screenSize"
+            android:label="My Orders "/>
     </application>
 
 </manifest>

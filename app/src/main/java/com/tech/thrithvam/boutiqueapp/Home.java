@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -107,6 +106,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     categoryIntent.putExtra("CategoryCode","OFR");
                     categoryIntent.putExtra("Category","Offers");
                     startActivity(categoryIntent);
+                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                 }
             });
 
@@ -119,12 +119,12 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     //-------------------------------- Items Grid----------------------------------
     public void productsOfCategory(Integer loadedCategoryCount){
         int currentPos=loadedCategoryCount+1;
-        if(currentPos>categoryList.size())
+        if(currentPos<categoryList.size())
         {
-            return;
+            new GetProductsByCategory().execute(currentPos);
         }
 
-        new GetProductsByCategory().execute(currentPos);
+
        // homeScreen.addView(cards.get(loadedCategoryCount));
 
 
@@ -315,14 +315,14 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(Home.this);
+       // ProgressDialog pDialog=new ProgressDialog(Home.this);
         ArrayList<String[]> productItems=new ArrayList<>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
+         /*   pDialog.setMessage(getResources().getString(R.string.wait));
             pDialog.setCancelable(false);
-            pDialog.show();
+            pDialog.show();*/
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -332,7 +332,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
             HttpURLConnection c = null;
             try {
-                postData =  "{\"CategoryCode\":\"" + categoryCode.get(categoryList.get(arg0[0])) + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + "4" + "\"}";
+                postData =  "{\"CategoryCode\":\"" + categoryCode.get(categoryList.get(arg0[0])) + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + constants.productsCountLimit + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -406,10 +406,9 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         @Override
         protected void onPostExecute(final Integer viewPos) {
            // super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
+        /*    if (pDialog.isShowing())
+                pDialog.dismiss();*/
             final LinearLayout categoryCard= (LinearLayout) inflater.inflate(R.layout.products_of_category,null);
-
             if(!pass) {
               /*  new AlertDialog.Builder(Home.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(R.string.no_items)
