@@ -46,9 +46,12 @@
     <string name="favorites">Favorites</string>
     <string name="view_on_map">View on Map</string>
     <string name="my_orders">My Orders</string>
-    <string name="order_date">Order Date</string>
-    <string name="expected_delivery_date">Expected Delivery Date</string>
-    <string name="last_updated">Last Updated</string>
-    <string name="your_order_is_ready">Your order is Ready!!</string>
+    <string name="order_date">Ordered on</string>
+    <string name="delivery_date">Delivery on</string>
+    <string name="delivered_date">Delivered on</string>
+    <string name="ready_date">Ready on</string>
+    <string name="last_updated">Updated on</string>
+    <string name="order_placed">Order is placed</string>
+    <string name="your_order_is_ready">Order is Ready</string>
     <string name="item_delivered">Item delivered</string>
 </resources>

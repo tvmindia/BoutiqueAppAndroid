@@ -332,7 +332,6 @@ public class User extends AppCompatActivity {
     public void myOrders(View view){
         Intent intentOrder = new Intent(this, OrderStatus.class);
         startActivity(intentOrder);
-        finish();
         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
     }
     //-------------------- Async tasks---------------------------------

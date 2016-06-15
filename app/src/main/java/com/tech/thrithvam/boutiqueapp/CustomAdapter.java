@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +43,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView title;
         ImageView offer;
         //Order items-----------------------------------------------
-        TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate,orderReady;
+        TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate, orderStatus,readyLabel;
     }
 
     @Override
@@ -63,7 +62,7 @@ public class CustomAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Holder holder;
+        final Holder holder;
         SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
         Calendar cal= Calendar.getInstance();
         switch (calledFrom) {
@@ -200,7 +199,8 @@ public class CustomAdapter extends BaseAdapter {
                     holder.orderDate = (TextView) convertView.findViewById(R.id.orderDate);
                     holder.expectedDeliveryDate = (TextView) convertView.findViewById(R.id.expectedDeliveryDate);
                     holder.lastUpdatedDate = (TextView) convertView.findViewById(R.id.lastUpdatedDate);
-                    holder.orderReady=(TextView) convertView.findViewById(R.id.orderReady);
+                    holder.orderStatus =(TextView) convertView.findViewById(R.id.orderStatus);
+                    holder.readyLabel=(TextView)convertView.findViewById(R.id.readyDateLabel);
                     convertView.setTag(holder);
                 } else {
                     holder = (Holder) convertView.getTag();
@@ -212,7 +212,7 @@ public class CustomAdapter extends BaseAdapter {
                 if(!objects.get(position)[2].equals("null"))
                     holder.amount.setText(adapterContext.getResources().getString(R.string.rs, objects.get(position)[2]));
                 else
-                    holder.amount.setVisibility(View.GONE);
+                    holder.amount.setVisibility(View.INVISIBLE);
 
                 if(!objects.get(position)[3].equals("null")) {
                     cal.setTimeInMillis(Long.parseLong(objects.get(position)[3]));
@@ -229,50 +229,84 @@ public class CustomAdapter extends BaseAdapter {
                     holder.expectedDeliveryDate.setText("-");
 
                 //order ready----------
-                if(!objects.get(position)[6].equals("null")){
+                if(!objects.get(position)[6].equals("null")){           //Actual delivery date
                     Calendar now= Calendar.getInstance();
                     cal.setTimeInMillis(Long.parseLong(objects.get(position)[6]));
                     if(cal.before(now)){
-                        holder.orderReady.setVisibility(View.VISIBLE);
-                        holder.orderReady.setText(R.string.item_delivered);
-                        holder.orderReady.setTextColor(Color.BLUE);
+                        holder.orderStatus.setText(R.string.item_delivered);
+                        holder.orderStatus.setTextColor(Color.BLUE);
+                        holder.readyLabel.setText(R.string.delivered_date);
+                        holder.expectedDeliveryDate.setText(formatted.format(cal.getTime()));
                     }
                     else{
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            holder.orderReady.setTextColor(adapterContext.getColor(R.color.green));
-                        }
-                        else {
-                            holder.orderReady.setTextColor(adapterContext.getResources().getColor(R.color.green));
-                        }
-                        holder.orderReady.setVisibility(View.GONE);
-                        holder.orderReady.setText(R.string.your_order_is_ready);
                         if (!objects.get(position)[5].equals("null")) {
                             cal.setTimeInMillis(Long.parseLong(objects.get(position)[5]));
-                            if (cal.before(now))
-                                holder.orderReady.setVisibility(View.VISIBLE);
-                            else
-                                holder.orderReady.setVisibility(View.GONE);
-                        } else
-                            holder.orderReady.setVisibility(View.GONE);
+                            if (cal.before(now)) {
+                                holder.readyLabel.setText(R.string.ready_date);
+                                holder.expectedDeliveryDate.setText(formatted.format(cal.getTime()));
+                                holder.orderStatus.setText(R.string.your_order_is_ready);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    holder.orderStatus.setTextColor(adapterContext.getColor(R.color.green));
+                                }
+                                else {
+                                    holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.green));
+                                }
+                            }
+                            else{
+                                holder.orderStatus.setText(R.string.order_placed);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    holder.orderStatus.setTextColor(adapterContext.getColor(R.color.primary_text));
+                                }
+                                else {
+                                    holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.primary_text));
+                                }
+                            }
+                        } else{
+                            holder.orderStatus.setText(R.string.order_placed);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                holder.orderStatus.setTextColor(adapterContext.getColor(R.color.primary_text));
+                            }
+                            else {
+                                holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.primary_text));
+                            }
+                        }
                     }
                 }
                 else {
-                    holder.orderReady.setText(R.string.your_order_is_ready);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        holder.orderReady.setTextColor(adapterContext.getColor(R.color.green));
-                    }
-                    else {
-                        holder.orderReady.setTextColor(adapterContext.getResources().getColor(R.color.green));
-                    }
                     if (!objects.get(position)[5].equals("null")) {
                         Calendar now = Calendar.getInstance();
                         cal.setTimeInMillis(Long.parseLong(objects.get(position)[5]));
-                        if (cal.before(now))
-                            holder.orderReady.setVisibility(View.VISIBLE);
+                        if (cal.before(now)) {
+                            holder.readyLabel.setText(R.string.ready_date);
+                            holder.expectedDeliveryDate.setText(formatted.format(cal.getTime()));
+                            holder.orderStatus.setText(R.string.your_order_is_ready);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                holder.orderStatus.setTextColor(adapterContext.getColor(R.color.green));
+                            }
+                            else {
+                                holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.green));
+                            }
+                        }
                         else
-                            holder.orderReady.setVisibility(View.GONE);
+                        {
+                            holder.orderStatus.setText(R.string.order_placed);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                holder.orderStatus.setTextColor(adapterContext.getColor(R.color.primary_text));
+                            }
+                            else {
+                                holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.primary_text));
+                            }
+                        }
                     } else
-                        holder.orderReady.setVisibility(View.GONE);
+                    {
+                        holder.orderStatus.setText(R.string.order_placed);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            holder.orderStatus.setTextColor(adapterContext.getColor(R.color.primary_text));
+                        }
+                        else {
+                            holder.orderStatus.setTextColor(adapterContext.getResources().getColor(R.color.primary_text));
+                        }
+                    }
                 }
                 //last updated------------
                 if(!objects.get(position)[8].equals("null")){                                    //updated
@@ -286,6 +320,20 @@ public class CustomAdapter extends BaseAdapter {
                 else
                     holder.lastUpdatedDate.setText("-");
 
+                //onclick
+                final int FinalP=position;
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.orderDescription.setMaxLines(5);
+                        if(isOnline()) {
+
+                        }
+                        else {
+                            Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 break;
             default:
                 break;
