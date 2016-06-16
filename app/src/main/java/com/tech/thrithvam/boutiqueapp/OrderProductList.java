@@ -36,6 +36,7 @@ public class OrderProductList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_product_list);
+        extras=getIntent().getExtras();
         if(isOnline()){
             new OrderItems(extras.getString("orderID")).execute();
         }
@@ -43,7 +44,6 @@ public class OrderProductList extends AppCompatActivity {
             Toast.makeText(OrderProductList.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
             finish();
         }
-        extras=getIntent().getExtras();
         TextView orderDescription = (TextView) findViewById(R.id.description);
         TextView orderNo = (TextView) findViewById(R.id.orderNo);
         TextView amount = (TextView) findViewById(R.id.amount);

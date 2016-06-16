@@ -46,6 +46,8 @@ public class CustomAdapter extends BaseAdapter {
         TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate, orderStatus,readyLabel;
         //Order products--------------------------
         TextView productName,remarks;
+        //Product Reviews-------------------------
+        TextView userName,reviewDescription,date;
     }
 
     @Override
@@ -337,24 +339,34 @@ public class CustomAdapter extends BaseAdapter {
                 //Label loading--------------------
                 holder.productName.setText(objects.get(position)[1]);
                 holder.remarks.setText(objects.get(position)[2]);
+                break;
+            //--------------------------------Order Items--------------------------------------
+            case "productReviews":
+                if (convertView == null) {
+                    holder = new Holder();
+                    convertView = inflater.inflate(R.layout.reviews_item, null);
+                    holder.userName = (TextView) convertView.findViewById(R.id.name);
+                    holder.reviewDescription = (TextView) convertView.findViewById(R.id.reviewDescription);
+                    holder.date = (TextView) convertView.findViewById(R.id.date);
+                    convertView.setTag(holder);
+                } else {
+                    holder = (Holder) convertView.getTag();
+                }
 
-                //Navigation------------------
-               /* final int FinalP = position;
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(isOnline()) {
-                            Intent intent=new Intent(adapterContext,ItemDetails.class);
-                            intent.putExtra("ProductID",objects.get(FinalP)[0]);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            adapterContext.startActivity(intent);
-                            ((Activity)adapterContext).overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                        }
-                        else {
-                            Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });*/
+                //Label loading--------------------
+                holder.userName.setText(objects.get(position)[1]);
+                holder.reviewDescription.setText(objects.get(position)[2]);
+                if(!objects.get(position)[4].equals("true")){//Not Approved
+                    holder.date.setText(R.string.not_approved);
+                    holder.reviewDescription.setTextColor(Color.GRAY);
+                    break;
+                }
+                if(!objects.get(position)[3].equals("null")) {
+                    cal.setTimeInMillis(Long.parseLong(objects.get(position)[3]));
+                    holder.date.setText(formatted.format(cal.getTime()));
+                }
+                else
+                    holder.date.setText("-");
                 break;
             default:
                 break;

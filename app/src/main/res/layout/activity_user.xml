@@ -268,7 +268,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg"
         android:id="@+id/UserDetails"
-        android:visibility="gone">
+        android:visibility="visible">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -389,43 +389,46 @@
                         android:id="@+id/shareText"
                         android:text="@string/share_text"
                         android:padding="10dp"
+                        android:onClick="shareApp"
                         android:textColor="@color/secondary_text"
                         android:layout_toLeftOf="@+id/share"
                         android:layout_toStartOf="@+id/share" />
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:id="@+id/share"
                         android:src="@drawable/share"
-                        android:layout_centerVertical="true"
+                        android:onClick="shareApp"
+                        android:layout_alignBottom="@+id/shareText"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:onClick="shareApp"/>
+                        android:padding="5dp"
+                        android:layout_margin="5dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/orderTxt"
+                        android:text="View your order status"
+                        android:layout_alignParentLeft="true"
+                        android:padding="10dp"
+                        android:textColor="@color/secondary_text"
+                        android:layout_alignBottom="@+id/myOrders"
+                        android:layout_toLeftOf="@+id/myOrders"
+                        android:layout_toStartOf="@+id/myOrders"
+                        android:onClick="myOrders"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:id="@+id/myOrders"
+                        android:src="@drawable/orders"
+                        android:onClick="myOrders"
+                        android:padding="5dp"
+                        android:layout_margin="5dp"
+                        android:layout_below="@+id/share"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"/>
                 </RelativeLayout>
                 </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="4dp"
-                >
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/my_orders"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/accent"
-                    android:onClick="myOrders"/>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -55,5 +55,8 @@
     <string name="your_order_is_ready">Order is Ready</string>
     <string name="item_delivered">Item delivered</string>
     <string name="products">Products</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
+    <string name="write_a_review">Write a review</string>
+    <string name="submit">Submit</string>
+    <string name="not_approved">Yet to approved</string>
 </resources>

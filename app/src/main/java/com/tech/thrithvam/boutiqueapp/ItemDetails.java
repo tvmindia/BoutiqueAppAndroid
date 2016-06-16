@@ -63,6 +63,7 @@ public class ItemDetails extends AppCompatActivity {
     DatabaseHandler db=new DatabaseHandler(this);
     ImageView favorite;
     ImageView share;
+    ImageView review;
     Boolean isFav=false;
     Integer favCount=0;
     TextView favCountString;
@@ -128,7 +129,7 @@ public class ItemDetails extends AppCompatActivity {
         actualPrice =(TextView)findViewById(R.id.actualPrice);
         offer=(ImageView)findViewById(R.id.offer);
         stock=(TextView)findViewById(R.id.stock);
-        //-----------Add to favorite and Sharing--------------------------
+        //-----------Add to favorite and Sharing and review--------------------------
         favorite=(ImageView)findViewById(R.id.fav);
         favCountString=(TextView)findViewById(R.id.favCount);
         favCountString.setText(getResources().getString(R.string.favorite_count,favCount));
@@ -150,6 +151,16 @@ public class ItemDetails extends AppCompatActivity {
 
         share=(ImageView)findViewById(R.id.share);
 
+        review=(ImageView)findViewById(R.id.review);
+        review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentReview = new Intent(ItemDetails.this, ProductReviews.class);
+                intentReview.putExtra("productName",productName);
+                intentReview.putExtra("productID",productID);
+                startActivity(intentReview);
+                overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+            }});
         //-----------------------Similar items grid---------------------------
         itemsGrid((LinearLayout)findViewById(R.id.similarProducts));
         //-----------------------Related items grid---------------------------
@@ -381,7 +392,6 @@ public class ItemDetails extends AppCompatActivity {
             //----------encrypting ---------------------------
            // usernameString=cryptography.Encrypt(usernameString);
         }
-
         @Override
         protected Void doInBackground(Void... arg0) {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/Products";
