@@ -44,6 +44,8 @@ public class CustomAdapter extends BaseAdapter {
         ImageView offer;
         //Order items-----------------------------------------------
         TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate, orderStatus,readyLabel;
+        //Order products--------------------------
+        TextView productName,remarks;
     }
 
     @Override
@@ -319,21 +321,40 @@ public class CustomAdapter extends BaseAdapter {
                 }
                 else
                     holder.lastUpdatedDate.setText("-");
+                break;
+            //--------------------------------Order Items--------------------------------------
+            case "orderItems":
+                if (convertView == null) {
+                    holder = new Holder();
+                    convertView = inflater.inflate(R.layout.product_list, null);
+                    holder.productName = (TextView) convertView.findViewById(R.id.itemLeft);
+                    holder.remarks = (TextView) convertView.findViewById(R.id.itemRight);
+                    convertView.setTag(holder);
+                } else {
+                    holder = (Holder) convertView.getTag();
+                }
 
-                //onclick
-                final int FinalP=position;
+                //Label loading--------------------
+                holder.productName.setText(objects.get(position)[1]);
+                holder.remarks.setText(objects.get(position)[2]);
+
+                //Navigation------------------
+               /* final int FinalP = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        holder.orderDescription.setMaxLines(5);
                         if(isOnline()) {
-
+                            Intent intent=new Intent(adapterContext,ItemDetails.class);
+                            intent.putExtra("ProductID",objects.get(FinalP)[0]);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            adapterContext.startActivity(intent);
+                            ((Activity)adapterContext).overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         }
                         else {
                             Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                });*/
                 break;
             default:
                 break;
@@ -346,4 +367,5 @@ public class CustomAdapter extends BaseAdapter {
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
 }

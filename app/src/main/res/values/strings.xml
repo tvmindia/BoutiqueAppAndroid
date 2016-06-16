@@ -54,4 +54,6 @@
     <string name="order_placed">Order is placed</string>
     <string name="your_order_is_ready">Order is Ready</string>
     <string name="item_delivered">Item delivered</string>
+    <string name="products">Products</string>
+    <string name="loading">Loading...</string>
 </resources>

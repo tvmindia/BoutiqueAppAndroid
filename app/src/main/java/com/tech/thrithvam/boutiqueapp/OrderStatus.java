@@ -3,14 +3,18 @@ package com.tech.thrithvam.boutiqueapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,6 +47,7 @@ public class OrderStatus extends AppCompatActivity {
         }
 
     }
+    //------------------------Threading-------------------------------------
     public class Orders extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
         String strJson, postData;
@@ -51,6 +56,7 @@ public class OrderStatus extends AppCompatActivity {
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(OrderStatus.this);
         ArrayList<String[]> orders=new ArrayList<>();
+        ListView orderList=(ListView) findViewById(R.id.orderList);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -128,6 +134,7 @@ public class OrderStatus extends AppCompatActivity {
                     data[6]=jsonObject.optString("ActualDeliveryDate").replace("\\/Date(", "").replace(")\\/", "");
                     data[7]=jsonObject.optString("CreatedDate").replace("\\/Date(", "").replace(")\\/", "");
                     data[8]=jsonObject.optString("UpdatedDate").replace("\\/Date(", "").replace(")\\/", "");
+                    data[9]=jsonObject.optString("OrderID");
                     orders.add(data);
                 }
             } catch (Exception ex) {
@@ -141,7 +148,10 @@ public class OrderStatus extends AppCompatActivity {
             super.onPostExecute(result);
             if (pDialog.isShowing())
                 pDialog.dismiss();
+            TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
             if(!pass) {
+                loadingTxt.setText(R.string.no_items);
+                loadingTxt.setVisibility(View.VISIBLE);
                 new AlertDialog.Builder(OrderStatus.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(R.string.no_items)
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
@@ -152,15 +162,40 @@ public class OrderStatus extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                loadingTxt.setVisibility(View.GONE);
                 CustomAdapter adapter=new CustomAdapter(OrderStatus.this, orders,"orders");
-                ListView orderList=(ListView) findViewById(R.id.orderList);
                 orderList.setAdapter(adapter);
+                orderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TextView t=(TextView) view.findViewById(R.id.description);
+                        t.setMaxLines(5);
+                        Intent products=new Intent(OrderStatus.this,OrderProductList.class);
+                        products.putExtra("orderDescription",((TextView) view.findViewById(R.id.description)).getText().toString());
+                        products.putExtra("orderNo",((TextView) view.findViewById(R.id.orderNo)).getText().toString());
+                        products.putExtra("amount",((TextView) view.findViewById(R.id.amount)).getText().toString());
+                        products.putExtra("orderDate",((TextView) view.findViewById(R.id.orderDate)).getText().toString());
+                        products.putExtra("expectedDeliveryDate",((TextView) view.findViewById(R.id.expectedDeliveryDate)).getText().toString());
+                        products.putExtra("lastUpdatedDate",((TextView) view.findViewById(R.id.lastUpdatedDate)).getText().toString());
+                        products.putExtra("orderStatus",((TextView) view.findViewById(R.id.orderStatus)).getText().toString());
+                        products.putExtra("readyLabel",((TextView) view.findViewById(R.id.readyDateLabel)).getText().toString());
+                        products.putExtra("orderID",orders.get(position)[9]);
+                        startActivity(products);
+                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                }});
             }
         }
+
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }

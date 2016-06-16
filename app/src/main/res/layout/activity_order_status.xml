@@ -7,6 +7,14 @@
     android:background="@drawable/bg"
     android:animateLayoutChanges="true">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/loading"
+        android:id="@+id/loadingText"
+        android:textColor="@color/secondary_text"
+        android:layout_centerHorizontal="true"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
