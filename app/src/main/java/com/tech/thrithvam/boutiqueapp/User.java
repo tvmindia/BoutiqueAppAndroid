@@ -483,7 +483,7 @@ public class User extends AppCompatActivity {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UserActivation";
             HttpURLConnection c = null;
             try {
-                postData = "{\"userId\":\"" + userID + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                postData = "{\"userID\":\"" + userID + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");

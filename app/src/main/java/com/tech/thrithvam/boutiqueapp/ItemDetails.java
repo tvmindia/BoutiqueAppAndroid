@@ -757,7 +757,7 @@ public class ItemDetails extends AppCompatActivity {
                         @Override
                         public void onSliderClick(BaseSliderView slider) {
                             Intent intent=new Intent(ItemDetails.this,ImageViewer.class);
-                            intent.putExtra("Imageurl",imgurls.get(fi));
+                            intent.putExtra("Imageurl",productName);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         }
