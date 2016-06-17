@@ -47,6 +47,7 @@ public class ProductReviews extends AppCompatActivity {
     EditText inputReview;
     Button submitReview;
     String productID;
+    Button submit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,7 @@ public class ProductReviews extends AppCompatActivity {
             Toast.makeText(ProductReviews.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
             finish();
         }
+        submit=(Button)findViewById(R.id.submitReview);
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle("Reviews: " + extras.getString("productName"));
@@ -81,6 +83,7 @@ public class ProductReviews extends AppCompatActivity {
         if(db.GetUserDetail("UserID")!=null){
             if(!inputReview.getText().toString().trim().equals(""))
             {
+                submit.setEnabled(false);
                 new InsertProductReview().execute();
             }
         }
@@ -354,6 +357,22 @@ public class ProductReviews extends AppCompatActivity {
                         t.setMaxLines(Integer.MAX_VALUE);
                         t.setEllipsize(null);
                     }});
+                reviewList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                        if(((TextView)view.findViewById(R.id.date)).getText().toString().equals(getString(R.string.not_approved))) {//If not approved yet
+                            new AlertDialog.Builder(ProductReviews.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle(R.string.exit)
+                                    .setMessage(R.string.delete_review_q)
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            new DeleteProductReview(reviews.get(position)[0]).execute();
+                                        }
+                                    }).setNegativeButton(R.string.no, null).show();
+                        }
+                        return false;
+                    }
+                });
             }
         }
     }
@@ -364,9 +383,13 @@ public class ProductReviews extends AppCompatActivity {
         String msg;
         boolean pass=false;
         String reviewDescription;
+        ProgressDialog pDialog=new ProgressDialog(ProductReviews.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
             reviewDescription=inputReview.getText().toString().trim();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -429,12 +452,6 @@ public class ProductReviews extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    String[] data=new String[5];
-                    data[0]=jsonObject.optString("ReviewID");
-                    data[1]=jsonObject.optString("Name");
-                    data[2]=jsonObject.optString("ReviewDescription").replace("\\u0026", "&");
-                    data[3]=jsonObject.optString("CreatedDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[4]=jsonObject.optString("IsApproved");
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -445,13 +462,123 @@ public class ProductReviews extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ProductReviews.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
                         .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                Intent intentReview = new Intent(ProductReviews.this, ProductReviews.class);
+                intentReview.putExtra("productName",extras.getString("productName"));
+                intentReview.putExtra("productID",productID);
+                startActivity(intentReview);
+                finish();
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+            }
+            submit.setEnabled(true);
+        }
+    }
+    public class DeleteProductReview extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ProgressDialog pDialog=new ProgressDialog(ProductReviews.this);
+        String reviewIDString;
+        public DeleteProductReview(String reviewID){
+            reviewIDString=reviewID;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //----------encrypting -------------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/DeleteProductReview";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"reviewID\":\"" + reviewIDString + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            if(!pass) {
+                new AlertDialog.Builder(ProductReviews.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
                             }
                         }).setCancelable(false).show();
             }
