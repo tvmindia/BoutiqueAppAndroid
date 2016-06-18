@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -85,7 +86,7 @@ public class Notification extends Service {
             String url=getResources().getString(R.string.url)+"WebServices/WebService.asmx/Notifications";
             HttpURLConnection c = null;
             try {
-                postData = "{\"notificationIDs\":\"" + db.getNotificationIDs() + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                postData = "{\"notificationIDs\":\"" + db.getNotificationIDs() + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID")) + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -151,11 +152,8 @@ public class Notification extends Service {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-    //        Toast.makeText(Notification.this,postData, Toast.LENGTH_LONG).show();
-     //       Toast.makeText(Notification.this,strJson, Toast.LENGTH_LONG).show();
-
             if(!pass) {
-    //            Toast.makeText(Notification.this,Message, Toast.LENGTH_LONG).show();
+                Toast.makeText(Notification.this,"Error in Boutique app background service: "+Message, Toast.LENGTH_LONG).show();
             }
             else {
                 for (int i=0;i<titles.size();i++) {
@@ -170,5 +168,4 @@ public class Notification extends Service {
             }
         }
     }
-
 }
