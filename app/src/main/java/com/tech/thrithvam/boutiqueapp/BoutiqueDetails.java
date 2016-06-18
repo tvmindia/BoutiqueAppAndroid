@@ -21,6 +21,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -89,12 +92,6 @@ public class BoutiqueDetails extends AppCompatActivity {
         owners=(TextView)findViewById(R.id.owners);
         designers=(TextView)findViewById(R.id.designers);
         //---------------set boutique details------------------
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boutiqueImg.setImageDrawable(getDrawable(R.drawable.boutique));
-        }
-        else {
-            boutiqueImg.setImageDrawable(getResources().getDrawable(R.drawable.boutique));
-        }
         aboutUs.setTypeface(fontType1);
         caption.setTypeface(fontType2);
         year.setTypeface(fontType1);
@@ -116,7 +113,7 @@ public class BoutiqueDetails extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(BoutiqueDetails.this);
-        String nameString, startedYearString, aboutUsString, captionString, locationString, addressString, phoneString, timingString, workingDaysString, fBLinkString, instagramLinkString,latlong;
+        String nameString, startedYearString, aboutUsString, captionString, locationString, addressString, phoneString, timingString, workingDaysString, fBLinkString, instagramLinkString,latlong,image;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -196,6 +193,7 @@ public class BoutiqueDetails extends AppCompatActivity {
                     fBLinkString ="https://"+jsonObject.optString("FBLink");
                     instagramLinkString ="https://"+jsonObject.optString("InstagramLink");
                     latlong=jsonObject.optString("latlong");
+                    image=jsonObject.optString("Image","null");
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -223,6 +221,12 @@ public class BoutiqueDetails extends AppCompatActivity {
                 if (ab != null) {
                     ab.setTitle(nameString);
                 }
+                if(!image.equals("null"))
+                {
+                    Picasso.with(BoutiqueDetails.this)
+                            .load(getString(R.string.url)+image.substring(image.indexOf("Media")))
+                            .into(boutiqueImg)
+                    ;}
                 caption.setText(captionString);
                 aboutUs.setText(aboutUsString);
                 year.setText(getResources().getString(R.string.since,startedYearString));

@@ -20,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,7 +47,9 @@ public class OwnerAndDesigner extends AppCompatActivity {
     ArrayList<String> arrayListProfile;
     ArrayList<String> arrayListPhone;
     ArrayList<String> designerID;
+    ArrayList<String> imageURL;
     ArrayAdapter<String> adapter;
+    ImageView dp;
     ListView sideBar;
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
@@ -66,10 +70,12 @@ public class OwnerAndDesigner extends AppCompatActivity {
                 ab.setTitle("Owner");
             }
         }
+        dp=(ImageView)findViewById(R.id.dp);
         arrayListName = new ArrayList<>();
         arrayListProfile=new ArrayList<>();
         arrayListPhone=new ArrayList<>();
         designerID =new ArrayList<>();
+        imageURL =new ArrayList<>();
         profile=(TextView)findViewById(R.id.profile);
         phone=(TextView)findViewById(R.id.phone);
         phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
@@ -165,6 +171,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     arrayListProfile.add(jsonObject.optString("Profile"));
                     arrayListPhone.add(jsonObject.optString("Mobile"));
                     designerID.add(jsonObject.optString("DesignerID"));
+                    imageURL.add(jsonObject.optString("Image","null"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -197,6 +204,19 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         profile.setText(arrayListProfile.get(spinner.getSelectedItemPosition()));
+                        if(!imageURL.get(position).equals("null"))
+                        {
+                            Picasso.with(OwnerAndDesigner.this)
+                                    .load(getString(R.string.url)+imageURL.get(position).substring(imageURL.get(position).indexOf("Media")))
+                                    .into(dp)
+                            ;
+                        }
+                        else {
+                            Picasso.with(OwnerAndDesigner.this)
+                                    .load(R.drawable.dp)
+                                    .into(dp)
+                            ;
+                        }
                         final String phoneString=arrayListPhone.get(spinner.getSelectedItemPosition());
                         if(!phoneString.equals("null")){
                         phone.setText(phoneString);
