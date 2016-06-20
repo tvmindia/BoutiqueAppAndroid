@@ -76,6 +76,9 @@ public class Notification extends Service {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         ArrayList<String> titles=new ArrayList<>();
         ArrayList<String> messages=new ArrayList<>();
+        ArrayList<String> productID=new ArrayList<>();
+        ArrayList<String> categoryCode=new ArrayList<>();
+        ArrayList<String> orderID=new ArrayList<>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -141,6 +144,9 @@ public class Notification extends Service {
                         }
                         titles.add(jsonObject.optString("Title"));
                         messages.add(jsonObject.optString("Description"));
+                        productID.add(jsonObject.optString("ProductID"));
+                        categoryCode.add(jsonObject.optString("CategoryCode"));
+                        orderID.add(jsonObject.optString("OrderID"));
                     }
 
                 } catch (Exception e) {
@@ -162,6 +168,26 @@ public class Notification extends Service {
                     mBuilder.setContentText(messages.get(i));
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     mBuilder.setSound(alarmSound);
+                    Intent resultIntent;
+                    if(!productID.get(i).equals("null")){
+                        resultIntent= new Intent(Notification.this, ItemDetails.class);
+                        resultIntent.putExtra("ProductID",productID.get(i));
+                    }
+                    else if(!categoryCode.get(i).equals("null")){
+                        resultIntent= new Intent(Notification.this, GridOfProducts.class);
+                        resultIntent.putExtra("CategoryCode",categoryCode.get(i));
+                        resultIntent.putExtra("Category","");
+                    }
+                    else if(!orderID.get(i).equals("null")){
+                        resultIntent= new Intent(Notification.this, OrderProductList.class);
+                        resultIntent.putExtra("orderID",orderID.get(i));
+                    }
+                    else{
+                        resultIntent= new Intent(Notification.this, SplashScreen.class);
+                    }
+                    PendingIntent resultPendingIntent =PendingIntent.getActivity(Notification.this,0,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    mBuilder.setAutoCancel(true);
                     mNotificationManager.notify((int) Math.ceil(Math.random() * 1000), mBuilder.build());//random notification id on phone
                 }
             }
