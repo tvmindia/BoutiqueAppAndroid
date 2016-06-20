@@ -248,6 +248,25 @@ public class ProductReviews extends AppCompatActivity {
                         startActivity(categoryIntent);
                     }
                 });
+                TextView myOrders=(TextView)findViewById(R.id.ordersSideBar);
+                myOrders.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent orderIntent=new Intent(ProductReviews.this,OrderStatus.class);
+                        startActivity(orderIntent);
+                    }
+                });
+
+                TextView trending=(TextView)findViewById(R.id.trending);
+                trending.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent trendIntent=new Intent(ProductReviews.this,GridOfProducts.class);
+                        trendIntent.putExtra("CategoryCode","trends");
+                        trendIntent.putExtra("Category",R.string.trending);
+                        startActivity(trendIntent);
+                    }
+                });
             }
         }
     }

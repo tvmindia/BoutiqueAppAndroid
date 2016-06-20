@@ -45,6 +45,7 @@ public class CustomAdapter extends BaseAdapter {
         ImageView imageView;
         TextView title;
         ImageView offer;
+        TextView viewCount;
         //Order items-----------------------------------------------
         TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate, orderStatus,readyLabel;
         //Order products--------------------------
@@ -81,6 +82,7 @@ public class CustomAdapter extends BaseAdapter {
                     holder.imageView = (ImageView) convertView.findViewById(R.id.gridImg);
                     holder.title = (TextView) convertView.findViewById(R.id.gridTxt);
                     holder.offer=(ImageView)convertView.findViewById(R.id.offer);
+                    holder.viewCount=(TextView) convertView.findViewById(R.id.viewCount);
                     convertView.setTag(holder);
                 } else {
                     holder = (Holder) convertView.getTag();
@@ -102,6 +104,18 @@ public class CustomAdapter extends BaseAdapter {
                     }
                 }else {
                     holder.offer.setVisibility(View.GONE);
+                }
+                //View count-----------------
+                if(!objects.get(position)[4].equals("null")){
+                    if(Integer.parseInt(objects.get(position)[4])>0){
+                        holder.viewCount.setVisibility(View.VISIBLE);
+                        holder.viewCount.setText(objects.get(position)[4]);
+                    }
+                    else {
+                        holder.viewCount.setVisibility(View.GONE);
+                    }
+                }else {
+                    holder.viewCount.setVisibility(View.GONE);
                 }
                 //Navigation------------------
                 final int FinalPosition = position;

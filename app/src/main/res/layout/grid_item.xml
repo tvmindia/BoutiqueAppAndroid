@@ -49,6 +49,21 @@
             android:scaleType="fitStart"
             android:visibility="gone"/>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="view count"
+            android:id="@+id/viewCount"
+            android:padding="5dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="@android:color/white"
+            android:background="@color/labelBackground"/>
+
+
     </RelativeLayout>
 
 </LinearLayout>

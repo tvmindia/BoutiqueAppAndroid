@@ -60,6 +60,9 @@ public class GridOfProducts extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         }
+        if("trends".equals(extras.getString("CategoryCode")))  {
+            ab.setTitle(R.string.trending_products);
+        }
         //---------threading----------------
         if (isOnline()){
             new GetCategories().execute();
@@ -194,6 +197,25 @@ public class GridOfProducts extends AppCompatActivity {
                         startActivity(categoryIntent);
                     }
                 });
+                TextView myOrders=(TextView)findViewById(R.id.ordersSideBar);
+                myOrders.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent orderIntent=new Intent(GridOfProducts.this,OrderStatus.class);
+                        startActivity(orderIntent);
+                    }
+                });
+
+                TextView trending=(TextView)findViewById(R.id.trending);
+                trending.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent trendIntent=new Intent(GridOfProducts.this,GridOfProducts.class);
+                        trendIntent.putExtra("CategoryCode","trends");
+                        trendIntent.putExtra("Category",R.string.trending);
+                        startActivity(trendIntent);
+                    }
+                });
             }
         }
     }
@@ -272,11 +294,12 @@ public class GridOfProducts extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    String[] data=new String[4];
+                    String[] data=new String[5];
                     data[0]=jsonObject.optString("ProductID");
                     data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
                     data[2]=jsonObject.optString("Image");
                     data[3]=jsonObject.optString("Discount");
+                    data[4]=jsonObject.optString("ProductCounts","null");
                     productItems.add(data);
                 }
             } catch (Exception ex) {

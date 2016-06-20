@@ -89,34 +89,56 @@
 
         </RelativeLayout>
     </FrameLayout>
-<RelativeLayout
-android:layout_width="280dp"
-android:layout_height="match_parent"
-android:layout_gravity="start"
-android:background="@android:drawable/dialog_holo_light_frame">
-<ListView
-    android:id="@+id/left_drawer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:choiceMode="singleChoice"
-    android:divider="@color/divider"
-    android:dividerHeight="0.5dp"/>
-<View
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp"
-    android:background="@color/divider"
-    android:layout_below="@id/left_drawer"
-    />
-<TextView
-    android:id="@+id/favorites"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textColor="@color/primary_text"
-    android:paddingTop="50dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="10dp"
-    android:text="@string/my_favorites"
-    android:layout_below="@id/left_drawer"
-    android:textAppearance="?android:attr/textAppearanceMedium"/>
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:drawable/dialog_holo_light_frame">
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:divider="@color/divider"
+            android:dividerHeight="0.5dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider"
+            android:layout_below="@id/left_drawer"
+            />
+        <TextView
+            android:id="@+id/favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:paddingTop="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:text="@string/my_favorites"
+            android:layout_below="@id/left_drawer"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <TextView
+            android:id="@+id/ordersSideBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:paddingTop="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:text="@string/my_orders_sidebar"
+            android:layout_below="@id/favorites"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <TextView
+            android:id="@+id/trending"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:paddingTop="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:text="@string/trending"
+            android:layout_below="@id/ordersSideBar"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

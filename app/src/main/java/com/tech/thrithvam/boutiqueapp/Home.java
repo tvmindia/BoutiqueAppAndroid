@@ -82,7 +82,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
         //-------------------------hide actionbar on scroll----------------------------
         scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
-      scrollView.setScrollViewCallbacks(this);
+        scrollView.setScrollViewCallbacks(this);
 
         //------------------------------slider for new arrivals-------------------------------
         SliderLayout sliderShow6 = (SliderLayout) findViewById(R.id.slider6);
@@ -291,8 +291,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     }
                 });
                 TextView myFav=(TextView)findViewById(R.id.favorites);
-
-                    myFav.setOnClickListener(new View.OnClickListener() {
+                myFav.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
@@ -302,6 +301,25 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         }
                     });
 
+                TextView myOrders=(TextView)findViewById(R.id.ordersSideBar);
+                myOrders.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent orderIntent=new Intent(Home.this,OrderStatus.class);
+                        startActivity(orderIntent);
+                    }
+                });
+
+                TextView trending=(TextView)findViewById(R.id.trending);
+                trending.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent trendIntent=new Intent(Home.this,GridOfProducts.class);
+                        trendIntent.putExtra("CategoryCode","trends");
+                        trendIntent.putExtra("Category",R.string.trending);
+                        startActivity(trendIntent);
+                    }
+                });
 
                 //products under category loading on Home screen
                 productsOfCategory(-1);
