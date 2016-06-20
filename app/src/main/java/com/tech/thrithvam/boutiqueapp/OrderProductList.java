@@ -1,6 +1,5 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,8 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OrderProductList extends AppCompatActivity {
-    DatabaseHandler db=new DatabaseHandler(OrderProductList.this);
     Constants constants=new Constants();
     Bundle extras=new Bundle();
     @Override

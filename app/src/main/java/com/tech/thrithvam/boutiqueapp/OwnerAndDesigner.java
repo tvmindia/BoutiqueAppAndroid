@@ -358,45 +358,33 @@ public class OwnerAndDesigner extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                //Links other than category
+                categoryList.add("");
+                categoryList.add(getResources().getString(R.string.trending));
+                categoryCode.put(getResources().getString(R.string.trending),"trends");
+                categoryList.add(getResources().getString(R.string.my_favorites));
+                categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
+                categoryList.add(getResources().getString(R.string.my_orders_sidebar));
+
                 categoryAdapter = new ArrayAdapter<>(OwnerAndDesigner.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent categoryIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
-                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
-                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
-                        Toast.makeText(OwnerAndDesigner.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
-                        startActivity(categoryIntent);
-                    }
-                });
-                TextView myFav=(TextView)findViewById(R.id.favorites);
-                myFav.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent categoryIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
-                        categoryIntent.putExtra("CategoryCode","myfav");
-                        categoryIntent.putExtra("Category",R.string.my_favorites);
-                        startActivity(categoryIntent);
-                    }
-                });
-                TextView myOrders=(TextView)findViewById(R.id.ordersSideBar);
-                myOrders.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent orderIntent=new Intent(OwnerAndDesigner.this,OrderStatus.class);
-                        startActivity(orderIntent);
-                    }
-                });
-
-                TextView trending=(TextView)findViewById(R.id.trending);
-                trending.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent trendIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
-                        trendIntent.putExtra("CategoryCode","trends");
-                        trendIntent.putExtra("Category",R.string.trending);
-                        startActivity(trendIntent);
+                        if(!categoryList.get(position).equals("")){
+                            if(categoryList.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
+                                Intent orderIntent=new Intent(OwnerAndDesigner.this,OrderStatus.class);
+                                startActivity(orderIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
+                            else {
+                                Intent categoryIntent=new Intent(OwnerAndDesigner.this,GridOfProducts.class);
+                                categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                                categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                                startActivity(categoryIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
+                        }
                     }
                 });
             }

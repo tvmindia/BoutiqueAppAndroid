@@ -185,6 +185,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(Home.this);
+        ArrayList<String> ListForSideBar;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -278,49 +279,36 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         }).setCancelable(false).show();
             }
             else {
-                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
+                //Links other than category
+                ListForSideBar=categoryList;
+                ListForSideBar.add("");
+                ListForSideBar.add(getResources().getString(R.string.trending));
+                categoryCode.put(getResources().getString(R.string.trending),"trends");
+                ListForSideBar.add(getResources().getString(R.string.my_favorites));
+                categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
+                ListForSideBar.add(getResources().getString(R.string.my_orders_sidebar));
+
+                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, ListForSideBar);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                        categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
-                        categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
-                        Toast.makeText(Home.this,categoryList.get(position)+"-"+categoryCode.get(categoryList.get(position)),Toast.LENGTH_SHORT).show();
-                        startActivity(categoryIntent);
-                    }
-                });
-                TextView myFav=(TextView)findViewById(R.id.favorites);
-                myFav.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                            categoryIntent.putExtra("CategoryCode","myfav");
-                            categoryIntent.putExtra("Category",R.string.my_favorites);
-                            startActivity(categoryIntent);
+                        if(!ListForSideBar.get(position).equals("")){
+                            if(ListForSideBar.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
+                                Intent orderIntent=new Intent(Home.this,OrderStatus.class);
+                                startActivity(orderIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
+                            else {
+                                Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                                categoryIntent.putExtra("CategoryCode",categoryCode.get(ListForSideBar.get(position)));
+                                categoryIntent.putExtra("Category",ListForSideBar.get(position).replace("\uD83D\uDC49\t",""));
+                                startActivity(categoryIntent);
+                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                            }
                         }
-                    });
-
-                TextView myOrders=(TextView)findViewById(R.id.ordersSideBar);
-                myOrders.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent orderIntent=new Intent(Home.this,OrderStatus.class);
-                        startActivity(orderIntent);
                     }
                 });
-
-                TextView trending=(TextView)findViewById(R.id.trending);
-                trending.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent trendIntent=new Intent(Home.this,GridOfProducts.class);
-                        trendIntent.putExtra("CategoryCode","trends");
-                        trendIntent.putExtra("Category",R.string.trending);
-                        startActivity(trendIntent);
-                    }
-                });
-
                 //products under category loading on Home screen
                 productsOfCategory(-1);
             }

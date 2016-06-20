@@ -61,7 +61,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textColor="@android:color/white"
-            android:background="@color/labelBackground"/>
+            android:background="@color/labelBackground"
+            android:visibility="gone"/>
 
 
     </RelativeLayout>
