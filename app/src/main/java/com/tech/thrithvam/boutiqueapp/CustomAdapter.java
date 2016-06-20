@@ -360,9 +360,7 @@ public class CustomAdapter extends BaseAdapter {
                 holder.userName.setText(objects.get(position)[1]);
                 holder.reviewDescription.setText(objects.get(position)[2]);
                 if(!objects.get(position)[4].equals("true")){//Not Approved
-                    holder.date.setText(R.string.not_approved);
                     holder.reviewDescription.setTextColor(Color.GRAY);
-                    break;
                 }
                 if(!objects.get(position)[3].equals("null")) {
                     cal.setTimeInMillis(Long.parseLong(objects.get(position)[3]));

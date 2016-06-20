@@ -268,7 +268,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg"
         android:id="@+id/UserDetails"
-        android:visibility="visible">
+        android:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -360,7 +360,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2147483647"
+                    android:text="-"
                     android:id="@+id/loyalty_card_number"
                     android:textColor="@color/primary_text"
                     android:paddingBottom="10dp"

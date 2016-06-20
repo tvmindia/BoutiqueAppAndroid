@@ -360,7 +360,7 @@ public class ProductReviews extends AppCompatActivity {
                 reviewList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                        if(((TextView)view.findViewById(R.id.date)).getText().toString().equals(getString(R.string.not_approved))) {//If not approved yet
+                        if(!reviews.get(position)[4].equals("true")) {//If not approved yet
                             new AlertDialog.Builder(ProductReviews.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle(R.string.exit)
                                     .setMessage(R.string.delete_review_q)
                                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

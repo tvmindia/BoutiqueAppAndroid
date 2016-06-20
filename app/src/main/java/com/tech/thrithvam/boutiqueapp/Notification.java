@@ -153,7 +153,7 @@ public class Notification extends Service {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if(!pass) {
-                Toast.makeText(Notification.this,"Error in Boutique app background service: "+Message, Toast.LENGTH_LONG).show();
+    //            Toast.makeText(Notification.this,"Error in Boutique app background service: "+Message, Toast.LENGTH_LONG).show();
             }
             else {
                 for (int i=0;i<titles.size();i++) {
