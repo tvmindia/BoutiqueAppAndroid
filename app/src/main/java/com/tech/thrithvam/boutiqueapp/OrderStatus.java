@@ -38,6 +38,13 @@ public class OrderStatus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_status);
         getSupportActionBar().setElevation(0);
+        if(db.GetUserDetail("UserID")==null){
+            Toast.makeText(OrderStatus.this,R.string.please_login,Toast.LENGTH_LONG).show();
+            Intent intentUser = new Intent(OrderStatus.this, User.class);
+            startActivity(intentUser);
+            finish();
+            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+        }
         //---------threading----------------
         if (isOnline()){
             new Orders().execute();
