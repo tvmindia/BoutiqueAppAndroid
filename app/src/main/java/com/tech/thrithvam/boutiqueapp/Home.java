@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -56,7 +57,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
-  //  int loadedCategoryCount=0;
+    SliderLayout newArrivals;
+    //  int loadedCategoryCount=0;
  //   ArrayList<View> cards=new ArrayList<>();
     ObservableScrollView scrollView;
     @Override
@@ -68,6 +70,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         db.flushNotifications();
         if (isOnline()){
             new GetCategories().execute();
+            new NewArrivalSlider().execute();
         }
         else {
             Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -85,17 +88,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         scrollView.setScrollViewCallbacks(this);
 
         //------------------------------slider for new arrivals-------------------------------
-        SliderLayout sliderShow6 = (SliderLayout) findViewById(R.id.slider6);
-        for (int i = 0; i < 5; i++) {
-            final String image = "na" + (Integer.toString(i + 1));
-            TextSliderView textSliderViews = new TextSliderView(this);
-            textSliderViews
-                    .description(SliderLayout.Transformer.Accordion.toString())
-                    .image(getResources().getIdentifier(image, "drawable", getPackageName()));
-            sliderShow6.addSlider(textSliderViews);
+         newArrivals = (SliderLayout) findViewById(R.id.newArrivals);
 
-            sliderShow6.setPresetTransformer(SliderLayout.Transformer.Accordion);
-        }
 
         //Offer--------
             ImageView offer=(ImageView)findViewById(R.id.offer);
@@ -466,6 +460,118 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     //  }
                 }
             });*/
+        }
+    }
+    public class NewArrivalSlider extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        ArrayList<String[]> productItems=new ArrayList<>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
+            HttpURLConnection c = null;
+            try {
+                postData =  "{\"CategoryCode\":\"" + "NEW" + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + constants.newArrivalsCountLimit + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    String[] data=new String[5];
+                    data[0]=jsonObject.optString("ProductID");
+                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[2]=getResources().getString(R.string.url) + jsonObject.optString("Image").substring((jsonObject.optString("Image")).indexOf("Media"));
+                    productItems.add(data);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if(!pass) {
+                newArrivals.setVisibility(View.GONE);
+            }
+            else {
+                for (int i=0;i<productItems.size();i++) {
+                    final int fi=i;
+                    TextSliderView textSliderViews = new TextSliderView(Home.this);
+                    textSliderViews
+                            .description(productItems.get(fi)[1])
+                            .image(productItems.get(fi)[2]);
+
+                    textSliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                        @Override
+                        public void onSliderClick(BaseSliderView slider) {
+                            Intent intent=new Intent(Home.this,ItemDetails.class);
+                            intent.putExtra("ProductID",productItems.get(fi)[0]);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                        }
+                    });
+                    newArrivals.addSlider(textSliderViews);
+                    newArrivals.setPresetTransformer(SliderLayout.Transformer.Accordion);
+                }
+            }
         }
     }
     public boolean isOnline() {
