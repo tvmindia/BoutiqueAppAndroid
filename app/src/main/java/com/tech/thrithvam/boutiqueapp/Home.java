@@ -314,7 +314,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             }
         }
     }
-
     public class GetProductsByCategory extends AsyncTask<Integer, Void, Integer> {
         int status;StringBuilder sb;
         String strJson, postData;
@@ -449,9 +448,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
                 homeScreen.addView(categoryCard);
             }
-
-
-
             productsOfCategory(viewPos);
            /* scrollView.getViewTreeObserver().removeOnScrollChangedListener(null);
             scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -470,11 +466,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     //  }
                 }
             });*/
-
-
-
-
-
         }
     }
     public boolean isOnline() {

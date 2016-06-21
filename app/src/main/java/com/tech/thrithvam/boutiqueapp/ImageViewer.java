@@ -33,7 +33,7 @@ public class ImageViewer extends AppCompatActivity {
         extras=getIntent().getExtras();
         imgDetails =(RelativeLayout)findViewById(R.id.imgDetails);
         TextView imagename=(TextView)findViewById(R.id.imgName);
-        imagename.setText(extras.getString("Imageurl"));
+        imagename.setText(extras.getString("ProductName"));
         Anim1 = ObjectAnimator.ofFloat(imgDetails, "y", 1500);
         Anim1.setDuration(300);
         extras=getIntent().getExtras();
@@ -53,6 +53,7 @@ public class ImageViewer extends AppCompatActivity {
             }
         });
         if (isOnline()){
+
         Picasso.with(ImageViewer.this)
                 .load(extras.getString("Imageurl"))
                         .into(photoView, new Callback() {
