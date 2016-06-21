@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,11 +27,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lucasr.twowayview.TwoWayView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -78,31 +82,32 @@ public class ItemDetails extends AppCompatActivity {
     String productID;
     String productName;
     Bundle extras;
-
+    Boolean relatedItemsLoaded=false;
     ListView sideBar;
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
+    CardView itemDetailsCard;
+    CardView relatedItemsCard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
-        extras=getIntent().getExtras();
-        productID=extras.getString("ProductID");
+        extras = getIntent().getExtras();
+        productID = extras.getString("ProductID");
         getSupportActionBar().setElevation(0);
-        sideBar=(ListView)findViewById(R.id.left_drawer);
-        if (isOnline()){
+        sideBar = (ListView) findViewById(R.id.left_drawer);
+        if (isOnline()) {
             new ProductDetails().execute();
             new GetCategories().execute();
             new ProductImages().execute();
-        }
-        else {
-            Toast.makeText(ItemDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(ItemDetails.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
             finish();
         }
-        inflater = (LayoutInflater)ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) ItemDetails.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
-        description=(TextView)findViewById(R.id.description);
+        description = (TextView) findViewById(R.id.description);
         description.setTypeface(fontType1);
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
        /* for (int i = 0; i < 3; i++) {
@@ -123,99 +128,62 @@ public class ItemDetails extends AppCompatActivity {
         }*/
 
 
-        viewDesigner=(TextView)findViewById(R.id.view_designer);
+        viewDesigner = (TextView) findViewById(R.id.view_designer);
 
-        price=(TextView)findViewById(R.id.price);
-        actualPrice =(TextView)findViewById(R.id.actualPrice);
-        offer=(ImageView)findViewById(R.id.offer);
-        stock=(TextView)findViewById(R.id.stock);
+        price = (TextView) findViewById(R.id.price);
+        actualPrice = (TextView) findViewById(R.id.actualPrice);
+        offer = (ImageView) findViewById(R.id.offer);
+        stock = (TextView) findViewById(R.id.stock);
         //-----------Add to favorite and Sharing and review--------------------------
-        favorite=(ImageView)findViewById(R.id.fav);
-        favCountString=(TextView)findViewById(R.id.favCount);
-        favCountString.setText(getResources().getString(R.string.favorite_count,favCount));
+        favorite = (ImageView) findViewById(R.id.fav);
+        favCountString = (TextView) findViewById(R.id.favCount);
+        favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(db.GetUserDetail("UserID")!=null){
+                if (db.GetUserDetail("UserID") != null) {
                     new AddOrRemoveFromFavorite().execute();
-                }
-                else {
-                    Toast.makeText(ItemDetails.this,R.string.please_login,Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ItemDetails.this, R.string.please_login, Toast.LENGTH_LONG).show();
                     Intent intentUser = new Intent(ItemDetails.this, User.class);
                     startActivity(intentUser);
                     finish();
-                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                    overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
                 }
             }
         });
 
-        share=(ImageView)findViewById(R.id.share);
+        share = (ImageView) findViewById(R.id.share);
 
-        review=(ImageView)findViewById(R.id.review);
+        review = (ImageView) findViewById(R.id.review);
         review.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentReview = new Intent(ItemDetails.this, ProductReviews.class);
-                intentReview.putExtra("productName",productName);
-                intentReview.putExtra("productID",productID);
+                intentReview.putExtra("productName", productName);
+                intentReview.putExtra("productID", productID);
                 startActivity(intentReview);
                 overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
-            }});
-        //-----------------------Similar items grid---------------------------
-        itemsGrid((LinearLayout)findViewById(R.id.similarProducts));
-        //-----------------------Related items grid---------------------------
-        itemsGrid((LinearLayout)findViewById(R.id.relatedProducts));
-    }
-    public void itemsGrid(LinearLayout fillingArea){
-        LinearLayout itemRow=new LinearLayout(ItemDetails.this);
-        itemRow.setOrientation(LinearLayout.HORIZONTAL);
-        itemRow= (LinearLayout) inflater.inflate(R.layout.items_two_coloum_frame, null);
-        itemRow.setPadding(0,10,0,5);
-        LinearLayout leftItem=(LinearLayout)itemRow.findViewById(R.id.LinearLeft);
-        LinearLayout rightItem=(LinearLayout)itemRow.findViewById(R.id.LinearRight);
-        View item=inflater.inflate(R.layout.grid_item, null);
-        ImageView imageView=(ImageView)item.findViewById(R.id.gridImg);
-        Picasso.with(ItemDetails.this).load(R.drawable.k1).into(imageView);
-        leftItem.addView(item);
-        View item2=inflater.inflate(R.layout.grid_item, null);
-        ImageView imageView2=(ImageView)item2.findViewById(R.id.gridImg);
-        Picasso.with(ItemDetails.this).load(R.drawable.k2).into(imageView2);
-        rightItem.addView(item2);
-        fillingArea.addView(itemRow);
-        item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
             }
         });
-        item2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemDetails.this, ItemDetails.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-            }
-        });
-        //More---------------
-        TextView more = new TextView(ItemDetails.this);
-        more.setText("more");
-        more.setGravity(Gravity.RIGHT);
-        if (Build.VERSION.SDK_INT < 23) {
-            more.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        } else {
-            more.setTextAppearance(android.R.style.TextAppearance_Medium);
-        }
-        more.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            more.setTextColor(getColor(R.color.accent));
-        }
-        else {
-            more.setTextColor(getResources().getColor(R.color.accent));
-        }
-        more.setPadding(5,5,5,0);
-        fillingArea.addView(more);
+
+        final ScrollView scrollView=(ScrollView)findViewById(R.id.itemDetailsScroll);
+        itemDetailsCard=(CardView)findViewById(R.id.itemDetailsCard);
+        relatedItemsCard=(CardView)findViewById(R.id.relatedItemsCard);
+        scrollView.getViewTreeObserver().removeOnScrollChangedListener(null);
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    if(!relatedItemsLoaded){
+                    int diff = itemDetailsCard.getBottom()-(scrollView.getHeight()+scrollView.getScrollY());
+                    if( diff <= 0 )
+                    {
+                       new RelatedProducts().execute();
+                        relatedItemsLoaded=true;
+                    } // super.onScrollChanged(l, t, oldl, oldt);
+                    }
+                }
+            });
     }
     //---------------Menu creation------------------------------------
     @Override
@@ -802,6 +770,111 @@ public class ItemDetails extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        }
+    }
+    public class RelatedProducts extends AsyncTask<Void, Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        // ProgressDialog pDialog=new ProgressDialog(Home.this);
+        ArrayList<String[]> productItems=new ArrayList<>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            relatedItemsCard.setVisibility(View.GONE);
+         /*   pDialog.setMessage(getResources().getString(R.string.wait));
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/RelatedProducts";
+            HttpURLConnection c = null;
+            try {
+                postData =  "{\"productID\":\"" + productID + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"limit\":\"" + constants.relatedProductsCountLimit + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    String[] data=new String[4];
+                    data[0]=jsonObject.optString("RelatedProductsID");
+                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[2]=jsonObject.optString("Image");
+                    data[3]=jsonObject.optString("Discount");
+                    productItems.add(data);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void result) {
+             super.onPostExecute(result);
+            if(!pass) {
+                relatedItemsCard.setVisibility(View.GONE);
+            }
+            else {
+                relatedItemsCard.setVisibility(View.VISIBLE);
+                CustomAdapter adapter=new CustomAdapter(ItemDetails.this, productItems,"relatedItems");
+                TwoWayView horizontalGrid=(TwoWayView)findViewById(R.id.gridRelatedItems);
+                horizontalGrid.setOrientation(TwoWayView.Orientation.HORIZONTAL);
+                horizontalGrid.setItemMargin(15);
+                horizontalGrid.setAdapter(adapter);
             }
         }
     }

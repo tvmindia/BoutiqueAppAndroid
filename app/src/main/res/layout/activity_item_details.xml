@@ -14,6 +14,7 @@
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/itemDetailsScroll"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +62,8 @@
     android:layout_marginTop="5dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="5dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    android:id="@+id/itemDetailsCard">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -176,6 +178,8 @@
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
+
+        <!--======================Related Products===================-->
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -184,6 +188,7 @@
             android:layout_marginRight="7dp"
             android:layout_marginBottom="5dp"
             app:cardCornerRadius="4dp"
+            android:id="@+id/relatedItemsCard"
             >
             <LinearLayout
                 android:paddingRight="2dp"
@@ -204,8 +209,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/divider" />
+                <org.lucasr.twowayview.TwoWayView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gridRelatedItems"
+                    android:layout_margin="5dp"
+                    />
             </LinearLayout>
         </android.support.v7.widget.CardView>
+        <!--======================Similar products=========================-->
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -213,7 +225,8 @@
     android:layout_marginTop="5dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="5dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    android:visibility="gone">
 <LinearLayout
     android:paddingRight="2dp"
 

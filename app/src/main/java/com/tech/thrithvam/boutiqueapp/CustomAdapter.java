@@ -383,6 +383,54 @@ public class CustomAdapter extends BaseAdapter {
                 else
                     holder.date.setText("-");
                 break;
+            //-------------------------------Related Items----------------------------------------
+            case "relatedItems":
+                if (convertView == null) {
+                    holder = new Holder();
+                    convertView = inflater.inflate(R.layout.homescreen_items, null);
+                    holder.imageView = (ImageView) convertView.findViewById(R.id.gridImg);
+                    holder.title = (TextView) convertView.findViewById(R.id.gridTxt);
+                    holder.offer=(ImageView)convertView.findViewById(R.id.offer);
+                    convertView.setTag(holder);
+                } else {
+                    holder = (Holder) convertView.getTag();
+                }
+                //Label loading--------------------
+                holder.title.setText(objects.get(position)[1]);
+                //Image Loading-------------------
+                Picasso.with(adapterContext)
+                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
+                        .into(holder.imageView)
+                ;
+                //Offer Label-----------------
+                if(!objects.get(position)[3].equals("null")){
+                    if(Integer.parseInt(objects.get(position)[3])>0){
+                        holder.offer.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        holder.offer.setVisibility(View.GONE);
+                    }
+                }else {
+                    holder.offer.setVisibility(View.GONE);
+                }
+                //Navigation------------------
+                final int FinalP = position;
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(isOnline()) {
+                            Intent intent=new Intent(adapterContext,ItemDetails.class);
+                            intent.putExtra("ProductID",objects.get(FinalP)[0]);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            adapterContext.startActivity(intent);
+                            ((Activity)adapterContext).overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                        }
+                        else {
+                            Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                break;
             default:
                 break;
         }
