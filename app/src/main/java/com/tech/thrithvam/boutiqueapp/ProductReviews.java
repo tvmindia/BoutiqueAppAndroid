@@ -481,12 +481,19 @@ public class ProductReviews extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                Intent intentReview = new Intent(ProductReviews.this, ProductReviews.class);
-                intentReview.putExtra("productName",extras.getString("productName"));
-                intentReview.putExtra("productID",productID);
-                startActivity(intentReview);
-                finish();
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                new ProductReviewsList().execute();
+
+                inputReview.clearFocus();
+                inputReview.setText("");
+                inputReview.setLines(1);
+                submitReview.setVisibility(View.GONE);
+                inputReview.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        inputReview.setLines(3);
+                        submitReview.setVisibility(View.VISIBLE);
+                    }
+                });
             }
             submit.setEnabled(true);
         }
@@ -590,12 +597,7 @@ public class ProductReviews extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                Intent intentReview = new Intent(ProductReviews.this, ProductReviews.class);
-                intentReview.putExtra("productName",extras.getString("productName"));
-                intentReview.putExtra("productID",productID);
-                startActivity(intentReview);
-                finish();
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                new ProductReviewsList().execute();
             }
         }
     }

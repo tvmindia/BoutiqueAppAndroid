@@ -172,11 +172,19 @@ public class ItemDetails extends AppCompatActivity {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentReview = new Intent(ItemDetails.this, Chat.class);
-                intentReview.putExtra("productName", productName);
-                intentReview.putExtra("productID", productID);
-                startActivity(intentReview);
-                overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+                if (db.GetUserDetail("UserID") != null) {
+                    Intent intentChat = new Intent(ItemDetails.this, Chat.class);
+                    intentChat.putExtra("productName", productName);
+                    intentChat.putExtra("productID", productID);
+                    startActivity(intentChat);
+                    overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+                } else {
+                    Toast.makeText(ItemDetails.this, R.string.please_login, Toast.LENGTH_LONG).show();
+                    Intent intentUser = new Intent(ItemDetails.this, User.class);
+                    startActivity(intentUser);
+                    overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+                }
+
             }
         });
 

@@ -61,7 +61,7 @@
             android:name=".ProductReviews"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Chat"></activity>
+        <activity android:name=".Chat"
+            android:configChanges="orientation|screenSize" />
     </application>
-
 </manifest>
