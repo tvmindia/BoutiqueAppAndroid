@@ -68,6 +68,7 @@ public class ItemDetails extends AppCompatActivity {
     ImageView favorite;
     ImageView share;
     ImageView review;
+    ImageView chat;
     Boolean isFav=false;
     Integer favCount=0;
     TextView favCountString;
@@ -160,6 +161,18 @@ public class ItemDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentReview = new Intent(ItemDetails.this, ProductReviews.class);
+                intentReview.putExtra("productName", productName);
+                intentReview.putExtra("productID", productID);
+                startActivity(intentReview);
+                overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+            }
+        });
+
+        chat = (ImageView) findViewById(R.id.chat);
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentReview = new Intent(ItemDetails.this, Chat.class);
                 intentReview.putExtra("productName", productName);
                 intentReview.putExtra("productID", productID);
                 startActivity(intentReview);

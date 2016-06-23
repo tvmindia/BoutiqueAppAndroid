@@ -554,7 +554,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     TextSliderView textSliderViews = new TextSliderView(Home.this);
                     textSliderViews
                             .description(productItems.get(fi)[1])
-                            .image(productItems.get(fi)[2]);
+                            .image(productItems.get(fi)[2])
+                            .setScaleType(BaseSliderView.ScaleType.CenterInside);
 
                     textSliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                         @Override

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tech.thrithvam.boutiqueapp.Chat"
+    android:background="@drawable/bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:focusableInTouchMode="true"
+        android:layout_alignParentBottom="true">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
+            android:ems="10"
+            android:id="@+id/msgInput"
+            android:gravity="top|start"
+            android:background="@drawable/boarder"
+            android:scrollbars="vertical"
+            android:maxLines="3"
+            android:layout_toLeftOf="@+id/submitMsg"
+            android:layout_toStartOf="@+id/submitMsg"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/submitMsg"
+            android:textColor="@android:color/white"
+            android:padding="5dp"
+            android:src="@drawable/send"
+            android:onClick="sendMsg"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+</RelativeLayout>
