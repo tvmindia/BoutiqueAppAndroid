@@ -179,7 +179,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         String msg;
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(Home.this);
-        ArrayList<String> ListForSideBar;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -274,29 +273,28 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             }
             else {
                 //Links other than category
-                ListForSideBar=categoryList;
-                ListForSideBar.add("");
-                ListForSideBar.add(getResources().getString(R.string.trending));
+                categoryList.add("");
+                categoryList.add(getResources().getString(R.string.trending));
                 categoryCode.put(getResources().getString(R.string.trending),"trends");
-                ListForSideBar.add(getResources().getString(R.string.my_favorites));
+                categoryList.add(getResources().getString(R.string.my_favorites));
                 categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
-                ListForSideBar.add(getResources().getString(R.string.my_orders_sidebar));
+                categoryList.add(getResources().getString(R.string.my_orders_sidebar));
 
-                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, ListForSideBar);
+                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
                 sideBar.setAdapter(categoryAdapter);
                 sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if(!ListForSideBar.get(position).equals("")){
-                            if(ListForSideBar.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
+                        if(!categoryList.get(position).equals("")){
+                            if(categoryList.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
                                 Intent orderIntent=new Intent(Home.this,OrderStatus.class);
                                 startActivity(orderIntent);
                                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                             }
                             else {
                                 Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                                categoryIntent.putExtra("CategoryCode",categoryCode.get(ListForSideBar.get(position)));
-                                categoryIntent.putExtra("Category",ListForSideBar.get(position).replace("\uD83D\uDC49\t",""));
+                                categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                                categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
                                 startActivity(categoryIntent);
                                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                             }
@@ -390,7 +388,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     data[3]=jsonObject.optString("Discount");
                     productItems.add(data);
                 }
-                String[] data=new String[4];
+                String[] data=new String[4];                //For more
                 data[0]="";
                 data[1]=categoryCode.get(categoryList.get(arg0[0]));
                 data[2]=categoryList.get(arg0[0]);
@@ -431,7 +429,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }
                 });
-            //    cards.add(categoryCard);
 
                 CustomAdapter adapter=new CustomAdapter(Home.this, productItems,"homeGrid");
                 TwoWayView horizontalGrid=(TwoWayView)categoryCard.findViewById(R.id.gridHorizontal);
