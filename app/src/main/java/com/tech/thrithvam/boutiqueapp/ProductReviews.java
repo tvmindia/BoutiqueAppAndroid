@@ -1,5 +1,6 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -80,6 +83,9 @@ public class ProductReviews extends AppCompatActivity {
         });
     }
     public void insertReview(View view){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
         if(db.GetUserDetail("UserID")!=null){
             if(!inputReview.getText().toString().trim().equals(""))
             {
@@ -265,9 +271,11 @@ public class ProductReviews extends AppCompatActivity {
         String msg;
         boolean pass=false;
         ArrayList<String[]> reviews=new ArrayList<>();
+        ListView reviewList= (ListView) findViewById(R.id.reviews);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            reviewList.setAdapter(null);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -355,7 +363,6 @@ public class ProductReviews extends AppCompatActivity {
                 loadingTxt.setVisibility(View.GONE);
                 CustomAdapter adapter=new CustomAdapter(ProductReviews.this, reviews,"productReviews");
 
-                ListView reviewList= (ListView) findViewById(R.id.reviews);
                 reviewList.setAdapter(adapter);
                 reviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
