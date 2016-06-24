@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     // All Static variables
@@ -23,6 +26,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_ACCOUNTS_TABLE);
         String CREATE_NOTIFICATIONS_TABLE = "CREATE TABLE IF NOT EXISTS Notifications (NotificationIDs TEXT, ExpiryDate DATE);";
         db.execSQL(CREATE_NOTIFICATIONS_TABLE);
+        String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS Chat (MsgIDs TEXT PRIMARY KEY, Msg TEXT, Direction TEXT, MsgTime DATETIME, ProductID TEXT);";
+        db.execSQL(CREATE_CHAT_TABLE);
     }
     // Upgrading database
     @Override
@@ -85,5 +90,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long time= System.currentTimeMillis();
         db.execSQL("DELETE FROM Notifications WHERE ExpiryDate<"+time+";");
         db.close();
+    }
+    //------------------------------Chat table---------------------------------------
+    public void insertMessage(String MsgIDs,String Msg,String Direction,String MsgTime,String ProductID)
+    {
+        db=this.getWritableDatabase();
+        try {
+            db.execSQL("INSERT INTO Chat (MsgIDs,Msg,Direction,MsgTime,ProductID) VALUES ('"+MsgIDs+"','"+Msg+"','"+Direction+"','"+MsgTime+"','"+ProductID+"');");
+        }
+        catch (Exception ex){
+        }
+        db.close();
+    }
+    public ArrayList<String[]> GetMsgs()
+    {db=this.getReadableDatabase();
+        ArrayList<String[]> msgs=new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Chat ORDER BY MsgTime ASC;",null);
+        if (cursor.getCount()>0)
+        {cursor.moveToFirst();
+            do {
+                String[] data = new String[2];
+                data[0] = cursor.getString(cursor.getColumnIndex("Msg"));
+                data[1] = cursor.getString(cursor.getColumnIndex("MsgTime"));
+                msgs.add(data);
+            }while (cursor.moveToNext());
+
+            cursor.close();
+            return msgs;
+        }
+        else return null;
     }
 }

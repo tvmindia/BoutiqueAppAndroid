@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,9 @@ public class CustomAdapter extends BaseAdapter {
         TextView productName,remarks;
         //Product Reviews-------------------------
         TextView userName,reviewDescription,date;
+        //Chat------------------------------------
+        TextView message,time;
+        RelativeLayout msgBox;
     }
 
     @Override
@@ -430,6 +434,27 @@ public class CustomAdapter extends BaseAdapter {
                         }
                     }
                 });
+                break;
+            //-------------------------------Chat Items----------------------------------------
+            case "chat":
+                if (convertView == null) {
+                    holder = new Holder();
+                    convertView = inflater.inflate(R.layout.message_item, null);
+                    holder.message = (TextView) convertView.findViewById(R.id.msgItem);
+                    holder.time = (TextView) convertView.findViewById(R.id.msgDate);
+                    holder.msgBox=(RelativeLayout)convertView.findViewById(R.id.msgBox);
+                    convertView.setTag(holder);
+                } else {
+                    holder = (Holder) convertView.getTag();
+                }
+                //Label loading--------------------
+                holder.message.setText(objects.get(position)[0]);
+                if(!objects.get(position)[1].equals("null")){
+                    SimpleDateFormat formattedWithTime = new SimpleDateFormat("hh:ma dd-MMM-yyyy", Locale.US);
+                    cal.setTimeInMillis(Long.parseLong(objects.get(position)[1]));
+                    holder.time.setText(formattedWithTime.format(cal.getTime()));
+                }
+                //holder.msgBox.margin
                 break;
             default:
                 break;

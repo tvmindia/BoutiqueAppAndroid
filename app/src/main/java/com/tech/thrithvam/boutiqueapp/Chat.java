@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -67,6 +68,7 @@ public class Chat extends AppCompatActivity {
         sideBar = (ListView) findViewById(R.id.left_drawer);
         if (isOnline()) {
             new GetCategories().execute();
+            new GetMessages().execute();
         } else {
             Toast.makeText(Chat.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
             finish();
@@ -350,6 +352,116 @@ public class Chat extends AppCompatActivity {
 
             }
             send.setEnabled(true);
+        }
+    }
+    public class GetMessages extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+
+        ListView msgList= (ListView) findViewById(R.id.messagesListView);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            msgList.setAdapter(null);
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/GetMessages";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID")) + "\",\"replyPersonID\":\"" + "" + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    db.insertMessage(jsonObject.optString("MessageID")
+                                    ,jsonObject.optString("Message")
+                                    ,jsonObject.optString("Direction")
+                                    ,jsonObject.optString("MessageTime").replace("\\/Date(", "").replace(")\\/", "")
+                                    ,jsonObject.optString("ProductID"));
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
+            if(!pass) {
+                loadingTxt.setText(R.string.no_items);
+                loadingTxt.setVisibility(View.VISIBLE);
+            }
+            else {
+                loadingTxt.setVisibility(View.GONE);
+
+                CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
+
+                msgList.setAdapter(adapter);
+                msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TextView t=(TextView) view.findViewById(R.id.reviewDescription);
+                        t.setMaxLines(Integer.MAX_VALUE);
+                        t.setEllipsize(null);
+                    }});
+                msgList.setOnItemClickListener(null);
+            }
         }
     }
     public boolean isOnline() {
