@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +50,8 @@ public class Chat extends AppCompatActivity {
     ImageView send;
     String productID="";
     Bundle extras;
+
+    String messageIDs="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -427,12 +430,16 @@ public class Chat extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    db.insertMessage(jsonObject.optString("MessageID")
-                                    ,jsonObject.optString("Message")
-                                    ,jsonObject.optString("Direction")
-                                    ,jsonObject.optString("MessageTime").replace("\\/Date(", "").replace(")\\/", "")
-                                    ,jsonObject.optString("ProductID"));
+                    messageIDs+=jsonObject.optString("MessageID")+",";
+                    if(jsonObject.has("MessageID")) {
+                        db.insertMessage(jsonObject.optString("MessageID")
+                                , jsonObject.optString("Message")
+                                , jsonObject.optString("Direction")
+                                , jsonObject.optString("MessageTime").replace("\\/Date(", "").replace(")\\/", "")
+                                , jsonObject.optString("ProductID"));
+                    }
                 }
+                messageIDs=messageIDs.substring(0,messageIDs.length() - 1);//Removing last comma
             } catch (Exception ex) {
                 msg=ex.getMessage();
             }}
@@ -448,19 +455,112 @@ public class Chat extends AppCompatActivity {
                 loadingTxt.setVisibility(View.VISIBLE);
             }
             else {
-                loadingTxt.setVisibility(View.GONE);
+                //Acknowledging------------
+                new UpdateDeliveryStatus().execute();
+            }
+            loadingTxt.setVisibility(View.GONE);
 
-                CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
+            CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
+            msgList.setAdapter(adapter);
+            msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    TextView t=(TextView) view.findViewById(R.id.reviewDescription);
+                    t.setMaxLines(Integer.MAX_VALUE);
+                    t.setEllipsize(null);
+                }});
+            msgList.setOnItemClickListener(null);
+        }
+    }
+    public class UpdateDeliveryStatus extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
 
-                msgList.setAdapter(adapter);
-                msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        TextView t=(TextView) view.findViewById(R.id.reviewDescription);
-                        t.setMaxLines(Integer.MAX_VALUE);
-                        t.setEllipsize(null);
-                    }});
-                msgList.setOnItemClickListener(null);
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UpdateDeliveryStatus";
+            HttpURLConnection c = null;
+            try {
+                postData = "{\"messageIDs\":\"" + messageIDs + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if(!pass) {
+                new AlertDialog.Builder(Chat.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(msg)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //   finish();
+                            }
+                        }).setCancelable(false).show();
             }
         }
     }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -450,11 +451,22 @@ public class CustomAdapter extends BaseAdapter {
                 //Label loading--------------------
                 holder.message.setText(objects.get(position)[0]);
                 if(!objects.get(position)[1].equals("null")){
-                    SimpleDateFormat formattedWithTime = new SimpleDateFormat("hh:ma dd-MMM-yyyy", Locale.US);
+                    SimpleDateFormat formattedWithTime = new SimpleDateFormat("hh:mm a dd-MMM-yyyy", Locale.US);
                     cal.setTimeInMillis(Long.parseLong(objects.get(position)[1]));
                     holder.time.setText(formattedWithTime.format(cal.getTime()));
                 }
-                //holder.msgBox.margin
+                //Left Right positioning of message boxes-------
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                if(objects.get(position)[2].equals("out")){
+                    params.setMargins(100, 7, 7, 7);//(left, top, right, bottom)
+                }
+                else if(objects.get(position)[2].equals("in")){
+                    params.setMargins(7, 7, 100, 7);//(left, top, right, bottom)
+                }
+                holder.msgBox.setLayoutParams(params);
                 break;
             default:
                 break;

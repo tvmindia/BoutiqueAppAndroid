@@ -22,9 +22,9 @@
     <string name="dob">Date of Birth</string>
     <string name="anniversary">Anniversary</string>
     <string name="wait">Please wait</string>
-    <string name="url" translatable="false">http://tiquesinn.com/</string>
+    <!--<string name="url" translatable="false">http://tiquesinn.com/</string>-->
     <!--<string name="url" translatable="false">http://jdadmin-001-site2.itempurl.com/</string>-->
-    <!--<string name="url" translatable="false">http://192.168.1.107:222/</string>-->
+    <string name="url" translatable="false">http://192.168.1.107:222/</string>
     <string name="ok_button">OK</string>
     <string name="network_off_alert">Please turn on internet</string>
     <string name="since">Since : %1$s</string>
