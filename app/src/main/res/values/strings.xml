@@ -64,4 +64,5 @@
     <string name="my_orders_sidebar">≡ My Orders</string>
     <string name="trending">⏫ Trending</string>
     <string name="trending_products">Trending Products</string>
+    <string name="new_message">"You have a new message"</string>
 </resources>

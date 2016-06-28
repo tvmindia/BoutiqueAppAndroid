@@ -1,5 +1,6 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,13 +54,15 @@ public class Chat extends AppCompatActivity {
     String productID="";
     Bundle extras;
 
-    String messageIDs="";
+    ListView msgList;
+    int loadedMsgCount=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         extras=getIntent().getExtras();
         getSupportActionBar().setElevation(0);
+        msgList= (ListView) findViewById(R.id.messagesListView);
         if(db.GetUserDetail("UserID")==null){
             Toast.makeText(Chat.this,R.string.please_login,Toast.LENGTH_LONG).show();
             Intent intentUser = new Intent(Chat.this, User.class);
@@ -71,7 +76,8 @@ public class Chat extends AppCompatActivity {
         sideBar = (ListView) findViewById(R.id.left_drawer);
         if (isOnline()) {
             new GetCategories().execute();
-            new GetMessages().execute();
+          //  new GetMessages().execute();
+
         } else {
             Toast.makeText(Chat.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
             finish();
@@ -84,6 +90,46 @@ public class Chat extends AppCompatActivity {
                 inputMessage.setLines(3);
             }
         });
+
+        //Messages Loading------------------
+
+        msgList.setAdapter(null);
+        TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
+        loadingTxt.setText(R.string.no_items);
+        loadingTxt.setVisibility(View.VISIBLE);
+        loadingTxt.setVisibility(View.GONE);
+
+
+        loadMessages();
+
+
+    }
+    //----------Loading messages-----------------
+    public void loadMessages()
+    {
+        CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
+        if(adapter.getCount()>loadedMsgCount)
+        {
+        msgList.setAdapter(adapter);
+        msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView t=(TextView) view.findViewById(R.id.reviewDescription);
+                t.setMaxLines(Integer.MAX_VALUE);
+                t.setEllipsize(null);
+            }});
+        msgList.setOnItemClickListener(null);
+
+            msgList.setSelection(msgList.getCount() - 1);
+            loadedMsgCount=msgList.getCount();
+        }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+               loadMessages();
+            }
+        },1000);
     }
     //---------------Menu creation------------------------------------
     @Override
@@ -117,6 +163,8 @@ public class Chat extends AppCompatActivity {
     public void sendMsg(View view){
             if(!inputMessage.getText().toString().trim().equals(""))
             {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 send.setEnabled(false);
                 new SendMessage().execute();
             }
@@ -352,12 +400,12 @@ public class Chat extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-
+                inputMessage.setText("");
             }
             send.setEnabled(true);
         }
     }
-    public class GetMessages extends AsyncTask<Void , Void, Void> {
+    /*public class GetMessages extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
         String strJson, postData;
         JSONArray jsonArray;
@@ -563,7 +611,7 @@ public class Chat extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
         }
-    }
+    }*/
     public boolean isOnline() {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

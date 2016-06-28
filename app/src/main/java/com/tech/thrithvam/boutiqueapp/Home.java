@@ -66,7 +66,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().setElevation(0);
-        startService(new Intent(this, Notification.class)); //calling the service
+        startService(new Intent(this, Services.class)); //calling the service
         db.flushNotifications();
         if (isOnline()){
             new GetCategories().execute();
