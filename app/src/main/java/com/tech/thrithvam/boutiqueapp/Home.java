@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -70,7 +70,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         db.flushNotifications();
         if (isOnline()){
             new GetCategories().execute();
-            new NewArrivalSlider().execute();
+            new BannerSlider().execute();
         }
         else {
             Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -87,22 +87,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
         scrollView.setScrollViewCallbacks(this);
 
-        //------------------------------slider for new arrivals-------------------------------
+        //------------------------------Home Screen Slider-------------------------------
          newArrivals = (SliderLayout) findViewById(R.id.newArrivals);
-
-
-        //Offer--------
-            ImageView offer=(ImageView)findViewById(R.id.offer);
-            offer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                    categoryIntent.putExtra("CategoryCode","OFR");
-                    categoryIntent.putExtra("Category","Offers");
-                    startActivity(categoryIntent);
-                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                }
-            });
 
 //see whether reached scroll bottom
       //  ScrollView scrollView=(ScrollView)findViewById(R.id.ScrlViewOfSPDetails);
@@ -459,13 +445,13 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             });*/
         }
     }
-    public class NewArrivalSlider extends AsyncTask<Void , Void, Void> {
+    public class BannerSlider extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
         String strJson, postData;
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ArrayList<String[]> productItems=new ArrayList<>();
+        ArrayList<String[]> bannerItems=new ArrayList<>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -475,10 +461,10 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsByCategory";
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/BannerImages";
             HttpURLConnection c = null;
             try {
-                postData =  "{\"CategoryCode\":\"" + "NEW" + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"userID\":\"" + (db.GetUserDetail("UserID")==null?"":db.GetUserDetail("UserID"))+ "\",\"limit\":\"" + constants.newArrivalsCountLimit + "\"}";
+                postData =  "{\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -530,11 +516,11 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    String[] data=new String[5];
+                    String[] data=new String[3];
                     data[0]=jsonObject.optString("ProductID");
-                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[1]=jsonObject.optString("CategoryCode");
                     data[2]=getResources().getString(R.string.url) + jsonObject.optString("Image").substring((jsonObject.optString("Image")).indexOf("Media"));
-                    productItems.add(data);
+                    bannerItems.add(data);
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -549,24 +535,34 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 newArrivals.setVisibility(View.GONE);
             }
             else {
-                for (int i=0;i<productItems.size();i++) {
+                for (int i=0;i<bannerItems.size();i++) {
                     final int fi=i;
-                    TextSliderView textSliderViews = new TextSliderView(Home.this);
-                    textSliderViews
-                            .description(productItems.get(fi)[1])
-                            .image(productItems.get(fi)[2])
-                            .setScaleType(BaseSliderView.ScaleType.CenterInside);
+                    DefaultSliderView sliderViews = new DefaultSliderView(Home.this);
+                    sliderViews
+                            .image(bannerItems.get(fi)[2])
+                            .setScaleType(BaseSliderView.ScaleType.CenterCrop);
 
-                    textSliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                    sliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                         @Override
                         public void onSliderClick(BaseSliderView slider) {
-                            Intent intent=new Intent(Home.this,ItemDetails.class);
-                            intent.putExtra("ProductID",productItems.get(fi)[0]);
+                            Intent intent;
+                            if(!bannerItems.get(fi)[0].equals("null")){
+                                intent= new Intent(Home.this, ItemDetails.class);
+                                intent.putExtra("ProductID",bannerItems.get(fi)[0]);
+                            }
+                            else if(!bannerItems.get(fi)[1].equals("null")){
+                                intent= new Intent(Home.this, GridOfProducts.class);
+                                intent.putExtra("CategoryCode",bannerItems.get(fi)[1]);
+                                intent.putExtra("Category","");
+                            }
+                            else{
+                                return;
+                            }
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                         }
                     });
-                    newArrivals.addSlider(textSliderViews);
+                    newArrivals.addSlider(sliderViews);
                     newArrivals.setPresetTransformer(SliderLayout.Transformer.Accordion);
                 }
             }

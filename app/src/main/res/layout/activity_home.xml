@@ -25,20 +25,6 @@
             android:layout_marginRight="7dp"
             android:id="@+id/homeScreen"
             >
-   <!-- <TextView
-        android:paddingLeft="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="New Arrivals !!!"
-        android:id="@+id/new_arrivals_label"
-        android:textColor="#ffffffff"
-        android:layout_above="@+id/newArrivalCard"
-        android:background="@color/whiteBackground"
-        android:layout_alignRight="@+id/newArrivalCard"
-        android:layout_alignEnd="@+id/newArrivalCard"
-        android:layout_alignLeft="@+id/newArrivalCard"
-        android:layout_alignStart="@+id/newArrivalCard" />-->
 
 
     <RelativeLayout
@@ -53,8 +39,7 @@
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/newArrivals"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-
+            android:layout_height="400dp"
             />
 
         <SearchView
@@ -70,21 +55,6 @@
             />
 
     </RelativeLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/whiteBackground"
-                android:baselineAligned="false">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:src="@drawable/offer"
-                    android:scaleType="fitXY"
-                    android:id="@+id/offer"/>
-</LinearLayout>
-
 
 
         </LinearLayout>
