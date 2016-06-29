@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.tech.thrithvam.boutiqueapp.Home"
     android:animateLayoutChanges="true"
-    android:background="@drawable/bg">
+    android:background="@color/primary">
 
     <FrameLayout
         android:id="@+id/content_frame"
@@ -16,13 +16,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/homeScroll">
         <LinearLayout
-
             android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:id="@+id/homeScreen"
             >
 
@@ -30,8 +27,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-
         android:id="@+id/newArrivalCard"
         android:background="@color/whiteBackground"
         android:orientation="vertical"

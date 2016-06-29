@@ -404,6 +404,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             }
             else {
                 TextView categoryTitle =(TextView)categoryCard.findViewById(R.id.title);
+                Typeface type = Typeface.createFromAsset(getAssets(), "fonts/avenirnextregular.ttf");
+               // categoryTitle.setTypeface(type);
                 categoryTitle.setText(categoryList.get(viewPos).replace("\uD83D\uDC49\t",""));
                 categoryTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
