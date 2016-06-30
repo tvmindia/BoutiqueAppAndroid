@@ -9,9 +9,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,13 +23,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -76,7 +78,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
         }
 
-        sideBar=(ListView)findViewById(R.id.left_drawer);
+        sideBar=(ListView)findViewById(R.id.drawer);
 
         inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
@@ -129,6 +131,14 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
                 startActivity(intentBoutique);
                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                break;
+            case R.id.sidebar:
+                DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
+                RelativeLayout drawer=(RelativeLayout)findViewById(R.id.rightDrawer);
+                if(drawerLayout.isDrawerOpen(Gravity.RIGHT))
+                    drawerLayout.closeDrawer(drawer);
+                else
+                    drawerLayout.openDrawer(drawer);
                 break;
             default:
         }

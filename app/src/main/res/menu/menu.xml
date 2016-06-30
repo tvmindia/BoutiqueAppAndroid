@@ -10,5 +10,10 @@
         android:icon="@drawable/shop"
         android:title="Boutique"
         yourapp:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sidebar"
+        android:icon="@drawable/sidebar"
+        android:title="Categories"
+        yourapp:showAsAction="always" />
 
 </menu>

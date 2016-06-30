@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -74,7 +76,7 @@ public class GridOfProducts extends AppCompatActivity {
         else {
             Toast.makeText(GridOfProducts.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
         }
-        sideBar=(ListView)findViewById(R.id.left_drawer);
+        sideBar=(ListView)findViewById(R.id.drawer);
 
     }
     //---------------Menu creation------------------------------------
@@ -97,6 +99,14 @@ public class GridOfProducts extends AppCompatActivity {
                 Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
                 startActivity(intentBoutique);
                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                break;
+            case R.id.sidebar:
+                DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
+                RelativeLayout drawer=(RelativeLayout)findViewById(R.id.rightDrawer);
+                if(drawerLayout.isDrawerOpen(Gravity.RIGHT))
+                    drawerLayout.closeDrawer(drawer);
+                else
+                    drawerLayout.openDrawer(drawer);
                 break;
             default:
         }
