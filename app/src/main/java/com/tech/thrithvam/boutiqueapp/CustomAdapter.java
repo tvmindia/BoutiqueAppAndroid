@@ -114,7 +114,10 @@ public class CustomAdapter extends BaseAdapter {
                 if(!objects.get(position)[4].equals("null")){
                     if(Integer.parseInt(objects.get(position)[4])>0){
                         holder.viewCount.setVisibility(View.VISIBLE);
-                        holder.viewCount.setText(objects.get(position)[4]);
+                        if(Integer.parseInt(objects.get(position)[4])<=999)
+                            holder.viewCount.setText(objects.get(position)[4]);
+                        else
+                            holder.viewCount.setText("999+");
                     }
                     else {
                         holder.viewCount.setVisibility(View.GONE);

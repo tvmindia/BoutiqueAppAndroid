@@ -10,6 +10,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -73,6 +76,31 @@ public class GridOfProducts extends AppCompatActivity {
         }
         sideBar=(ListView)findViewById(R.id.left_drawer);
 
+    }
+    //---------------Menu creation------------------------------------
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.user:
+                Intent intentUser = new Intent(this, User.class);
+                startActivity(intentUser);
+                finish();
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                break;
+            case R.id.boutique:
+                Intent intentBoutique = new Intent(this, BoutiqueDetails.class);
+                startActivity(intentBoutique);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                break;
+            default:
+        }
+        return super.onOptionsItemSelected(item);
     }
     //------------------------------Async Tasks-----------------------------
     public class GetCategories extends AsyncTask<Void , Void, Void> {
