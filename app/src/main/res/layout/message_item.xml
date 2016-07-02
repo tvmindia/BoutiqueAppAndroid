@@ -17,7 +17,6 @@
             android:text="Message Description"
             android:id="@+id/msgItem"
             android:textColor="@color/primary_text"
-            android:maxLines="1"
             android:ellipsize="end"/>
         <TextView
             android:layout_width="wrap_content"

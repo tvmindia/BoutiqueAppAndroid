@@ -465,9 +465,11 @@ public class CustomAdapter extends BaseAdapter {
                 );
                 if(objects.get(position)[2].equals("out")){
                     params.setMargins(100, 7, 7, 7);//(left, top, right, bottom)
+                    holder.msgBox.setBackgroundColor(Color.parseColor("#FFFFF8E1"));
                 }
                 else if(objects.get(position)[2].equals("in")){
                     params.setMargins(7, 7, 100, 7);//(left, top, right, bottom)
+                    holder.msgBox.setBackgroundColor(Color.parseColor("#FFE3F2FD"));
                 }
                 holder.msgBox.setLayoutParams(params);
                 break;

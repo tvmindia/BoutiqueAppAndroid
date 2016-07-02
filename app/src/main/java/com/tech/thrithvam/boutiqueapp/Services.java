@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,7 +51,9 @@ public class Services extends Service {
     //        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
         if(isOnline()){
                 new GetNotifications().execute();
-                new GetMessages().execute();
+                if(db.GetUserDetail("UserID")!=null){
+				new GetMessages().execute();
+				}
         }
         stopSelf();
         return START_NOT_STICKY;
@@ -301,7 +304,7 @@ public class Services extends Service {
                 if(msgIncomingflag){
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(Services.this);
                     mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                    mBuilder.setContentTitle("You have a new message");
+                    mBuilder.setContentTitle(getResources().getString(R.string.msg_notification));
                     //mBuilder.setContentText("");
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     mBuilder.setSound(alarmSound);
@@ -309,10 +312,9 @@ public class Services extends Service {
                     PendingIntent resultPendingIntent =PendingIntent.getActivity(Services.this,0,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(resultPendingIntent);
                     mBuilder.setAutoCancel(true);
-                    mNotificationManager.notify((int) Math.ceil(Math.random() * 1000), mBuilder.build());//random notification id on phone
+                    mNotificationManager.notify(5555, mBuilder.build());
                 }
             }
-
         }
     }
     public class UpdateDeliveryStatus extends AsyncTask<Void , Void, Void> {
@@ -333,7 +335,7 @@ public class Services extends Service {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/UpdateDeliveryStatus";
             HttpURLConnection c = null;
             try {
-                postData = "{\"messageIDs\":\"" + messageIDs + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                postData = "{\"messageIDs\":\"" + messageIDs + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\",\"person\":\"" + "Customer" + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");

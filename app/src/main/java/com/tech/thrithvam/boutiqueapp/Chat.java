@@ -112,13 +112,6 @@ public class Chat extends AppCompatActivity {
         if(adapter.getCount()>loadedMsgCount)
         {
         msgList.setAdapter(adapter);
-        msgList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView t=(TextView) view.findViewById(R.id.reviewDescription);
-                t.setMaxLines(Integer.MAX_VALUE);
-                t.setEllipsize(null);
-            }});
         msgList.setOnItemClickListener(null);
 
             msgList.setSelection(msgList.getCount() - 1);
