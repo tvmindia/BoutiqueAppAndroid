@@ -465,11 +465,21 @@ public class CustomAdapter extends BaseAdapter {
                 );
                 if(objects.get(position)[2].equals("out")){
                     params.setMargins(100, 7, 7, 7);//(left, top, right, bottom)
-                    holder.msgBox.setBackgroundColor(Color.parseColor("#FFFFF8E1"));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.msgBox.setBackground(adapterContext.getDrawable(R.drawable.out_chat));
+                    }
+                    else {
+                        holder.msgBox.setBackgroundDrawable(adapterContext.getResources().getDrawable(R.drawable.out_chat));
+                    }
                 }
                 else if(objects.get(position)[2].equals("in")){
                     params.setMargins(7, 7, 100, 7);//(left, top, right, bottom)
-                    holder.msgBox.setBackgroundColor(Color.parseColor("#FFE3F2FD"));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.msgBox.setBackground(adapterContext.getDrawable(R.drawable.in_chat));
+                    }
+                    else {
+                        holder.msgBox.setBackgroundDrawable(adapterContext.getResources().getDrawable(R.drawable.in_chat));
+                    }
                 }
                 holder.msgBox.setLayoutParams(params);
                 break;
