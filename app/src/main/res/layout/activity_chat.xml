@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.tech.thrithvam.boutiqueapp.Chat"
     android:id="@+id/drawerLayout"
+    android:background="@drawable/bg"
     >
     <FrameLayout
         android:id="@+id/content_frame"

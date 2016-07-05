@@ -97,8 +97,6 @@ public class Chat extends AppCompatActivity {
         msgList.setAdapter(null);
         TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
         loadingTxt.setText(R.string.no_items);
-        loadingTxt.setVisibility(View.VISIBLE);
-        loadingTxt.setVisibility(View.GONE);
 
 
         loadMessages();
@@ -117,7 +115,12 @@ public class Chat extends AppCompatActivity {
             msgList.setSelection(msgList.getCount() - 1);
             loadedMsgCount=msgList.getCount();
         }
-
+        if(loadedMsgCount==0){
+            msgList.setVisibility(View.GONE);
+        }
+        else {
+            msgList.setVisibility(View.VISIBLE);
+        }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
