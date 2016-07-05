@@ -48,6 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     {
         db=this.getWritableDatabase();
         db.execSQL("DELETE FROM UserAccount;");
+        db.execSQL("DELETE FROM Chat;");
         db.close();
     }
     public String GetUserDetail(String detail)
