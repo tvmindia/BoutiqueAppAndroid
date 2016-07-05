@@ -56,6 +56,7 @@ public class Chat extends AppCompatActivity {
     Bundle extras;
 
     ListView msgList;
+    Handler handler = new Handler();
     int loadedMsgCount=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +122,6 @@ public class Chat extends AppCompatActivity {
         else {
             msgList.setVisibility(View.VISIBLE);
         }
-        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                loadMessages();
@@ -163,6 +163,7 @@ public class Chat extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        handler.removeCallbacksAndMessages(null);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     public void sendMsg(View view){
