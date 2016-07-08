@@ -106,14 +106,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String[]> GetMsgs()
     {db=this.getReadableDatabase();
         ArrayList<String[]> msgs=new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT Msg,MsgTime,Direction FROM Chat ORDER BY MsgTime ASC;",null);
+        Cursor cursor = db.rawQuery("SELECT Msg,MsgTime,Direction,ProductID FROM Chat ORDER BY MsgTime ASC;",null);
         if (cursor.getCount()>0)
         {cursor.moveToFirst();
             do {
-                String[] data = new String[3];
+                String[] data = new String[4];
                 data[0] = cursor.getString(cursor.getColumnIndex("Msg"));
                 data[1] = cursor.getString(cursor.getColumnIndex("MsgTime"));
                 data[2] = cursor.getString(cursor.getColumnIndex("Direction"));
+                data[3] = cursor.getString(cursor.getColumnIndex("ProductID"));
                 msgs.add(data);
             }while (cursor.moveToNext());
 

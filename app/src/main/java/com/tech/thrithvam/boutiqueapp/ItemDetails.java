@@ -74,6 +74,7 @@ public class ItemDetails extends AppCompatActivity {
     SliderLayout itemImages;
     LayoutInflater inflater;
     TextView description;
+    TextView productNo;
     TextView viewDesigner;
     TextView price;
     TextView actualPrice;
@@ -109,6 +110,7 @@ public class ItemDetails extends AppCompatActivity {
         Typeface fontType1 = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
         description = (TextView) findViewById(R.id.description);
         description.setTypeface(fontType1);
+        productNo=(TextView)findViewById(R.id.productNo);
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
        /* for (int i = 0; i < 3; i++) {
             final String image = "f" + (Integer.toString(i + 1));
@@ -385,6 +387,7 @@ public class ItemDetails extends AppCompatActivity {
         boolean pass=false;
         ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
         String descriptionString,priceString,discount,designerID,designerName;
+        Integer productNoInt;
         Boolean isOutOfStock;
         @Override
         protected void onPreExecute() {
@@ -458,6 +461,7 @@ public class ItemDetails extends AppCompatActivity {
                     discount=jsonObject.optString("Discount");
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
                     designerID=jsonObject.optString("DesignerID");
+                    productNoInt=jsonObject.optInt("ProductNo");
                     designerName=jsonObject.optString("DesignerName");
                     isFav=jsonObject.optBoolean("isFav");
                     favCount=jsonObject.optInt("FavCount");
@@ -489,6 +493,7 @@ public class ItemDetails extends AppCompatActivity {
                     ab.setTitle(productName);
                 }
                 description.setText(descriptionString);
+                productNo.setText(getResources().getString(R.string.product_no, productNoInt));
                 price.setText(getResources().getString(R.string.rs, priceString));
                 if(!discount.equals("null")){
                     if(Integer.parseInt(discount)>0){
