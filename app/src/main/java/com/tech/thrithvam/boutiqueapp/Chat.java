@@ -589,6 +589,16 @@ public class Chat extends AppCompatActivity {
                 pPrice.setText(getResources().getString(R.string.rs, priceString));
                 Picasso.with(Chat.this).load(productImage).into(pImage);
                 productDetail.setVisibility(View.VISIBLE);
+                productDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(Chat.this,ItemDetails.class);
+                        intent.putExtra("ProductID",lastProductIdSeen);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                    }
+                });
             }
         }
     }
