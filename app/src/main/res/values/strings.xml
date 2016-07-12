@@ -67,4 +67,6 @@
     <string name="trending_products">Trending Products</string>
     <string name="new_message">"You have a new message"</string>
     <string name="msg_notification">You have new messages</string>
+    <string name="splash_title">Boutique App</string>
+    <string name="splash_tagline">- Meet the styles -</string>
 </resources>
