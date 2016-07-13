@@ -119,7 +119,7 @@ public class Chat extends AppCompatActivity {
             lastProductIdSeen=productID;
         }
         new ProductDetailsForChat().execute();
-        productDetail.setVisibility(View.GONE);
+        productDetail.setVisibility(View.INVISIBLE);
 
     }
     //----------Loading messages-----------------
@@ -178,13 +178,13 @@ public class Chat extends AppCompatActivity {
 
         }
         if(loadedMsgCount==0){
-            msgList.setVisibility(View.GONE);
-            productDetail.setVisibility(View.GONE);
+           // msgList.setVisibility(View.INVISIBLE);
+           // productDetail.setVisibility(View.INVISIBLE);
             loadingTxt.setVisibility(View.VISIBLE);
         }
         else {
             msgList.setVisibility(View.VISIBLE);
-            loadingTxt.setVisibility(View.GONE);
+           // loadingTxt.setVisibility(View.INVISIBLE);
         }
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -575,7 +575,7 @@ public class Chat extends AppCompatActivity {
 
                             }
                         }).setCancelable(false).show();*/
-                productDetail.setVisibility(View.GONE);
+                productDetail.setVisibility(View.INVISIBLE);
 
             }
             else {
