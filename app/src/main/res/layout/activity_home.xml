@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.tech.thrithvam.boutiqueapp.Home"
     android:animateLayoutChanges="true"
-    android:background="@color/primary"
+    android:background="@drawable/backimg"
     android:id="@+id/drawerLayout">
 
     <FrameLayout

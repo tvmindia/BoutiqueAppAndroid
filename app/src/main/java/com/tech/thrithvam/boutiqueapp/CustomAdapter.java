@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -48,6 +49,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView title;
         ImageView offer;
         TextView viewCount;
+        AVLoadingIndicatorView loading;
         //Order items-----------------------------------------------
         TextView orderDescription,orderNo,amount,orderDate,expectedDeliveryDate,lastUpdatedDate, orderStatus,readyLabel;
         //Order products--------------------------
@@ -150,12 +152,14 @@ public class CustomAdapter extends BaseAdapter {
                     holder.imageView = (ImageView) convertView.findViewById(R.id.gridImg);
                     holder.title = (TextView) convertView.findViewById(R.id.gridTxt);
                     holder.offer=(ImageView)convertView.findViewById(R.id.offer);
+                    holder.loading=(AVLoadingIndicatorView)convertView.findViewById(R.id.itemsLoading);
                     convertView.setTag(holder);
                 } else {
                     holder = (Holder) convertView.getTag();
                 }
                 //More Image----------------------------------
                 if(objects.get(position)[0].equals("")){        //More
+                    holder.loading.setVisibility(View.GONE);
                     Picasso.with(adapterContext)
                             .load(R.drawable.more)
                             .into(holder.imageView)

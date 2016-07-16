@@ -3,16 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tech.thrithvam.boutiqueapp.Home"
     android:animateLayoutChanges="true"
-    android:background="@drawable/bg"
+    android:background="@drawable/backimg"
     android:id="@+id/drawerLayout">
 
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/itemsLoading"
+            android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:indicator="BallScale"
+        app:indicator_color="@android:color/white"
+        />
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

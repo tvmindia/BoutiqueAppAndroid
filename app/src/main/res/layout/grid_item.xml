@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -8,8 +10,19 @@
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
         android:paddingRight="2dp"
-        android:paddingLeft="2dp">
-
+        android:paddingLeft="2dp"
+        android:background="@color/whiteBackground">
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/itemsLoading"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            app:indicator="BallTrianglePath"
+            app:indicator_color="@android:color/white"
+            />
         <ImageView
             android:id="@+id/gridImg"
             android:layout_gravity="center"

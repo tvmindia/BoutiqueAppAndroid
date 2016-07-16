@@ -253,13 +253,9 @@ public class ItemDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -334,8 +330,6 @@ public class ItemDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -545,13 +539,9 @@ public class ItemDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg,AddOrRemove;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             if (isFav) {
                 AddOrRemove="remove";
                 favCount--;
@@ -638,8 +628,6 @@ public class ItemDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -650,9 +638,6 @@ public class ItemDetails extends AppCompatActivity {
                             }
                         }).setCancelable(false).show();
             }
-            else {
-                Toast.makeText(ItemDetails.this,msg, Toast.LENGTH_SHORT).show();
-            }
         }
     }
     public class ProductImages extends AsyncTask<Void , Void, Void> {
@@ -661,14 +646,10 @@ public class ItemDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
         ArrayList<String> imgurls=new ArrayList<>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -741,8 +722,6 @@ public class ItemDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -813,7 +792,6 @@ public class ItemDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        // ProgressDialog pDialog=new ProgressDialog(Home.this);
         ArrayList<String[]> productItems=new ArrayList<>();
         @Override
         protected void onPreExecute() {
@@ -921,7 +899,7 @@ public class ItemDetails extends AppCompatActivity {
     public Uri getLocalBitmapUri(ImageView imageView,String fileName) {
         // Extract Bitmap from ImageView drawable
         Drawable drawable = imageView.getDrawable();
-        Bitmap bmp = null;
+        Bitmap bmp;
         if (drawable instanceof BitmapDrawable){
             bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         } else {

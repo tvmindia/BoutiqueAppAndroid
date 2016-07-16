@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -251,14 +253,12 @@ public class GridOfProducts extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(GridOfProducts.this);
+        AVLoadingIndicatorView pDialog=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
         ArrayList<String[]> productItems=new ArrayList<>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
+            pDialog.setVisibility(View.VISIBLE);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -337,8 +337,7 @@ public class GridOfProducts extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
+            pDialog.setVisibility(View.GONE);
             if(!pass) {
                 new AlertDialog.Builder(GridOfProducts.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(R.string.no_items)
