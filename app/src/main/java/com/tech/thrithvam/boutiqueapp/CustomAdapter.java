@@ -185,6 +185,9 @@ public class CustomAdapter extends BaseAdapter {
                     });
                     break;
                 }
+                else {
+                    holder.title.setVisibility(View.VISIBLE);
+                }
                 //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
                 //Image Loading-------------------

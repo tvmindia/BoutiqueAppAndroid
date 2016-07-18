@@ -33,6 +33,7 @@ import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,12 +64,14 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     //  int loadedCategoryCount=0;
  //   ArrayList<View> cards=new ArrayList<>();
     ObservableScrollView scrollView;
+    AVLoadingIndicatorView loadingIndicator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().setElevation(0);
         db.flushNotifications();
+        loadingIndicator=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
         if (isOnline()){
             new GetCategories().execute();
             new BannerSlider().execute();
@@ -103,6 +106,9 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         if(currentPos<categoryList.size())
         {
             new GetProductsByCategory().execute(currentPos);
+        }
+        else {
+            loadingIndicator.setVisibility(View.GONE);
         }
 
 

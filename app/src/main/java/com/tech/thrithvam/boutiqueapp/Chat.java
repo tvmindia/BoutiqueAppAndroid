@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,13 +67,13 @@ public class Chat extends AppCompatActivity {
     Handler handler = new Handler();
     int loadedMsgCount=0;
     TextView loadingTxt;
-    LinearLayout productDetail;
+    CardView productDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        productDetail=(LinearLayout)findViewById(R.id.productDetail);
+        productDetail=(CardView)findViewById(R.id.productDetail);
         extras=getIntent().getExtras();
         getSupportActionBar().setElevation(0);
         msgList= (ListView) findViewById(R.id.messagesListView);
@@ -119,7 +120,7 @@ public class Chat extends AppCompatActivity {
             lastProductIdSeen=productID;
         }
         new ProductDetailsForChat().execute();
-        productDetail.setVisibility(View.INVISIBLE);
+
 
     }
     //----------Loading messages-----------------
@@ -575,7 +576,7 @@ public class Chat extends AppCompatActivity {
 
                             }
                         }).setCancelable(false).show();*/
-                productDetail.setVisibility(View.INVISIBLE);
+                productDetail.setVisibility(View.GONE);
 
             }
             else {
