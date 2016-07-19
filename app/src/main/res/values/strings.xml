@@ -3,7 +3,7 @@
     <string name="add_fav_msg">Added to favorites…</string>
     <string name="remove_fav_msg">Removed from favorites…</string>
     <string name="favorite_count">☆ %1$d people favorites it ☆</string>
-    <string name="favorite_count_0">☆ Be first one to favorite it ☆</string>
+    <string name="favorite_count_0">☆ Be the first one to favorite it ☆</string>
     <string name="product_no">Product No: %1$d</string>
     <string name="share_image">Preparing high quality image to share…</string>
     <string name="similar_products">Similar products in %1$s</string>
