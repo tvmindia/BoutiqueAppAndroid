@@ -185,7 +185,7 @@ public class Chat extends AppCompatActivity {
         }
         else {
             msgList.setVisibility(View.VISIBLE);
-           // loadingTxt.setVisibility(View.INVISIBLE);
+            loadingTxt.setVisibility(View.INVISIBLE);
         }
         handler.postDelayed(new Runnable() {
             public void run() {
