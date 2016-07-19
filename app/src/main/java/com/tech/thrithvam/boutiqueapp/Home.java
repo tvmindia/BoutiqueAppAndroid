@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -439,8 +440,9 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 horizontalGrid.setItemMargin(15);
                 horizontalGrid.setAdapter(adapter);
 
-
                 homeScreen.addView(categoryCard);
+                ImageView footer=(ImageView)findViewById(R.id.tiquesinnlabel);
+                footer.setVisibility(View.VISIBLE);
             }
             productsOfCategory(viewPos);
            /* scrollView.getViewTreeObserver().removeOnScrollChangedListener(null);

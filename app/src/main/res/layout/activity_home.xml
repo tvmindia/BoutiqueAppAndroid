@@ -75,7 +75,8 @@
                 android:id="@+id/tiquesinnlabel"
                 android:src="@drawable/tiquesinnlabel"
                 android:scaleType="centerInside"
-                android:background="@color/primary"/>
+                android:background="@color/primary"
+                android:visibility="invisible"/>
         </LinearLayout>
 </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
     </FrameLayout>

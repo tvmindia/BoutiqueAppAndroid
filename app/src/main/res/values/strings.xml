@@ -69,4 +69,5 @@
     <string name="msg_notification">You have new messages</string>
     <string name="splash_title">Boutique App</string>
     <string name="splash_tagline">- Meet the styles -</string>
+    <string name="your_loyalty_card_number_is">Your loyalty card number is</string>
 </resources>
