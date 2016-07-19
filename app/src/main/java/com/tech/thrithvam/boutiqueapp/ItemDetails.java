@@ -512,9 +512,13 @@ public class ItemDetails extends AppCompatActivity {
                 }
                 if (isFav) {
                     favorite.setImageResource(R.drawable.fav);
-                    favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
                 } else {
                     favorite.setImageResource(R.drawable.fav_no);
+                }
+                if(favCount==0){
+                    favCountString.setText(R.string.favorite_count_0);
+                }
+                else {
                     favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
                 }
                 viewDesigner.setOnClickListener(new View.OnClickListener() {
@@ -547,7 +551,12 @@ public class ItemDetails extends AppCompatActivity {
                 favCount--;
                 favorite.setImageResource(R.drawable.fav_no);
                 Toast.makeText(ItemDetails.this, R.string.remove_fav_msg, Toast.LENGTH_LONG).show();
-                favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
+                if(favCount==0){
+                    favCountString.setText(R.string.favorite_count_0);
+                }
+                else {
+                    favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
+                }
                 isFav = false;
             } else {
                 AddOrRemove="add";
