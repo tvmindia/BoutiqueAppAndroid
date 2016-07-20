@@ -1,6 +1,5 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +29,7 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -41,6 +41,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -112,24 +113,6 @@ public class ItemDetails extends AppCompatActivity {
         description.setTypeface(fontType1);
         productNo=(TextView)findViewById(R.id.productNo);
         itemImages = (SliderLayout) findViewById(R.id.itemImages);
-       /* for (int i = 0; i < 3; i++) {
-            final String image = "f" + (Integer.toString(i + 1));
-            sliderViews
-                    .description(SliderLayout.Transformer.DepthPage.toString())
-                    .image(getResources().getIdentifier(image, "drawable", getPackageName())).setScaleType(BaseSliderView.ScaleType.CenterInside);
-            sliderViews.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-                @Override
-                public void onSliderClick(BaseSliderView slider) {
-                    Intent intent=new Intent(ItemDetails.this,ImageViewer.class);
-                    intent.putExtra("Image",image);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                }
-            });
-            itemImages.addSlider(sliderViews);
-        }*/
-
-
         viewDesigner = (TextView) findViewById(R.id.view_designer);
 
         price = (TextView) findViewById(R.id.price);
@@ -139,7 +122,6 @@ public class ItemDetails extends AppCompatActivity {
         //-----------Add to favorite and Sharing and review--------------------------
         favorite = (ImageView) findViewById(R.id.fav);
         favCountString = (TextView) findViewById(R.id.favCount);
-        favCountString.setText(getResources().getString(R.string.favorite_count, favCount));
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -379,16 +361,13 @@ public class ItemDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(ItemDetails.this);
+        AVLoadingIndicatorView itemLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
         String descriptionString,priceString,discount,designerID,designerName;
         Integer productNoInt;
         Boolean isOutOfStock;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-              pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             //----------encrypting ---------------------------
            // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -469,8 +448,6 @@ public class ItemDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ItemDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -482,6 +459,9 @@ public class ItemDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                LinearLayout fav_share=(LinearLayout)findViewById(R.id.fav_share_buttons);
+                fav_share.setVisibility(View.VISIBLE);
+                itemLoadingIndicatorView.setVisibility(View.GONE);
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
                 if (ab != null) {
                     ab.setTitle(productName);
@@ -507,8 +487,11 @@ public class ItemDetails extends AppCompatActivity {
                 }
 
                 if(isOutOfStock){
-                    stock.setText("Out of Stock");
+                    stock.setText(R.string.out_of_Stock);
                     stock.setTextColor(Color.RED);
+                }
+                else {
+                    stock.setText(R.string.in_stock);
                 }
                 if (isFav) {
                     favorite.setImageResource(R.drawable.fav);

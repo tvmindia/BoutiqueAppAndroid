@@ -75,7 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:id="@+id/fav_share_buttons">
+            android:id="@+id/fav_share_buttons"
+            android:visibility="invisible">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -102,10 +103,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/favorite_count"
             android:textIsSelectable="false"
             android:textColor="@color/secondary_text"
             android:id="@+id/favCount"
+            android:text=""
             android:gravity="center"/>
 
         <TextView
@@ -120,13 +121,21 @@
             android:textColor="@color/primary_text"
             android:text="Description Loading..."
             android:id="@+id/description" />
-
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/itemsLoading"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="visible"
+            app:indicator="BallTrianglePath"
+            app:indicator_color="@color/primary_text"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/description"/>
         <TextView
             android:layout_below="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/product_no"
             android:textIsSelectable="false"
             android:textColor="@color/secondary_text"
             android:id="@+id/productNo"
@@ -138,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="In Stock"
+                android:text=""
                 android:textSize="30sp"
                 android:textIsSelectable="false"
                 android:textColor="@color/primary_text"
@@ -156,7 +165,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:text="₹ :"
+                android:text=""
                 android:textSize="30sp"
                 android:textIsSelectable="false"
                 android:textColor="@color/primary_text"
@@ -184,7 +193,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="View Designer"
+                android:text=""
                 android:textIsSelectable="false"
                 android:textColor="@color/accent"
                 android:id="@+id/view_designer"
