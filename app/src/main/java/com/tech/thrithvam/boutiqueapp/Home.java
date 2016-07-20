@@ -274,6 +274,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         }).setCancelable(false).show();
             }
             else {
+                AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 //Links other than category
                 categoryList.add("");
                 categoryList.add(getResources().getString(R.string.trending));

@@ -285,6 +285,15 @@
         android:layout_gravity="end"
         android:background="@android:drawable/dialog_holo_light_frame"
         android:id="@+id/rightDrawer">
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/catItemsLoading"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="visible"
+            app:indicator="BallTrianglePath"
+            app:indicator_color="@color/primary_text"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
         <ListView
             android:id="@+id/drawer"
             android:layout_width="match_parent"
