@@ -1,6 +1,5 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -137,13 +137,11 @@ public class OwnerAndDesigner extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(OwnerAndDesigner.this);
+        AVLoadingIndicatorView avLoadingIndicatorView;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -220,8 +218,6 @@ public class OwnerAndDesigner extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(OwnerAndDesigner.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -233,6 +229,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 adapter = new ArrayAdapter<>(OwnerAndDesigner.this, R.layout.spinner_item, arrayListName);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner=(Spinner)findViewById(R.id.name);
@@ -302,13 +299,9 @@ public class OwnerAndDesigner extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(OwnerAndDesigner.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -383,8 +376,6 @@ public class OwnerAndDesigner extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(OwnerAndDesigner.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
