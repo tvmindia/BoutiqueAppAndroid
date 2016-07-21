@@ -63,6 +63,7 @@ public class BoutiqueDetails extends AppCompatActivity {
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
+    AsyncTask getCategories,boutiqueDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +71,8 @@ public class BoutiqueDetails extends AppCompatActivity {
 
         sideBar=(ListView)findViewById(R.id.drawer);
         if (isOnline()){
-            new GetBoutiqueDetails().execute();
-            new GetCategories().execute();
+            boutiqueDetails=new GetBoutiqueDetails().execute();
+            getCategories=new GetCategories().execute();
         }
         else {
             Toast.makeText(BoutiqueDetails.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -142,6 +143,8 @@ public class BoutiqueDetails extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        getCategories.cancel(true);
+        boutiqueDetails.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     //-------------------- Async tasks---------------------------------

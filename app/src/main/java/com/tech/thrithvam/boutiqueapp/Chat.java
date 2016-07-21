@@ -27,13 +27,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,7 +68,7 @@ public class Chat extends AppCompatActivity {
     int loadedMsgCount=0;
     TextView loadingTxt;
     CardView productDetail;
-
+    AsyncTask getCategories,productDetailsFroChat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +87,7 @@ public class Chat extends AppCompatActivity {
 
         sideBar = (ListView) findViewById(R.id.drawer);
         if (isOnline()) {
-            new GetCategories().execute();
+            getCategories= new GetCategories().execute();
           //  new GetMessages().execute();
 
         } else {
@@ -119,7 +119,7 @@ public class Chat extends AppCompatActivity {
             productID=extras.getString("productID");
             lastProductIdSeen=productID;
         }
-        new ProductDetailsForChat().execute();
+        productDetailsFroChat=new ProductDetailsForChat().execute();
 
 
     }
@@ -142,13 +142,13 @@ public class Chat extends AppCompatActivity {
                     public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                         if(msgList.getLastVisiblePosition()==msgData.size()-1){
                             lastProductIdSeen=productID;
-                            new ProductDetailsForChat().execute();
+                            productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
                                     !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
                                 lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                                new ProductDetailsForChat().execute();
+                                productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                     }
                 });
@@ -160,13 +160,13 @@ public class Chat extends AppCompatActivity {
 
                         if(msgList.getLastVisiblePosition()==msgData.size()-1){
                             lastProductIdSeen=productID;
-                            new ProductDetailsForChat().execute();
+                            productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
                                 !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
                             lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                            new ProductDetailsForChat().execute();
+                            productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                     }
 
@@ -229,6 +229,8 @@ public class Chat extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         handler.removeCallbacksAndMessages(null);
+        getCategories.cancel(true);
+        productDetailsFroChat.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     public void sendMsg(View view){
@@ -253,13 +255,9 @@ public class Chat extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(Chat.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -334,8 +332,6 @@ public class Chat extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(Chat.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -347,6 +343,8 @@ public class Chat extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 //Links other than category
                 categoryList.add("");
                 categoryList.add(getResources().getString(R.string.trending));
@@ -490,9 +488,12 @@ public class Chat extends AppCompatActivity {
         boolean pass=false;
         String productName,priceString,productImage;
         Integer productNoInt;
+        AVLoadingIndicatorView avLoadingIndicatorView;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.prodDetLoading);
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -601,6 +602,7 @@ public class Chat extends AppCompatActivity {
                     }
                 });
             }
+            avLoadingIndicatorView.setVisibility(View.GONE);
         }
     }
 

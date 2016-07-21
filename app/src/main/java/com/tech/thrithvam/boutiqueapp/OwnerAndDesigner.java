@@ -60,6 +60,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
     ArrayList<String> categoryList;
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
+    AsyncTask getCategories,details;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +87,8 @@ public class OwnerAndDesigner extends AppCompatActivity {
         phone=(TextView)findViewById(R.id.phone);
         phoneSymbol=(ImageView)findViewById(R.id.callSymbol);
         if (isOnline()){
-            new GetDetails().execute();
-            new GetCategories().execute();
+            details=new GetDetails().execute();
+            getCategories=new GetCategories().execute();
         }
         else {
             Toast.makeText(OwnerAndDesigner.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -96,6 +97,8 @@ public class OwnerAndDesigner extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        getCategories.cancel(true);
+        details.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     //---------------Menu creation---------------------------------------------

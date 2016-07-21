@@ -91,6 +91,7 @@ public class ItemDetails extends AppCompatActivity {
     ArrayAdapter categoryAdapter;
     CardView itemDetailsCard;
     CardView relatedItemsCard;
+    AsyncTask getCategories,productDetails,productImages,relatedProducts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +101,9 @@ public class ItemDetails extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         sideBar = (ListView) findViewById(R.id.drawer);
         if (isOnline()) {
-            new ProductDetails().execute();
-            new GetCategories().execute();
-            new ProductImages().execute();
+            productDetails=new ProductDetails().execute();
+            getCategories=new GetCategories().execute();
+            productImages=new ProductImages().execute();
         } else {
             Toast.makeText(ItemDetails.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
             finish();
@@ -182,7 +183,7 @@ public class ItemDetails extends AppCompatActivity {
                     int diff = itemDetailsCard.getBottom()-(scrollView.getHeight()+scrollView.getScrollY());
                     if( diff <= 0 )
                     {
-                       new RelatedProducts().execute();
+                       relatedProducts=new RelatedProducts().execute();
                         relatedItemsLoaded=true;
                     } // super.onScrollChanged(l, t, oldl, oldt);
                     }
@@ -225,6 +226,12 @@ public class ItemDetails extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        getCategories.cancel(true);
+        productDetails.cancel(true);
+        productImages.cancel(true);
+        if(relatedProducts!=null){
+            relatedProducts.cancel(true);
+        }
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 

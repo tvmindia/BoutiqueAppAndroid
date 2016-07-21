@@ -27,6 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,6 +55,7 @@ public class ProductReviews extends AppCompatActivity {
     Button submitReview;
     String productID;
     Button submit;
+    AsyncTask getCategories,productReviews;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +65,8 @@ public class ProductReviews extends AppCompatActivity {
         productID=extras.getString("productID");
         sideBar=(ListView)findViewById(R.id.drawer);
         if (isOnline()){
-            new GetCategories().execute();
-            new ProductReviewsList().execute();
+            getCategories=new GetCategories().execute();
+            productReviews=new ProductReviewsList().execute();
         }
         else {
             Toast.makeText(ProductReviews.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -139,6 +142,8 @@ public class ProductReviews extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        getCategories.cancel(true);
+        productReviews.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     //-----------------------Async tasks----------------------------
@@ -148,13 +153,9 @@ public class ProductReviews extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(ProductReviews.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -229,8 +230,6 @@ public class ProductReviews extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(ProductReviews.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -282,10 +281,13 @@ public class ProductReviews extends AppCompatActivity {
         boolean pass=false;
         ArrayList<String[]> reviews=new ArrayList<>();
         ListView reviewList= (ListView) findViewById(R.id.reviews);
+        AVLoadingIndicatorView avLoadingIndicatorView;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             reviewList.setAdapter(null);
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -398,6 +400,7 @@ public class ProductReviews extends AppCompatActivity {
                     }
                 });
             }
+            avLoadingIndicatorView.setVisibility(View.GONE);
         }
     }
     public class InsertProductReview extends AsyncTask<Void , Void, Void> {
@@ -498,7 +501,7 @@ public class ProductReviews extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                new ProductReviewsList().execute();
+                productReviews=new ProductReviewsList().execute();
 
                 inputReview.clearFocus();
                 inputReview.setText("");
@@ -614,7 +617,7 @@ public class ProductReviews extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
-                new ProductReviewsList().execute();
+                productReviews=new ProductReviewsList().execute();
             }
         }
     }

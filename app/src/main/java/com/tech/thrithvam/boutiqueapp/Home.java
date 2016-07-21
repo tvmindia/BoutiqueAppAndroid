@@ -66,6 +66,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
  //   ArrayList<View> cards=new ArrayList<>();
     ObservableScrollView scrollView;
     AVLoadingIndicatorView loadingIndicator;
+    AsyncTask getCategories,productsByCategory, bannerslider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +75,8 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         db.flushNotifications();
         loadingIndicator=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
         if (isOnline()){
-            new GetCategories().execute();
-            new BannerSlider().execute();
+            getCategories=new GetCategories().execute();
+            productsByCategory=new BannerSlider().execute();
         }
         else {
             Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -106,7 +107,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         int currentPos=loadedCategoryCount+1;
         if(currentPos<categoryList.size())
         {
-            new GetProductsByCategory().execute(currentPos);
+            productsByCategory=new GetProductsByCategory().execute(currentPos);
         }
         else {
             loadingIndicator.setVisibility(View.GONE);
@@ -602,6 +603,11 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        getCategories.cancel(true);
+                        productsByCategory.cancel(true);
+                        bannerslider.cancel(true);
+
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_HOME);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

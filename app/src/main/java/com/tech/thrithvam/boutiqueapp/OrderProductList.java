@@ -454,7 +454,9 @@ public class OrderProductList extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-        orderDetails.cancel(true);
+        if(orderDetails!=null){
+            orderDetails.cancel(true);
+        }
         orderItems.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }

@@ -46,6 +46,7 @@ public class GridOfProducts extends AppCompatActivity {
     Constants constants=new Constants();
     DatabaseHandler db=new DatabaseHandler(this);
     Bundle extras;
+    AsyncTask getCategories,productsByCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +72,8 @@ public class GridOfProducts extends AppCompatActivity {
         }
         //---------threading----------------
         if (isOnline()){
-            new GetCategories().execute();
-            new GetProductsByCategory().execute();
+            getCategories=new GetCategories().execute();
+            productsByCategory=new GetProductsByCategory().execute();
         }
         else {
             Toast.makeText(GridOfProducts.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -358,6 +359,8 @@ public class GridOfProducts extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        getCategories.cancel(true);
+        productsByCategory.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }
