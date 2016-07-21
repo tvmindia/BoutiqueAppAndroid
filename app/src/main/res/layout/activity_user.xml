@@ -408,7 +408,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/orderTxt"
-                        android:text="View your order status"
+                        android:text="@string/view_your_order_status"
                         android:layout_alignParentLeft="true"
                         android:padding="10dp"
                         android:textColor="@color/secondary_text"
@@ -453,7 +453,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mobile"
+                    android:text=""
                     android:id="@+id/mobile_no"
                     android:textColor="@color/primary_text"
                     android:padding="10dp"
@@ -475,7 +475,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email"
+                    android:text=""
                     android:id="@+id/email"
                     android:textColor="@color/primary_text"
                     android:padding="10dp"
@@ -496,7 +496,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DateOfBirth"
+                    android:text=""
                     android:id="@+id/dob"
                     android:textColor="@color/primary_text"
                     android:padding="10dp"
@@ -517,7 +517,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Anniversary"
+                    android:text=""
                     android:id="@+id/anniversary"
                     android:textColor="@color/primary_text"
                     android:padding="10dp"
