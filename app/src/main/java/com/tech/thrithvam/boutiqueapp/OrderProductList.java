@@ -1,6 +1,5 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +45,7 @@ public class OrderProductList extends AppCompatActivity {
     TextView lastUpdatedDate;
     TextView orderStatus;
     TextView readyLabel;
+    AsyncTask orderItems,orderDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +60,9 @@ public class OrderProductList extends AppCompatActivity {
         orderStatus =(TextView) findViewById(R.id.orderStatus);
         readyLabel=(TextView)findViewById(R.id.readyDateLabel);
         if(isOnline()){
-            new OrderItems(extras.getString("orderID")).execute();
+            orderItems= new OrderItems(extras.getString("orderID")).execute();
             if(!(getIntent().hasExtra("orderDescription"))){
-                new OrderDetails(extras.getString("orderID")).execute();
+                orderDetails=new OrderDetails(extras.getString("orderID")).execute();
             }
             else {
                 orderDescription.setText(extras.getString("orderDescription"));
@@ -112,12 +114,16 @@ public class OrderProductList extends AppCompatActivity {
         boolean pass=false;
         ArrayList<String[]> products=new ArrayList<>();
         String orderID;
+        TextView loadingTxt;
+        AVLoadingIndicatorView avLoadingIndicatorView;
         public OrderItems(String orderID){
             this.orderID=orderID;
         }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingTxt=(TextView)findViewById(R.id.loadingText);
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -194,7 +200,6 @@ public class OrderProductList extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
             if(!pass) {
                     loadingTxt.setText(R.string.no_items);
                     loadingTxt.setVisibility(View.VISIBLE);
@@ -214,6 +219,8 @@ public class OrderProductList extends AppCompatActivity {
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                     }});
             }
+            avLoadingIndicatorView.setVisibility(View.GONE);
+
         }
     }
     public class OrderDetails extends AsyncTask<Void , Void, Void> {
@@ -222,7 +229,6 @@ public class OrderProductList extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(OrderProductList.this);
        // ArrayList<String[]> orders=new ArrayList<>();
         String orderID;
         String[] data=new String[10];
@@ -232,9 +238,6 @@ public class OrderProductList extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -317,8 +320,6 @@ public class OrderProductList extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             SimpleDateFormat formatted = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
             Calendar cal= Calendar.getInstance();
             if(!pass) {
@@ -453,6 +454,8 @@ public class OrderProductList extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        orderDetails.cancel(true);
+        orderItems.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }

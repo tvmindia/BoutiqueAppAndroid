@@ -1,21 +1,21 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 public class OrderStatus extends AppCompatActivity {
     DatabaseHandler db=new DatabaseHandler(OrderStatus.this);
     Constants constants=new Constants();
+    AsyncTask orders;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,7 @@ public class OrderStatus extends AppCompatActivity {
         }
         //---------threading----------------
         if (isOnline()){
-            new Orders().execute();
+            orders=new Orders().execute();
         }
         else {
             Toast.makeText(OrderStatus.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -61,15 +62,16 @@ public class OrderStatus extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(OrderStatus.this);
         ArrayList<String[]> orders=new ArrayList<>();
         ListView orderList=(ListView) findViewById(R.id.orderList);
+        AVLoadingIndicatorView avLoadingIndicatorView;
+        TextView loadingTxt;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
+            loadingTxt=(TextView)findViewById(R.id.loadingText);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -153,9 +155,6 @@ public class OrderStatus extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
-            TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
             if(!pass) {
                 loadingTxt.setText(R.string.no_items);
                 loadingTxt.setVisibility(View.VISIBLE);
@@ -169,6 +168,7 @@ public class OrderStatus extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 loadingTxt.setVisibility(View.GONE);
                 CustomAdapter adapter=new CustomAdapter(OrderStatus.this, orders,"orders");
                 orderList.setAdapter(adapter);
@@ -203,6 +203,7 @@ public class OrderStatus extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        orders.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }
