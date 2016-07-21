@@ -243,6 +243,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                         {
                             Picasso.with(OwnerAndDesigner.this)
                                     .load(getString(R.string.url)+imageURL.get(position).substring(imageURL.get(position).indexOf("Media")))
+                                    .placeholder(R.drawable.dp)
                                     .into(dp)
                             ;
                         }
@@ -282,9 +283,8 @@ public class OwnerAndDesigner extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
-                if("designer".equals(extras.getString("ownerORdesigner")))   //to show specific designer details when comes from product details screen
-                    {
-                            spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
+                if("designer".equals(extras.getString("ownerORdesigner")) && getIntent().hasExtra("designerID"))   //to show specific designer details when comes from product details screen
+                    {           spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
                     }
                 else {
                     spinner.performClick();                 //to allow user to see the list of owners as a popup- to avoid priority in owners
