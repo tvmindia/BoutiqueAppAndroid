@@ -1,6 +1,5 @@
 package com.tech.thrithvam.boutiqueapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,10 +22,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -150,14 +151,14 @@ public class BoutiqueDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(BoutiqueDetails.this);
+        AVLoadingIndicatorView avLoadingIndicatorView;
+        ScrollView detailsScroll;
         String nameString, startedYearString, aboutUsString, captionString, locationString, addressString, phoneString, timingString, workingDaysString, fBLinkString, instagramLinkString,latlong,image;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
+            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
+            detailsScroll=(ScrollView)findViewById(R.id.detailsScroll);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -242,8 +243,6 @@ public class BoutiqueDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
             if(!pass) {
                 new AlertDialog.Builder(BoutiqueDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -255,6 +254,8 @@ public class BoutiqueDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                detailsScroll.setVisibility(View.VISIBLE);
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
                 if (ab != null) {
                     ab.setTitle(nameString);
@@ -341,13 +342,9 @@ public class BoutiqueDetails extends AppCompatActivity {
         JSONArray jsonArray;
         String msg;
         boolean pass=false;
-        ProgressDialog pDialog=new ProgressDialog(BoutiqueDetails.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
             categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
@@ -422,8 +419,7 @@ public class BoutiqueDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (pDialog.isShowing())
-                pDialog.dismiss();
+
             if(!pass) {
                 new AlertDialog.Builder(BoutiqueDetails.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -435,6 +431,8 @@ public class BoutiqueDetails extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else {
+                AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 //Links other than category
                 categoryList.add("");
                 categoryList.add(getResources().getString(R.string.trending));
