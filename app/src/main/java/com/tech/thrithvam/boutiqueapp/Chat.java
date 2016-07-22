@@ -297,7 +297,7 @@ public class Chat extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -430,7 +430,7 @@ public class Chat extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -531,7 +531,7 @@ public class Chat extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -554,7 +554,7 @@ public class Chat extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    productName=jsonObject.optString("Name").replace("\\u0026", "&");
+                    productName=jsonObject.optString("Name");
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
                     productNoInt=jsonObject.optInt("ProductNo");
                     productImage=getResources().getString(R.string.url) + jsonObject.optString("Image").substring((jsonObject.optString("Image")).indexOf("Media"));

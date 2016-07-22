@@ -163,7 +163,7 @@ public class GridOfProducts extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -293,7 +293,7 @@ public class GridOfProducts extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -318,7 +318,7 @@ public class GridOfProducts extends AppCompatActivity {
                     pass=jsonObject.optBoolean("Flag",true);
                     String[] data=new String[5];
                     data[0]=jsonObject.optString("ProductID");
-                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[1]=jsonObject.optString("Name");
                     data[2]=jsonObject.optString("Image");
                     data[3]=jsonObject.optString("Discount");
                     data[4]=jsonObject.optString("ProductCounts","null");

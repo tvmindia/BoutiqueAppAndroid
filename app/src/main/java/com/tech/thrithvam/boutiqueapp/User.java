@@ -409,7 +409,7 @@ public class User extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -512,7 +512,7 @@ public class User extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -620,7 +620,7 @@ public class User extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -734,7 +734,7 @@ public class User extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -762,8 +762,8 @@ public class User extends AppCompatActivity {
                     emailString =jsonObject.optString("Email");
                     loyaltyCardNoString =jsonObject.optString("LoyaltyCardNo");
                     loyaltyPointsString=jsonObject.optString("LoyaltyPoints");
-                    DOBString =jsonObject.optString("DOB","").replace("\\/Date(", "").replace(")\\/", "");
-                    anniversaryString =jsonObject.optString("Anniversary","").replace("\\/Date(", "").replace(")\\/", "");
+                    DOBString =jsonObject.optString("DOB","").replace("/Date(", "").replace(")/", "");
+                    anniversaryString =jsonObject.optString("Anniversary","").replace("/Date(", "").replace(")/", "");
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();

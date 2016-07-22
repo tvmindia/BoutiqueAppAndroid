@@ -162,7 +162,7 @@ public class OrderProductList extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -187,8 +187,8 @@ public class OrderProductList extends AppCompatActivity {
                     pass=jsonObject.optBoolean("Flag",true);
                     String[] data=new String[3];
                     data[0]=jsonObject.optString("ProductID");
-                    data[1]=jsonObject.optString("Product").replace("\\u0026", "&");
-                    data[2]=jsonObject.optString("CustomerRemarks").replace("\\u0026", "&");
+                    data[1]=jsonObject.optString("Product");
+                    data[2]=jsonObject.optString("CustomerRemarks");
                     products.add(data);
                 }
             } catch (Exception ex) {
@@ -276,7 +276,7 @@ public class OrderProductList extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -300,15 +300,15 @@ public class OrderProductList extends AppCompatActivity {
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
 
-                    data[0]=jsonObject.optString("OrderDescription").replace("\\u0026", "&");
+                    data[0]=jsonObject.optString("OrderDescription");
                     data[1]=jsonObject.optString("OrderNo");
                     data[2]=String.format(Locale.US,"%.2f", jsonObject.optDouble("TotalOrderAmount"));
-                    data[3]=jsonObject.optString("OrderDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[4]=jsonObject.optString("ForecastDeliveryDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[5]=jsonObject.optString("OrderReadyDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[6]=jsonObject.optString("ActualDeliveryDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[7]=jsonObject.optString("CreatedDate").replace("\\/Date(", "").replace(")\\/", "");
-                    data[8]=jsonObject.optString("UpdatedDate").replace("\\/Date(", "").replace(")\\/", "");
+                    data[3]=jsonObject.optString("OrderDate").replace("/Date(", "").replace(")/", "");
+                    data[4]=jsonObject.optString("ForecastDeliveryDate").replace("/Date(", "").replace(")/", "");
+                    data[5]=jsonObject.optString("OrderReadyDate").replace("/Date(", "").replace(")/", "");
+                    data[6]=jsonObject.optString("ActualDeliveryDate").replace("/Date(", "").replace(")/", "");
+                    data[7]=jsonObject.optString("CreatedDate").replace("/Date(", "").replace(")/", "");
+                    data[8]=jsonObject.optString("UpdatedDate").replace("/Date(", "").replace(")/", "");
                     data[9]=jsonObject.optString("OrderID");
                 }
             } catch (Exception ex) {

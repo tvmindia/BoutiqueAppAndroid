@@ -284,7 +284,7 @@ public class ItemDetails extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -414,7 +414,7 @@ public class ItemDetails extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                      //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -437,8 +437,8 @@ public class ItemDetails extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    productName=jsonObject.optString("Name").replace("\\u0026", "&");
-                    descriptionString=jsonObject.optString("Description").replace("\\u0026", "&");
+                    productName=jsonObject.optString("Name");
+                    descriptionString=jsonObject.optString("Description");
                     priceString=String.format(Locale.US,"%.2f", jsonObject.optDouble("Price"));
                     discount=jsonObject.optString("Discount");
                     isOutOfStock =jsonObject.optBoolean("IsOutOfStock");
@@ -596,7 +596,7 @@ public class ItemDetails extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -689,7 +689,7 @@ public class ItemDetails extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -839,7 +839,7 @@ public class ItemDetails extends AppCompatActivity {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -864,7 +864,7 @@ public class ItemDetails extends AppCompatActivity {
                     pass=jsonObject.optBoolean("Flag",true);
                     String[] data=new String[4];
                     data[0]=jsonObject.optString("RelatedProductsID");
-                    data[1]=jsonObject.optString("Name").replace("\\u0026", "&");
+                    data[1]=jsonObject.optString("Name");
                     data[2]=jsonObject.optString("Image");
                     data[3]=jsonObject.optString("Discount");
                     productItems.add(data);

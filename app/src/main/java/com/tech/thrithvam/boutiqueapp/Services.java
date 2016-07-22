@@ -148,7 +148,7 @@ public class Services extends Service {
                         pass=jsonObject.optBoolean("Flag",true);
                         Message=jsonObject.optString("Message","");
                         if(!jsonObject.optString("NotificationID").equals("")){     //to avoiding inserting null values when NotificationID is absent
-                            db.insertNotificationIDs(jsonObject.optString("NotificationID"),jsonObject.optString("EndDate").replace("\\/Date(", "").replace(")\\/", ""));
+                            db.insertNotificationIDs(jsonObject.optString("NotificationID"),jsonObject.optString("EndDate").replace("/Date(", "").replace(")/", ""));
                         }
                         titles.add(jsonObject.optString("Title"));
                         messages.add(jsonObject.optString("Description"));
@@ -251,7 +251,7 @@ public class Services extends Service {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -277,7 +277,7 @@ public class Services extends Service {
                         db.insertMessage(jsonObject.optString("MessageID")
                                 , jsonObject.optString("Message")
                                 , jsonObject.optString("Direction")
-                                , jsonObject.optString("MessageTime").replace("\\/Date(", "").replace(")\\/", "")
+                                , jsonObject.optString("MessageTime").replace("/Date(", "").replace(")/", "")
                                 , jsonObject.optString("ProductID"));
                         if(jsonObject.optString("Direction").equals("in")){
                             msgIncomingflag=true;
@@ -364,7 +364,7 @@ public class Services extends Service {
                         int b=sb.lastIndexOf("]");
                         strJson=sb.substring(a, b + 1);
                         //   strJson=cryptography.Decrypt(strJson);
-                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"") + "}";
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
