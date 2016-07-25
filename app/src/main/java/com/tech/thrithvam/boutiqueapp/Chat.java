@@ -136,24 +136,26 @@ public class Chat extends AppCompatActivity {
             msgList.setSelection(msgList.getCount() - 1);
             loadedMsgCount=msgList.getCount();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+         /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 msgList.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                     @Override
                     public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                        if(msgList.getLastVisiblePosition()==msgData.size()-1){
+                        if(msgList.getLastVisiblePosition()>=(msgData.size()-1)){
                             lastProductIdSeen=productID;
+                            Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
                             productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
                                     !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
+
                                 lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
                                 productDetailsFroChat=new ProductDetailsForChat().execute();
                         }
                     }
                 });
             }
-            else {
+            else {*/
                 msgList.setOnScrollListener(new AbsListView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -161,6 +163,7 @@ public class Chat extends AppCompatActivity {
                         if(msgList.getLastVisiblePosition()==msgData.size()-1){
                             lastProductIdSeen=productID;
                             productDetailsFroChat=new ProductDetailsForChat().execute();
+//                            Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
@@ -175,7 +178,7 @@ public class Chat extends AppCompatActivity {
 
                     }
                 });
-            }
+          //  }
 
         }
         if(loadedMsgCount==0){
