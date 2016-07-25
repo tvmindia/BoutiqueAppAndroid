@@ -289,7 +289,7 @@ public class OwnerAndDesigner extends AppCompatActivity {
                 if("designer".equals(extras.getString("ownerORdesigner")) && getIntent().hasExtra("designerID"))   //to show specific designer details when comes from product details screen
                     {           spinner.setSelection(designerID.indexOf(extras.getString("designerID")));
                     }
-                else {
+                else if(arrayListName.size()>1){
                     spinner.performClick();                 //to allow user to see the list of owners as a popup- to avoid priority in owners
                 }
 
