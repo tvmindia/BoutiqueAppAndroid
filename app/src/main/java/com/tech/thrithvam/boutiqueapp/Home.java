@@ -613,14 +613,14 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        //clear cache
+                      /*  //clear cache
                         Toast.makeText(Home.this,"Cache Memory Cleared!!",Toast.LENGTH_SHORT).show();
                         try {
                             File dir = getApplicationContext().getCacheDir();
                             if (dir != null && dir.isDirectory()) {
                                 deleteDir(dir);
                             }
-                        } catch (Exception e) {}
+                        } catch (Exception e) {}*/
                         finish();
 
                     }
