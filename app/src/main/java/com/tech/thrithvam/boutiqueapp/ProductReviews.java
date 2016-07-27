@@ -368,7 +368,7 @@ public class ProductReviews extends AppCompatActivity {
             super.onPostExecute(result);
             TextView loadingTxt=(TextView)findViewById(R.id.loadingText);
             if(!pass) {
-                loadingTxt.setText(R.string.no_items);
+                loadingTxt.setText(R.string.no_reviews);
                 loadingTxt.setVisibility(View.VISIBLE);
             }
             else {
