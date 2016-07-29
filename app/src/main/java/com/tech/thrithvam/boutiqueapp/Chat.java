@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -16,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,7 +66,7 @@ public class Chat extends AppCompatActivity {
     int loadedMsgCount=0;
     TextView loadingTxt;
     CardView productDetail;
-    AsyncTask getCategories,productDetailsFroChat;
+    AsyncTask getCategories, productDetailsForChat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +117,7 @@ public class Chat extends AppCompatActivity {
             productID=extras.getString("productID");
             lastProductIdSeen=productID;
         }
-        productDetailsFroChat=new ProductDetailsForChat().execute();
+        productDetailsForChat =new ProductDetailsForChat().execute();
 
 
     }
@@ -143,14 +141,14 @@ public class Chat extends AppCompatActivity {
                         if(msgList.getLastVisiblePosition()>=(msgData.size()-1)){
                             lastProductIdSeen=productID;
                             Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
-                            productDetailsFroChat=new ProductDetailsForChat().execute();
+                            productDetailsForChat=new ProductDetailsForChat().execute();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
                                     !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
 
                                 lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                                productDetailsFroChat=new ProductDetailsForChat().execute();
+                                productDetailsForChat=new ProductDetailsForChat().execute();
                         }
                     }
                 });
@@ -162,14 +160,14 @@ public class Chat extends AppCompatActivity {
 
                         if(msgList.getLastVisiblePosition()==msgData.size()-1){
                             lastProductIdSeen=productID;
-                            productDetailsFroChat=new ProductDetailsForChat().execute();
+                            productDetailsForChat =new ProductDetailsForChat().execute();
 //                            Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
                         }
                         else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
                                 &&
                                 !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
                             lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                            productDetailsFroChat=new ProductDetailsForChat().execute();
+                            productDetailsForChat =new ProductDetailsForChat().execute();
                         }
                     }
 
@@ -233,7 +231,7 @@ public class Chat extends AppCompatActivity {
         finish();
         handler.removeCallbacksAndMessages(null);
         getCategories.cancel(true);
-        productDetailsFroChat.cancel(true);
+        productDetailsForChat.cancel(true);
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
     public void sendMsg(View view){
