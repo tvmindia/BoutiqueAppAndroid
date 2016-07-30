@@ -46,7 +46,7 @@ public class GridOfProducts extends AppCompatActivity {
     Constants constants=new Constants();
     DatabaseHandler db=new DatabaseHandler(this);
     Bundle extras;
-    AsyncTask getCategories,productsByCategory;
+    AsyncTask getCategories,productsByCategory,productsBySearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +57,7 @@ public class GridOfProducts extends AppCompatActivity {
             ab.setTitle(extras.getString("Category"));
         }
         //----------------force to login if not logged in and wanna see favorites---------------
+
         if("myfav".equals(extras.getString("CategoryCode")))  {
             ab.setTitle(R.string.favorites);
             if(db.GetUserDetail("UserID")==null){
@@ -73,7 +74,13 @@ public class GridOfProducts extends AppCompatActivity {
         //---------threading----------------
         if (isOnline()){
             getCategories=new GetCategories().execute();
-            productsByCategory=new GetProductsByCategory().execute();
+            if(getIntent().hasExtra("SearchString")){
+                ab.setTitle(R.string.search_results);
+                productsBySearch=new GetProductsBySearch().execute();
+            }
+            else {
+                productsByCategory=new GetProductsByCategory().execute();
+            }
         }
         else {
             Toast.makeText(GridOfProducts.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
@@ -351,6 +358,114 @@ public class GridOfProducts extends AppCompatActivity {
             }
         }
     }
+    public class GetProductsBySearch extends AsyncTask<Void , Void, Void> {
+        int status;StringBuilder sb;
+        String strJson, postData;
+        JSONArray jsonArray;
+        String msg;
+        boolean pass=false;
+        AVLoadingIndicatorView pDialog=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
+        ArrayList<String[]> productItems=new ArrayList<>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog.setVisibility(View.VISIBLE);
+            //----------encrypting ---------------------------
+            // usernameString=cryptography.Encrypt(usernameString);
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/ProductsBySearch";
+            HttpURLConnection c = null;
+            try {
+                postData =  "{\"searchString\":\"" + extras.getString("SearchString") + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-type", "application/json; charset=utf-16");
+                c.setRequestProperty("Content-length", Integer.toString(postData.length()));
+                c.setDoInput(true);
+                c.setDoOutput(true);
+                c.setUseCaches(false);
+                c.setConnectTimeout(10000);
+                c.setReadTimeout(10000);
+                DataOutputStream wr = new DataOutputStream(c.getOutputStream());
+                wr.writeBytes(postData);
+                wr.flush();
+                wr.close();
+                status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201: BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        br.close();
+                        int a=sb.indexOf("[");
+                        int b=sb.lastIndexOf("]");
+                        strJson=sb.substring(a, b + 1);
+                        //   strJson=cryptography.Decrypt(strJson);
+                        strJson="{\"JSON\":" + strJson.replace("\\\"","\"").replace("\\\\","\\") + "}";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                msg=ex.getMessage();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                        msg=ex.getMessage();
+                    }
+                }
+            }
+            if(strJson!=null)
+            {try {
+                JSONObject jsonRootObject = new JSONObject(strJson);
+                jsonArray = jsonRootObject.optJSONArray("JSON");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    msg=jsonObject.optString("Message");
+                    pass=jsonObject.optBoolean("Flag",true);
+                    String[] data=new String[5];
+                    data[0]=jsonObject.optString("ProductID");
+                    data[1]=jsonObject.optString("Name");
+                    data[2]=jsonObject.optString("Image");
+                    data[3]=jsonObject.optString("Discount");
+                    data[4]=jsonObject.optString("ProductCounts","null");
+                    productItems.add(data);
+                }
+            } catch (Exception ex) {
+                msg=ex.getMessage();
+            }}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pDialog.setVisibility(View.GONE);
+            if(!pass) {
+                new AlertDialog.Builder(GridOfProducts.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
+                        .setMessage(R.string.no_items)
+                        .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+            }
+            else {
+                CustomAdapter adapter=new CustomAdapter(GridOfProducts.this, productItems,"categoryGrid");
+                GridView productGrid=(GridView)findViewById(R.id.productGrid);
+                productGrid.setAdapter(adapter);
+            }
+        }
+    }
     public boolean isOnline() {
         ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -360,7 +475,12 @@ public class GridOfProducts extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         getCategories.cancel(true);
-        productsByCategory.cancel(true);
+        if(productsByCategory!=null){
+            productsByCategory.cancel(true);
+        }
+        if(productsBySearch!=null){
+            productsBySearch.cancel(true);
+        }
         overridePendingTransition(R.anim.slide_exit1,R.anim.slide_exit2);
     }
 }

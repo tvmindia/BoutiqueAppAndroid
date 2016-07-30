@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +68,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     ObservableScrollView scrollView;
     AVLoadingIndicatorView loadingIndicator;
     AsyncTask getCategories,productsByCategory, bannerslider;
+    SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,24 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         //------------------------------Home Screen Slider-------------------------------
          newArrivals = (SliderLayout) findViewById(R.id.newArrivals);
 
-//see whether reached scroll bottom
-      //  ScrollView scrollView=(ScrollView)findViewById(R.id.ScrlViewOfSPDetails);
+        //----------------------------Searching---------------------------------------------
+        searchView=(SearchView)findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent intent=new Intent(Home.this,GridOfProducts.class);
+                intent.putExtra("SearchString",searchView.getQuery().toString());
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
 
 
 
@@ -606,7 +624,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
                         getCategories.cancel(true);
                         productsByCategory.cancel(true);
-                        bannerslider.cancel(true);
+                        if(bannerslider!=null)bannerslider.cancel(true);
 
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_HOME);

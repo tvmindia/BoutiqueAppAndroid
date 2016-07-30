@@ -75,4 +75,5 @@
     <string name="out_of_Stock">Out of Stock</string>
     <string name="in_stock">In Stock</string>
     <string name="view_your_order_status">View your order status</string>
+    <string name="search_results">Search Results</string>
 </resources>

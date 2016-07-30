@@ -38,12 +38,12 @@
             android:layout_height="400dp"
             />
 
-        <SearchView
+        <android.support.v7.widget.SearchView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/searchView"
             android:queryHint="Search"
-            android:background="@android:color/transparent"
+            android:background="@drawable/bg"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
