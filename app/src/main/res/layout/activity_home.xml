@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/searchView"
             android:queryHint="Search"
-            android:background="@drawable/bg"
+            android:background="@drawable/bg_black"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
