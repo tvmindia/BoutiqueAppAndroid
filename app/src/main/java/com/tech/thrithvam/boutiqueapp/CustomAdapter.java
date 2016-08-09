@@ -2,13 +2,11 @@ package com.tech.thrithvam.boutiqueapp;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,9 +96,20 @@ public class CustomAdapter extends BaseAdapter {
                 //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
                 //Image Loading-------------------
+                final int FinalPosition = position;
                 Picasso.with(adapterContext)
                         .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
-                        .into(holder.imageView)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(holder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {}
+                            @Override
+                            public void onError() {
+                                Picasso.with(adapterContext)
+                                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(FinalPosition)[2].substring((objects.get(FinalPosition)[2]).indexOf("Media")))
+                                        .into(holder.imageView);
+                            }
+                        })
                 ;
                 //Offer Label-----------------
                 if(!objects.get(position)[3].equals("null")){
@@ -128,7 +138,6 @@ public class CustomAdapter extends BaseAdapter {
                     holder.viewCount.setVisibility(View.GONE);
                 }
                 //Navigation------------------
-                final int FinalPosition = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -191,10 +200,25 @@ public class CustomAdapter extends BaseAdapter {
                 //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
                 //Image Loading-------------------
+                final int FinalPos = position;
                 Picasso.with(adapterContext)
                         .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
-                        .into(holder.imageView)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(holder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {}
+                            @Override
+                            public void onError() {
+                                Picasso.with(adapterContext)
+                                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(FinalPos)[2].substring((objects.get(FinalPos)[2]).indexOf("Media")))
+                                        .into(holder.imageView);
+                            }
+                        })
                 ;
+               /* Picasso.with(adapterContext)
+                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
+                        .into(holder.imageView)
+                ;*/
                 //Offer Label-----------------
                 if(!objects.get(position)[3].equals("null")){
                     if(Integer.parseInt(objects.get(position)[3])>0){
@@ -207,7 +231,6 @@ public class CustomAdapter extends BaseAdapter {
                     holder.offer.setVisibility(View.GONE);
                 }
                 //Navigation------------------
-                final int FinalPos = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -413,9 +436,21 @@ public class CustomAdapter extends BaseAdapter {
                 //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
                 //Image Loading-------------------
+                final int FinalP = position;
                 Picasso.with(adapterContext)
                         .load(adapterContext.getResources().getString(R.string.url) + objects.get(position)[2].substring((objects.get(position)[2]).indexOf("Media")))
-                        .into(holder.imageView)
+                        .networkPolicy(NetworkPolicy.OFFLINE)
+                        .into(holder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {}
+                            @Override
+                            public void onError() {
+                                Picasso.with(adapterContext)
+                                        .load(adapterContext.getResources().getString(R.string.url) + objects.get(FinalP)[2].substring((objects.get(FinalP)[2]).indexOf("Media")))
+                                        .into(holder.imageView)
+                                ;
+                            }
+                        })
                 ;
                 //Offer Label-----------------
                 if(!objects.get(position)[3].equals("null")){
@@ -429,7 +464,6 @@ public class CustomAdapter extends BaseAdapter {
                     holder.offer.setVisibility(View.GONE);
                 }
                 //Navigation------------------
-                final int FinalP = position;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
