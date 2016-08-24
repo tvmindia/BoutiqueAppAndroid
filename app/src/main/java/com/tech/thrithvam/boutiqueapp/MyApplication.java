@@ -1,0 +1,35 @@
+package com.tech.thrithvam.boutiqueapp;
+
+import android.app.Application;
+import android.content.Context;
+/**
+ * Created by SREEJITH on 19-Aug-16.
+ */
+import org.acra.*;
+import org.acra.annotation.*;
+import org.acra.sender.HttpSender;
+
+@ReportsCrashes(
+        formUri =  "http://192.168.1.107:222/WebServices/WebService.asmx/ErrorDetection",
+        reportType = HttpSender.Type.JSON,
+        httpMethod = HttpSender.Method.POST,
+        customReportContent = { ReportField.ANDROID_VERSION,
+                                ReportField.APP_VERSION_CODE,
+                                ReportField.AVAILABLE_MEM_SIZE,
+                                ReportField.BUILD,
+                                ReportField.CRASH_CONFIGURATION,
+                                ReportField.LOGCAT,
+                                ReportField.PACKAGE_NAME,
+                                ReportField.REPORT_ID},
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.app_name
+)
+public class MyApplication extends Application {
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+
+        // The following line triggers the initialization of ACRA
+        ACRA.init(this);
+    }
+}

@@ -48,6 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:maxWidth="10000dp"
+            android:onClick="dsfas"
             />
 
     </RelativeLayout>
