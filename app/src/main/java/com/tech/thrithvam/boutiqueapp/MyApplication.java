@@ -2,9 +2,6 @@ package com.tech.thrithvam.boutiqueapp;
 
 import android.app.Application;
 import android.content.Context;
-/**
- * Created by SREEJITH on 19-Aug-16.
- */
 import org.acra.*;
 import org.acra.annotation.*;
 import org.acra.sender.HttpSender;
@@ -21,8 +18,7 @@ import org.acra.sender.HttpSender;
                                 ReportField.LOGCAT,
                                 ReportField.PACKAGE_NAME,
                                 ReportField.REPORT_ID},
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.app_name
+        mode = ReportingInteractionMode.SILENT
 )
 public class MyApplication extends Application {
     @Override
