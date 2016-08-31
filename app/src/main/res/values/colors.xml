@@ -12,7 +12,7 @@
 
     <color name="primary">#FF6600</color>
     <color name="primary_dark">#e45b00</color>
-    <color name="primary_light">#ffd2b4</color>
+    <color name="primary_light">#FFAB91</color>
     <color name="accent">#536DFE</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>

@@ -1,5 +1,7 @@
 package com.tech.thrithvam.boutiqueapp;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,20 +62,19 @@ public class Chat extends AppCompatActivity {
 
     EditText inputMessage;
     ImageView send;
-    String productID="",lastProductIdSeen="";
+    String productID="";
     Bundle extras;
 
     ListView msgList;
     Handler handler = new Handler();
     int loadedMsgCount=0;
     TextView loadingTxt;
-    CardView productDetail;
     AsyncTask getCategories, productDetailsForChat;
+    ObjectAnimator Anim1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        productDetail=(CardView)findViewById(R.id.productDetail);
         extras=getIntent().getExtras();
         getSupportActionBar().setElevation(0);
         msgList= (ListView) findViewById(R.id.messagesListView);
@@ -86,8 +89,6 @@ public class Chat extends AppCompatActivity {
         sideBar = (ListView) findViewById(R.id.drawer);
         if (isOnline()) {
             getCategories= new GetCategories().execute();
-          //  new GetMessages().execute();
-
         } else {
             Toast.makeText(Chat.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
             finish();
@@ -98,6 +99,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 inputMessage.setLines(3);
+                msgList.setSelection(msgList.getCount() - 1);
             }
         });
 
@@ -115,7 +117,6 @@ public class Chat extends AppCompatActivity {
         //Product Details----------------------
         if(getIntent().hasExtra("productID")){
             productID=extras.getString("productID");
-            lastProductIdSeen=productID;
         }
         productDetailsForChat =new ProductDetailsForChat().execute();
 
@@ -124,7 +125,7 @@ public class Chat extends AppCompatActivity {
     //----------Loading messages-----------------
     public void loadMessages()
     {
-        final ArrayList<String[]> msgData=db.GetMsgs();
+       // final ArrayList<String[]> msgData=db.GetMsgs();
         CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
         if(adapter.getCount()>loadedMsgCount)
         {
@@ -154,7 +155,7 @@ public class Chat extends AppCompatActivity {
                 });
             }
             else {*/
-                msgList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            /*    msgList.setOnScrollListener(new AbsListView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -175,7 +176,7 @@ public class Chat extends AppCompatActivity {
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
                     }
-                });
+                });*/
           //  }
 
         }
@@ -490,11 +491,15 @@ public class Chat extends AppCompatActivity {
         String productName,priceString,productImage;
         Integer productNoInt;
         AVLoadingIndicatorView avLoadingIndicatorView;
+
+        private  LayoutInflater inflater=null;
+        LinearLayout viewProd;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.prodDetLoading);
-            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+
+            inflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            viewProd=(LinearLayout)findViewById(R.id.productDetail);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -503,7 +508,7 @@ public class Chat extends AppCompatActivity {
             String url =getResources().getString(R.string.url) + "WebServices/WebService.asmx/GetProductDetailsOnChat";
             HttpURLConnection c = null;
             try {
-                postData = "{\"productID\":\"" + lastProductIdSeen + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
+                postData = "{\"productID\":\"" + productID + "\",\"boutiqueID\":\"" + constants.BoutiqueID + "\"}";
                 URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("POST");
@@ -569,6 +574,10 @@ public class Chat extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+          //  RelativeLayout msgArea=(RelativeLayout)findViewById(R.id.msgInputArea);
+
+            LinearLayout child=(LinearLayout) inflater.inflate(R.layout.product_detail_in_chat, null);
+            viewProd.addView(child);
             if(!pass) {
                 /*new AlertDialog.Builder(Chat.this).setIcon(android.R.drawable.ic_dialog_alert)//.setTitle("")
                         .setMessage(msg)
@@ -578,25 +587,52 @@ public class Chat extends AppCompatActivity {
 
                             }
                         }).setCancelable(false).show();*/
-                productDetail.setVisibility(View.GONE);
-
+                viewProd.setVisibility(View.GONE);
+                Toast.makeText(Chat.this,msg,Toast.LENGTH_LONG).show();
             }
             else {
-                TextView pName=(TextView)findViewById(R.id.productName);
-                TextView pNo=(TextView)findViewById(R.id.productNo);
-                TextView pPrice=(TextView)findViewById(R.id.productPrice);
-                ImageView pImage=(ImageView)findViewById(R.id.productImg);
+               // viewProd.setVisibility(View.VISIBLE);
+                Anim1 = ObjectAnimator.ofFloat(viewProd, "y", 1500);
+                Anim1.setDuration(300);
+                Anim1.reverse();
+                Anim1.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        msgList.setSelection(msgList.getCount());
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                avLoadingIndicatorView=(AVLoadingIndicatorView)viewProd.findViewById(R.id.prodDetLoading);
+                avLoadingIndicatorView.setVisibility(View.VISIBLE);
+                TextView pName=(TextView)viewProd.findViewById(R.id.productName);
+                TextView pNo=(TextView)viewProd.findViewById(R.id.productNo);
+                TextView pPrice=(TextView)viewProd.findViewById(R.id.productPrice);
+                ImageView pImage=(ImageView)viewProd.findViewById(R.id.productImg);
 
                 pName.setText(productName);
                 pNo.setText(getResources().getString(R.string.product_no, productNoInt));
                 pPrice.setText(getResources().getString(R.string.rs, priceString));
                 Picasso.with(Chat.this).load(productImage).into(pImage);
-                productDetail.setVisibility(View.VISIBLE);
-                productDetail.setOnClickListener(new View.OnClickListener() {
+                viewProd.setVisibility(View.VISIBLE);
+                viewProd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(Chat.this,ItemDetails.class);
-                        intent.putExtra("ProductID",lastProductIdSeen);
+                        intent.putExtra("ProductID",productID);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
