@@ -71,6 +71,7 @@ public class Chat extends AppCompatActivity {
     TextView loadingTxt;
     AsyncTask getCategories, productDetailsForChat;
     ObjectAnimator Anim1;
+    LinearLayout viewProd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -478,6 +479,7 @@ public class Chat extends AppCompatActivity {
             }
             else {
                 inputMessage.setText("");
+                viewProd.setVisibility(View.GONE);
             }
             send.setEnabled(true);
         }
@@ -493,7 +495,6 @@ public class Chat extends AppCompatActivity {
         AVLoadingIndicatorView avLoadingIndicatorView;
 
         private  LayoutInflater inflater=null;
-        LinearLayout viewProd;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

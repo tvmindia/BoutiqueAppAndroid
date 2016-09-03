@@ -7,7 +7,7 @@ import org.acra.annotation.*;
 import org.acra.sender.HttpSender;
 
 @ReportsCrashes(
-        formUri =  "http://www.tiquesinn.com/WebServices/WebService.asmx/ErrorDetection",
+        formUri =  "http://192.168.1.107:222/WebServices/WebService.asmx/ErrorDetection",
         reportType = HttpSender.Type.JSON,
         httpMethod = HttpSender.Method.POST,
         customReportContent = { ReportField.ANDROID_VERSION,
