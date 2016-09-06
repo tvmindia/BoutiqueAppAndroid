@@ -358,6 +358,9 @@ public class ItemDetails extends AppCompatActivity {
                                 startActivity(categoryIntent);
                                 overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
                             }
+                            DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
+                            RelativeLayout drawer=(RelativeLayout)findViewById(R.id.rightDrawer);
+                            drawerLayout.closeDrawer(drawer);
                         }
                     }
                 });
