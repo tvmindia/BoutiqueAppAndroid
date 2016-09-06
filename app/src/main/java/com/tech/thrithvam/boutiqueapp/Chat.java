@@ -126,7 +126,6 @@ public class Chat extends AppCompatActivity {
     //----------Loading messages-----------------
     public void loadMessages()
     {
-       // final ArrayList<String[]> msgData=db.GetMsgs();
         CustomAdapter adapter=new CustomAdapter(Chat.this, db.GetMsgs(),"chat");
         if(adapter.getCount()>loadedMsgCount)
         {
@@ -135,55 +134,8 @@ public class Chat extends AppCompatActivity {
 
             msgList.setSelection(msgList.getCount() - 1);
             loadedMsgCount=msgList.getCount();
-
-         /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                msgList.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-                    @Override
-                    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                        if(msgList.getLastVisiblePosition()>=(msgData.size()-1)){
-                            lastProductIdSeen=productID;
-                            Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
-                            productDetailsForChat=new ProductDetailsForChat().execute();
-                        }
-                        else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
-                                &&
-                                    !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
-
-                                lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                                productDetailsForChat=new ProductDetailsForChat().execute();
-                        }
-                    }
-                });
-            }
-            else {*/
-            /*    msgList.setOnScrollListener(new AbsListView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                        if(msgList.getLastVisiblePosition()==msgData.size()-1){
-                            lastProductIdSeen=productID;
-                            productDetailsForChat =new ProductDetailsForChat().execute();
-//                            Toast.makeText(Chat.this,"Product details called",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!msgData.get(msgList.getLastVisiblePosition())[3].equals(lastProductIdSeen)
-                                &&
-                                !msgData.get(msgList.getLastVisiblePosition())[3].equals("null")){
-                            lastProductIdSeen=msgData.get(msgList.getLastVisiblePosition())[3];
-                            productDetailsForChat =new ProductDetailsForChat().execute();
-                        }
-                    }
-
-                    @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                    }
-                });*/
-          //  }
-
         }
         if(loadedMsgCount==0){
-           // msgList.setVisibility(View.INVISIBLE);
-           // productDetail.setVisibility(View.INVISIBLE);
             loadingTxt.setVisibility(View.VISIBLE);
         }
         else {
