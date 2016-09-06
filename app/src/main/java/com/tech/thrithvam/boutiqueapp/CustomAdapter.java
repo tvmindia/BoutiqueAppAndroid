@@ -577,9 +577,24 @@ public class CustomAdapter extends BaseAdapter {
             this.productID=productID;
             this.prodDetView=convertView;
         }
+        TextView pName;
+        TextView pNo;
+        TextView pPrice;
+        ImageView pImage;
+        AVLoadingIndicatorView avLoadingIndicatorView;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            avLoadingIndicatorView=(AVLoadingIndicatorView)prodDetView.findViewById(R.id.prodDetLoading);
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+            pName=(TextView)prodDetView.findViewById(R.id.productName);
+            pNo=(TextView)prodDetView.findViewById(R.id.productNo);
+            pPrice=(TextView)prodDetView.findViewById(R.id.productPrice);
+            pImage=(ImageView)prodDetView.findViewById(R.id.productImg);
+            pName.setVisibility(View.INVISIBLE);
+            pNo.setVisibility(View.INVISIBLE);
+            pPrice.setVisibility(View.INVISIBLE);
+            pImage.setVisibility(View.INVISIBLE);
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -665,15 +680,10 @@ public class CustomAdapter extends BaseAdapter {
                         }).setCancelable(false).show();*/
             }
             else {
-                // viewProd.setVisibility(View.VISIBLE);
-
-
-                AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)prodDetView.findViewById(R.id.prodDetLoading);
-                avLoadingIndicatorView.setVisibility(View.VISIBLE);
-                TextView pName=(TextView)prodDetView.findViewById(R.id.productName);
-                TextView pNo=(TextView)prodDetView.findViewById(R.id.productNo);
-                TextView pPrice=(TextView)prodDetView.findViewById(R.id.productPrice);
-                ImageView pImage=(ImageView)prodDetView.findViewById(R.id.productImg);
+                pName.setVisibility(View.VISIBLE);
+                pNo.setVisibility(View.VISIBLE);
+                pPrice.setVisibility(View.VISIBLE);
+                pImage.setVisibility(View.VISIBLE);
 
                 pName.setText(productName);
                 pNo.setText(adapterContext.getResources().getString(R.string.product_no, productNoInt));
