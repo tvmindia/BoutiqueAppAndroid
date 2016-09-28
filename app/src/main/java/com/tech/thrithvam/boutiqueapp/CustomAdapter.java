@@ -181,37 +181,6 @@ public class CustomAdapter extends BaseAdapter {
                 } else {
                     holder = (Holder) convertView.getTag();
                 }
-                //More Image----------------------------------
-                if(objects.get(position)[0].equals("")){        //More
-                    holder.loading.setVisibility(View.GONE);
-                    Picasso.with(adapterContext)
-                            .load(R.drawable.more)
-                            .into(holder.imageView)
-                    ;
-                    holder.title.setVisibility(View.GONE);
-                    holder.offer.setVisibility(View.GONE);
-                    final int FinalPos = position;
-                    convertView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(isOnline()) {
-                                Intent categoryIntent=new Intent(adapterContext,GridOfProducts.class);
-                                categoryIntent.putExtra("CategoryCode",objects.get(FinalPos)[1]);
-                                categoryIntent.putExtra("Category",objects.get(FinalPos)[2].replace("\uD83D\uDC49\t",""));
-                                categoryIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                adapterContext.startActivity(categoryIntent);
-                                ((Activity)adapterContext).overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                            }
-                            else {
-                                Toast.makeText(adapterContext, R.string.network_off_alert, Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    break;
-                }
-                else {
-                    holder.title.setVisibility(View.VISIBLE);
-                }
                 //Label loading--------------------
                 holder.title.setText(objects.get(position)[1]);
                 //Image Loading-------------------

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -59,54 +60,49 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     LinearLayout homeScreen;
     LayoutInflater inflater;
     ListView sideBar;
-    ArrayList<String> categoryList;
+    ArrayList<String> categoryList=new ArrayList<>();
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
     SliderLayout newArrivals;
     //  int loadedCategoryCount=0;
- //   ArrayList<View> cards=new ArrayList<>();
+    //   ArrayList<View> cards=new ArrayList<>();
     ObservableScrollView scrollView;
     AVLoadingIndicatorView loadingIndicator;
     AsyncTask getCategories,productsByCategory, bannerslider;
     SearchView searchView;
+    ArrayList<String []> cats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().setElevation(0);
         db.flushNotifications();
-        loadingIndicator=(AVLoadingIndicatorView)findViewById(R.id.itemsLoading);
-        if (isOnline()){
-            getCategories=new GetCategories().execute();
-            productsByCategory=new BannerSlider().execute();
-        }
-        else {
-            Toast.makeText(Home.this,R.string.network_off_alert,Toast.LENGTH_LONG).show();
-        }
+        loadingIndicator = (AVLoadingIndicatorView) findViewById(R.id.itemsLoading);
 
-        sideBar=(ListView)findViewById(R.id.drawer);
 
-        inflater = (LayoutInflater)Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        homeScreen=(LinearLayout)findViewById(R.id.homeScreen);
-       // final TextView newArrivalsLabel = (TextView) findViewById(R.id.new_arrivals_label);
-        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/segoeui.ttf");
+        sideBar = (ListView) findViewById(R.id.drawer);
+
+        inflater = (LayoutInflater) Home.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        homeScreen = (LinearLayout) findViewById(R.id.homeScreen);
 
         //-------------------------hide actionbar on scroll----------------------------
-        scrollView=(ObservableScrollView)findViewById(R.id.homeScroll);
+        scrollView = (ObservableScrollView) findViewById(R.id.homeScroll);
         scrollView.setScrollViewCallbacks(this);
 
         //------------------------------Home Screen Slider-------------------------------
-         newArrivals = (SliderLayout) findViewById(R.id.newArrivals);
+        newArrivals = (SliderLayout) findViewById(R.id.newArrivals);
 
         //----------------------------Searching---------------------------------------------
-        searchView=(SearchView)findViewById(R.id.searchView);
+        searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent intent=new Intent(Home.this,GridOfProducts.class);
-                intent.putExtra("SearchString",searchView.getQuery().toString());
+                Intent intent = new Intent(Home.this, GridOfProducts.class);
+                intent.putExtra("SearchString", searchView.getQuery().toString());
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                searchView.setQuery("", false);
+                searchView.clearFocus();
+                overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
                 return true;
             }
 
@@ -116,9 +112,60 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             }
         });
 
-
-
-
+        //---------------------------Categories loading------------------------------------
+        cats = db.GetCategories();
+        if (cats.size()>0)
+        {
+            for (int i = 0; i < cats.size(); i++) {
+                categoryList.add(cats.get(i)[1]);
+                categoryCode.put(cats.get(i)[1], cats.get(i)[0]);
+            }
+            //Links other than category
+            categoryList.add("");
+            categoryList.add(getResources().getString(R.string.trending));
+            categoryCode.put(getResources().getString(R.string.trending),"trends");
+            categoryList.add(getResources().getString(R.string.my_favorites));
+            categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
+            categoryList.add(getResources().getString(R.string.my_orders_sidebar));
+            categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
+            sideBar.setAdapter(categoryAdapter);
+            sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (!categoryList.get(position).equals("")) {
+                        if (categoryList.get(position).equals(getResources().getString(R.string.my_orders_sidebar))) {
+                            Intent orderIntent = new Intent(Home.this, OrderStatus.class);
+                            startActivity(orderIntent);
+                            overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+                        } else {
+                            Intent categoryIntent = new Intent(Home.this, GridOfProducts.class);
+                            categoryIntent.putExtra("CategoryCode", categoryCode.get(categoryList.get(position)));
+                            categoryIntent.putExtra("Category", categoryList.get(position).replace("\uD83D\uDC49\t", ""));
+                            startActivity(categoryIntent);
+                            overridePendingTransition(R.anim.slide_entry1, R.anim.slide_entry2);
+                        }
+                        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+                        RelativeLayout drawer = (RelativeLayout) findViewById(R.id.rightDrawer);
+                        drawerLayout.closeDrawer(drawer);
+                    }
+                }
+            });
+            AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+            avLoadingIndicatorView.setVisibility(View.GONE);
+            //products under category loading on Home screen
+            productsOfCategory(-1);
+        }
+        if (isOnline()) {
+            getCategories = new GetCategories().execute();
+            bannerslider = new BannerSlider().execute();
+        } else {
+            Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+        }
+    }
+    public void tiquesinnsite(View view){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.tiquesinn.com/"));
+        startActivity(browserIntent);
+        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
     }
     //-------------------------------- Items Grid----------------------------------
     public void productsOfCategory(Integer loadedCategoryCount){
@@ -132,7 +179,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         }
 
 
-       // homeScreen.addView(cards.get(loadedCategoryCount));
+        // homeScreen.addView(cards.get(loadedCategoryCount));
 
 
     }
@@ -203,10 +250,12 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.setMessage(getResources().getString(R.string.wait));
-            pDialog.setCancelable(false);
-            pDialog.show();
-            categoryList=new ArrayList<>();
+            if(cats.size()==0){
+                pDialog.setMessage(getResources().getString(R.string.wait));
+                pDialog.setCancelable(false);
+                pDialog.show();
+            }
+            //  categoryList=new ArrayList<>();
             //----------encrypting ---------------------------
             // usernameString=cryptography.Encrypt(usernameString);
         }
@@ -264,12 +313,16 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             {try {
                 JSONObject jsonRootObject = new JSONObject(strJson);
                 jsonArray = jsonRootObject.optJSONArray("JSON");
+                db.flushOldCategories();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     msg=jsonObject.optString("Message");
                     pass=jsonObject.optBoolean("Flag",true);
-                    categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name").replace("\\u0026", "&"));
-                    categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    if(cats.size()==0){
+                        categoryList.add("\uD83D\uDC49\t"+jsonObject.optString("Name"));
+                        categoryCode.put("\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optString("CategoryCode"));
+                    }
+                    db.CategoryInsert(jsonObject.optString("CategoryCode"),"\uD83D\uDC49\t"+jsonObject.optString("Name"),jsonObject.optInt("OrderNo"));
                 }
             } catch (Exception ex) {
                 msg=ex.getMessage();
@@ -291,44 +344,53 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                                 finish();
                             }
                         }).setCancelable(false).show();
+
+                Toast.makeText(Home.this,"entered",Toast.LENGTH_LONG).show();
             }
             else {
-                AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
-                avLoadingIndicatorView.setVisibility(View.GONE);
-                //Links other than category
-                categoryList.add("");
-                categoryList.add(getResources().getString(R.string.trending));
-                categoryCode.put(getResources().getString(R.string.trending),"trends");
-                categoryList.add(getResources().getString(R.string.my_favorites));
-                categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
-                categoryList.add(getResources().getString(R.string.my_orders_sidebar));
 
-                categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
-                sideBar.setAdapter(categoryAdapter);
-                sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if(!categoryList.get(position).equals("")){
-                            if(categoryList.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
-                                Intent orderIntent=new Intent(Home.this,OrderStatus.class);
-                                startActivity(orderIntent);
-                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                if(cats.size()==0){
+                    AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+                    avLoadingIndicatorView.setVisibility(View.GONE);
+                    //Links other than category
+                    categoryList.add("");
+                    categoryList.add(getResources().getString(R.string.trending));
+                    categoryCode.put(getResources().getString(R.string.trending),"trends");
+                    categoryList.add(getResources().getString(R.string.my_favorites));
+                    categoryCode.put(getResources().getString(R.string.my_favorites),"myfav");
+                    categoryList.add(getResources().getString(R.string.my_orders_sidebar));
+
+                    categoryAdapter = new ArrayAdapter<>(Home.this, R.layout.side_bar_item, categoryList);
+                    sideBar.setAdapter(categoryAdapter);
+                    sideBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            if(!categoryList.get(position).equals("")){
+                                if(categoryList.get(position).equals(getResources().getString(R.string.my_orders_sidebar))){
+                                    Intent orderIntent=new Intent(Home.this,OrderStatus.class);
+                                    startActivity(orderIntent);
+                                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                                }
+                                else {
+                                    Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
+                                    categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
+                                    categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
+                                    startActivity(categoryIntent);
+                                    overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+                                }
+                                DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
+                                RelativeLayout drawer=(RelativeLayout)findViewById(R.id.rightDrawer);
+                                drawerLayout.closeDrawer(drawer);
                             }
-                            else {
-                                Intent categoryIntent=new Intent(Home.this,GridOfProducts.class);
-                                categoryIntent.putExtra("CategoryCode",categoryCode.get(categoryList.get(position)));
-                                categoryIntent.putExtra("Category",categoryList.get(position).replace("\uD83D\uDC49\t",""));
-                                startActivity(categoryIntent);
-                                overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
-                            }
-                            DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
-                            RelativeLayout drawer=(RelativeLayout)findViewById(R.id.rightDrawer);
-                            drawerLayout.closeDrawer(drawer);
                         }
-                    }
-                });
-                //products under category loading on Home screen
-                productsOfCategory(-1);
+                    });
+//                    AVLoadingIndicatorView avLoadingIndicatorView=(AVLoadingIndicatorView)findViewById(R.id.catItemsLoading);
+//                    avLoadingIndicatorView.setVisibility(View.GONE);
+                    //products under category l+//10oa// ing on Home screen
+                    productsOfCategory(-1);
+                }
+
+
             }
         }
     }
@@ -414,12 +476,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     data[3]=jsonObject.optString("Discount");
                     productItems.add(data);
                 }
-                String[] data=new String[4];                //For more
-                data[0]="";
-                data[1]=categoryCode.get(categoryList.get(arg0[0]));
-                data[2]=categoryList.get(arg0[0]);
-                data[3]="";
-                productItems.add(data);
             } catch (Exception ex) {
                 msg=ex.getMessage();
             }}
@@ -596,7 +652,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                             else if(!bannerItems.get(fi)[1].equals("null")){
                                 intent= new Intent(Home.this, GridOfProducts.class);
                                 intent.putExtra("CategoryCode",bannerItems.get(fi)[1]);
-                                intent.putExtra("Category","");
+                                intent.putExtra("Category",db.GetCategoryName(bannerItems.get(fi)[1]).replace("\uD83D\uDC49\t", ""));
                             }
                             else{
                                 return;

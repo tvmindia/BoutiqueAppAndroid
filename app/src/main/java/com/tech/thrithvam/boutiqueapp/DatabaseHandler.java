@@ -28,6 +28,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_NOTIFICATIONS_TABLE);
         String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS Chat (MsgIDs TEXT PRIMARY KEY, Msg TEXT, Direction TEXT, MsgTime DATETIME, ProductID TEXT);";
         db.execSQL(CREATE_CHAT_TABLE);
+        //Homescreen Items-----
+        String CREATE_CATEGORY_TABLE = "CREATE TABLE IF NOT EXISTS Category (CatCode TEXT PRIMARY KEY, Category TEXT,OrderNo NUMBER);";
+        db.execSQL(CREATE_CATEGORY_TABLE);
     }
     // Upgrading database
     @Override
@@ -53,14 +56,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public String GetUserDetail(String detail)
     {db=this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM UserAccount;",null);
+        Cursor cursor = db.rawQuery("SELECT UserID FROM UserAccount;",null);
         if (cursor.getCount()>0)
         {cursor.moveToFirst();
             String result=cursor.getString(cursor.getColumnIndex(detail));
             cursor.close();
+            db.close();
             return result;
         }
-        else return null;
+        else {
+            db.close();
+            return null;
+        }
     }
     //------------------------Notifications table------------------------------
     public void insertNotificationIDs(String notIds, String date)
@@ -81,9 +88,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 nIDs=nIDs+","+cursor.getString(cursor.getColumnIndex("NotificationIDs"));
             }while (cursor.moveToNext());
             cursor.close();
+            db.close();
             return nIDs;
         }
-        else return "";
+        else {
+            db.close();
+            return "";
+        }
     }
     public void flushNotifications()
     {
@@ -129,8 +140,60 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 msgs.add(data);
             }while (cursor.moveToNext());
             cursor.close();
+            db.close();
             return msgs;
         }
-        else return msgs;//empty array list to avoid exception in custom adapter
+        else {
+            db.close();
+            return msgs;//empty array list to avoid exception in custom adapter
+        }
+    }
+
+    //--------------------------Homescreen Items-----------------------------
+    public void flushOldCategories()
+    {
+        db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM Category");
+        db.close();
+    }
+    public void CategoryInsert(String CatCode,String Category, int OrderNo)
+    {
+        db=this.getWritableDatabase();
+        db.execSQL("INSERT INTO Category (CatCode,Category,OrderNo) VALUES ('"+CatCode+"','"+Category+"','"+OrderNo+"');");
+        db.close();
+    }
+    public ArrayList<String []> GetCategories()
+    {
+        db=this.getReadableDatabase();
+        ArrayList<String[]> categories=new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT CatCode,Category FROM Category ORDER BY OrderNo ASC;",null);
+        if (cursor.getCount()>0)
+        {cursor.moveToFirst();
+            do {
+                String[] data = new String[3];
+                data[0] = cursor.getString(cursor.getColumnIndex("CatCode"));
+                data[1] = cursor.getString(cursor.getColumnIndex("Category"));
+                categories.add(data);
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return categories;
+    }
+    public String GetCategoryName(String CategoryCode)
+    {
+        db=this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Category FROM Category WHERE CatCode=='"+CategoryCode+"';",null);
+        if (cursor.getCount()>0)
+        {cursor.moveToFirst();
+            String result=cursor.getString(cursor.getColumnIndex("Category"));
+            cursor.close();
+            db.close();
+            return result;
+        }
+        else {
+            db.close();
+            return "";
+        }
     }
 }
