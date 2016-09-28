@@ -64,11 +64,9 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     Dictionary<String,String> categoryCode=new Hashtable<>();
     ArrayAdapter categoryAdapter;
     SliderLayout newArrivals;
-    //  int loadedCategoryCount=0;
-    //   ArrayList<View> cards=new ArrayList<>();
     ObservableScrollView scrollView;
     AVLoadingIndicatorView loadingIndicator;
-    AsyncTask getCategories,productsByCategory, bannerslider;
+    AsyncTask productsByCategory, bannerslider;
     SearchView searchView;
     ArrayList<String []> cats;
     @Override
@@ -156,7 +154,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             productsOfCategory(-1);
         }
         if (isOnline()) {
-            getCategories = new GetCategories().execute();
+            new GetCategories().execute();
             bannerslider = new BannerSlider().execute();
         } else {
             Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
@@ -681,7 +679,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        getCategories.cancel(true);
+
                         productsByCategory.cancel(true);
                         if(bannerslider!=null)bannerslider.cancel(true);
 
