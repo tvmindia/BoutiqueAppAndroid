@@ -22,6 +22,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // the emulator or uninstall the application in the phone, to run the application
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //----------------Variables------------------------------
+        String CREATE_VARIABLES_TABLE = "CREATE TABLE IF NOT EXISTS Variables (variable TEXT PRIMARY KEY, value TEXT);";//store the variables in the program
+        db.execSQL(CREATE_VARIABLES_TABLE);
+        db.execSQL("insert into variables values ('CategoryTable','UNLOCKED');");//store notifications IDs
+
+        //---------------Tables----------------------------------
         String CREATE_USER_ACCOUNTS_TABLE = "CREATE TABLE IF NOT EXISTS UserAccount (UserID TEXT);";
         db.execSQL(CREATE_USER_ACCOUNTS_TABLE);
         String CREATE_NOTIFICATIONS_TABLE = "CREATE TABLE IF NOT EXISTS Notifications (NotificationIDs TEXT, ExpiryDate DATE);";
@@ -39,6 +45,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME );
         // Create tables again
         onCreate(db);
+    }
+    //---------------------Variables Table------------------
+    public String getVarValue(String var)
+    {db=this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select (value) from Variables where variable='"+var+"';",null);
+        if (cursor != null)
+        {cursor.moveToFirst();db.close();
+            return cursor.getString(cursor.getColumnIndex("value"));}
+        else{
+            db.close();
+            return "";
+        }
+
+    }
+
+    public void updateVarValue(String var,String val)
+    {
+        db=this.getWritableDatabase();
+        db.execSQL("UPDATE Variables SET value='"+val+"' WHERE variable='"+var+"';");
+        db.close();
     }
     //--------------------------User Accounts-----------------------------
     public void UserLogin(String UserID)

@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -69,6 +70,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     AsyncTask productsByCategory, bannerslider;
     SearchView searchView;
     ArrayList<String []> cats;
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,9 +112,26 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             }
         });
 
-        //---------------------------Categories loading------------------------------------
+
+        loadCategories();
+
+        if (isOnline()) {
+           // new GetCategories().execute();
+            bannerslider = new BannerSlider().execute();
+        } else {
+            Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+        }
+    }
+    public void tiquesinnsite(View view){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.tiquesinn.com/"));
+        startActivity(browserIntent);
+        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
+    }
+
+    //---------------------------Categories loading------------------------------------
+    public void loadCategories(){
         cats = db.GetCategories();
-        if (cats.size()>0)
+        if (cats.size()>0 && (db.getVarValue("CategoryTable").equals("UNLOCKED")))
         {
             for (int i = 0; i < cats.size(); i++) {
                 categoryList.add(cats.get(i)[1]);
@@ -153,17 +172,13 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
             //products under category loading on Home screen
             productsOfCategory(-1);
         }
-        if (isOnline()) {
-            new GetCategories().execute();
-            bannerslider = new BannerSlider().execute();
-        } else {
-            Toast.makeText(Home.this, R.string.network_off_alert, Toast.LENGTH_LONG).show();
+        else {
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    loadCategories();
+                }
+            },300);
         }
-    }
-    public void tiquesinnsite(View view){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.tiquesinn.com/"));
-        startActivity(browserIntent);
-        overridePendingTransition(R.anim.slide_entry1,R.anim.slide_entry2);
     }
     //-------------------------------- Items Grid----------------------------------
     public void productsOfCategory(Integer loadedCategoryCount){
@@ -238,7 +253,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
     }
 
     //------------------------------Async Tasks-----------------------------
-    public class GetCategories extends AsyncTask<Void , Void, Void> {
+    /*public class GetCategories extends AsyncTask<Void , Void, Void> {
         int status;StringBuilder sb;
         String strJson, postData;
         JSONArray jsonArray;
@@ -343,7 +358,6 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                             }
                         }).setCancelable(false).show();
 
-                Toast.makeText(Home.this,"entered",Toast.LENGTH_LONG).show();
             }
             else {
 
@@ -391,7 +405,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
 
             }
         }
-    }
+    }*/
     public class GetProductsByCategory extends AsyncTask<Integer, Void, Integer> {
         int status;StringBuilder sb;
         String strJson, postData;
@@ -679,7 +693,7 @@ public class Home extends AppCompatActivity implements ObservableScrollViewCallb
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-
+                        handler.removeCallbacksAndMessages(null);
                         productsByCategory.cancel(true);
                         if(bannerslider!=null)bannerslider.cancel(true);
 
